@@ -1076,7 +1076,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   <input
                     type="file"
                     accept="application/pdf"
-                    onChange={handlePdfFileUpload}
+                    onChange={handleMultiplePdfUpload}
                     className="hidden"
                   />
                 </label>
@@ -1115,7 +1115,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                     <input
                       type="file"
                       accept="application/pdf"
-                      onChange={handlePdfFileUpload}
+                      onChange={handleMultiplePdfUpload}
                       className="hidden"
                     />
                   </label>
