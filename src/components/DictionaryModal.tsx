@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { BookMarked, Search, Plus, Trash2, X, Sparkles, Brain, CheckCircle2, RotateCw, ChevronRight, Layers } from 'lucide-react';
+import TextSelectionDictionary from './TextSelectionDictionary';
 
 interface GlossaryItem {
   id: string;
@@ -44,32 +45,28 @@ export default function DictionaryModal() {
     }
   }, [isOpen]);
 
-  const handleSearchWord = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!query.trim()) return;
-
+  const searchSpecificWord = async (wordToSearch: string) => {
+    if (!wordToSearch.trim()) return;
+    setQuery(wordToSearch);
+    setIsOpen(true);
     setIsSearching(true);
     try {
-      const res = await fetch(`/api/glossary?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/glossary?q=${encodeURIComponent(wordToSearch)}`);
       const data = await res.json();
       if (data.success && data.result) {
         setSearchResult(data.result);
-      } else {
-        setSearchResult({
-          id: `TEMP_${Date.now()}`,
-          term: query.toUpperCase(),
-          definition: `Definición para "${query}": Concepto clave de estudio en el programa Polímata.`,
-          etymology: 'Origen y etimología en procesamiento',
-          category: 'Vocabulario Técnico',
-          example: `Ejemplo de uso de ${query} en contexto interdisciplinario.`,
-          createdAt: new Date().toISOString()
-        });
       }
     } catch (err) {
       console.error(err);
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleSearchWord = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!query.trim()) return;
+    await searchSpecificWord(query);
   };
 
   const handleSaveToGlossary = async (itemToSave?: GlossaryItem) => {
@@ -115,6 +112,9 @@ export default function DictionaryModal() {
 
   return (
     <>
+      {/* COMPONENTE DE SELECCIÓN DE TEXTO AL LEER EN CUALQUIER PARTE */}
+      <TextSelectionDictionary onSearchWord={searchSpecificWord} />
+
       {/* BOTÓN FLOTANTE DICCIONARIO & GLOSARIO */}
       <button
         type="button"
@@ -149,7 +149,7 @@ export default function DictionaryModal() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Escribe una palabra o concepto (ej: epistemología, eudaimonía, interleaving)..."
+                placeholder="Escribe una palabra o concepto (ej: alma, ciencia, epistemología, eudaimonía)..."
                 className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
               />
               <button
@@ -183,7 +183,7 @@ export default function DictionaryModal() {
                   </button>
                 </div>
 
-                <p className="text-xs text-slate-200 leading-relaxed font-mono bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                <p className="text-xs text-slate-200 leading-relaxed font-mono bg-slate-950/80 p-3.5 rounded-xl border border-slate-800">
                   {searchResult.definition}
                 </p>
 
@@ -314,7 +314,7 @@ export default function DictionaryModal() {
                     ))
                   ) : (
                     <p className="text-center py-6 text-xs text-slate-500 italic">
-                      Tu glosario personal está vacío. Busca palabras arriba (ej: "epistemología", "eudaimonía") y presiona "Guardar a mi Glosario".
+                      Tu glosario personal está vacío. Selecciona cualquier palabra mientras lees o búscala arriba para guardarla.
                     </p>
                   )}
                 </div>
