@@ -65,6 +65,27 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [pdfFileName, setPdfFileName] = useState<string | null>(null);
 
+  const getExecutablePdfUrl = (rawUrl: string | null): string | null => {
+    if (!rawUrl) return null;
+    if (!rawUrl.startsWith('data:')) return rawUrl;
+    try {
+      const parts = rawUrl.split(',');
+      const mimeMatch = parts[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+      const bstr = atob(parts[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      return URL.createObjectURL(blob);
+    } catch (e) {
+      return rawUrl;
+    }
+  };
+
+
   // Estado Recuerdo Activo por Voz (Speech-to-Text Feynman)
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [selectedResource, setSelectedResource] = useState<any | null>(null);
@@ -639,26 +660,51 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
           </div>
 
 
-          {/* VISOR PDF ABAJO (INLINE PLAYER) */}
+          {/* VISOR PDF ABAJO (INLINE PLAYER PARA LIBROS Y PAPERS DE CUALQUIER TAMAÑO) */}
           {pdfBlobUrl && (
             <div className="bg-slate-950 border border-emerald-800/60 rounded-2xl p-4 space-y-3 shadow-2xl">
-              <div className="flex justify-between items-center bg-slate-900 p-3 rounded-xl border border-slate-800">
+              <div className="flex flex-wrap justify-between items-center bg-slate-900 p-3 rounded-xl border border-slate-800 gap-2">
                 <div className="flex items-center space-x-2 text-xs font-bold text-slate-100">
                   <FileText className="w-4 h-4 text-emerald-400" />
                   <span>Documento Cargado: <em className="text-emerald-300 font-mono font-normal">{pdfFileName}</em></span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => { setPdfBlobUrl(null); setPdfFileName(null); }}
-                  className="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 text-xs font-bold rounded-lg border border-rose-500/30 transition cursor-pointer flex items-center gap-1.5 shadow"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Quitar / Eliminar PDF</span>
-                </button>
+
+                <div className="flex items-center space-x-2">
+                  {pdfBlobUrl && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const execUrl = getExecutablePdfUrl(pdfBlobUrl);
+                        if (execUrl) window.open(execUrl, '_blank');
+                      }}
+                      className="px-3 py-1.5 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-xs font-bold rounded-lg border border-sky-500/40 transition cursor-pointer flex items-center gap-1.5 shadow"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>↗️ Abrir en Pestaña Completa / Lector Nativo</span>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => { setPdfBlobUrl(null); setPdfFileName(null); }}
+                    className="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 text-xs font-bold rounded-lg border border-rose-500/30 transition cursor-pointer flex items-center gap-1.5 shadow"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Quitar PDF</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="w-full h-[520px] rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
-                <iframe src={pdfBlobUrl} className="w-full h-full" title="Visor Lector PDF Integrado Abajo" />
+              <div className="w-full h-[550px] rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+                {(() => {
+                  const execUrl = getExecutablePdfUrl(pdfBlobUrl);
+                  if (!execUrl) return null;
+                  return (
+                    <object data={execUrl} type="application/pdf" className="w-full h-full">
+                      <iframe src={execUrl} className="w-full h-full" title="Visor Lector PDF Integrado Abajo" />
+                    </object>
+                  );
+                })()}
               </div>
             </div>
           )}

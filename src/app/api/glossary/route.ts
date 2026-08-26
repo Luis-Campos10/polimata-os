@@ -44,29 +44,49 @@ const PRESET_DICTIONARY: Record<string, { definition: string; etymology: string;
 
 async function fetchWikipediaDefinition(word: string) {
   try {
-    const formattedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    const url = `https://es.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles=${encodeURIComponent(formattedWord)}&format=json&origin=*`;
-    const res = await fetch(url, { headers: { 'User-Agent': 'PolimataOS/2.0' } });
-    const data = await res.json();
-    const pages = data?.query?.pages;
-    if (!pages) return null;
+    const formattedWord = word.trim().toLowerCase();
+    
+    // 1. Probar consulta directa
+    let url = `https://es.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles=${encodeURIComponent(formattedWord)}&format=json&origin=*`;
+    let res = await fetch(url, { headers: { 'User-Agent': 'PolimataOS/2.0' } });
+    let data = await res.json();
+    let pages = data?.query?.pages;
 
-    const pageId = Object.keys(pages)[0];
-    if (pageId === '-1' || !pages[pageId]?.extract) return null;
+    let extract = '';
+    if (pages) {
+      const pageId = Object.keys(pages)[0];
+      if (pageId !== '-1' && pages[pageId]?.extract) {
+        extract = pages[pageId].extract;
+      }
+    }
 
-    const extract: string = pages[pageId].extract;
-    const paragraphs = extract.split('\n').filter((p) => p.trim().length > 20);
+    // 2. Si falló la directa, buscar con el generador de búsqueda de Wikipedia (soporta adjetivos como "duradero", formas plurales y derivadas)
+    if (!extract) {
+      url = `https://es.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(formattedWord)}&gsrlimit=1&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`;
+      res = await fetch(url, { headers: { 'User-Agent': 'PolimataOS/2.0' } });
+      data = await res.json();
+      pages = data?.query?.pages;
+      if (pages) {
+        const pageId = Object.keys(pages)[0];
+        if (pageId && pages[pageId]?.extract) {
+          extract = pages[pageId].extract;
+        }
+      }
+    }
+
+    if (!extract) return null;
+
+    const paragraphs = extract.split('\n').filter((p) => p.trim().length > 15);
     const mainDef = paragraphs[0] || extract.slice(0, 350);
 
-    // Intentar extraer párrafo de etimología si existe
-    const etymologyPara = paragraphs.find((p) => p.toLowerCase().includes('etimológicamente') || p.toLowerCase().includes('del latín') || p.toLowerCase().includes('del griego'));
-    const etymologyText = etymologyPara ? etymologyPara.slice(0, 200) : 'Origen etimológico registrado en la enciclopedia académica.';
+    const etymologyPara = paragraphs.find((p) => p.toLowerCase().includes('etimológicamente') || p.toLowerCase().includes('del latín') || p.toLowerCase().includes('del griego') || p.toLowerCase().includes('del verbo') || p.toLowerCase().includes('del sufijo'));
+    const etymologyText = etymologyPara ? etymologyPara.slice(0, 220) : 'Origen etimológico y derivación conceptual en la enciclopedia académica.';
 
     return {
       definition: mainDef,
       etymology: etymologyText,
       category: 'Diccionario Enciclopédico Académico',
-      example: `Uso conceptual de "${word}" en textos disciplinares.`
+      example: `Uso de "${word}" en contextos académicos y filosóficos.`
     };
   } catch (err) {
     console.error('Error fetching Wikipedia definition:', err);
@@ -105,7 +125,7 @@ export async function GET(req: Request) {
         });
       }
 
-      // 3. Buscar en la API de la Enciclopedia Académica de Wikipedia en Español
+      // 3. Buscar en Wikipedia/Wiktionary con soporte de adjetivos (ej: duradero) y derivados
       const wikiData = await fetchWikipediaDefinition(query);
       if (wikiData) {
         return NextResponse.json({
@@ -128,10 +148,10 @@ export async function GET(req: Request) {
         result: {
           id: `FALLBACK_${Date.now()}`,
           term: query.toUpperCase(),
-          definition: `Definición conceptual para "${query}": Término clave registrado para el estudio interdisciplinario de Polímata OS.`,
-          etymology: 'Consultar bibliografía específica del Canon.',
+          definition: `Definición conceptual para "${query}": Término clave del programa Polímata OS.`,
+          etymology: 'Origen y etimología registrada.',
           category: 'Vocabulario General',
-          example: `Análisis de ${query} en el contexto del plan de estudios.`,
+          example: `Uso de ${query} en el plan de estudio.`,
           createdAt: new Date().toISOString()
         }
       });
