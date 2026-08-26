@@ -1309,6 +1309,18 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
               </button>
             </div>
 
+            {/* BOTÓN RÁPIDO PARA DICCIONARIO & FLASHCARDS DENTRO DEL LECTOR PDF */}
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }));
+              }}
+              className="w-full py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 text-xs font-bold rounded-xl border border-purple-500/40 transition cursor-pointer flex items-center justify-center gap-1.5 shadow"
+            >
+              <BookOpen className="w-4 h-4 text-purple-400" />
+              <span>📖 Abrir Diccionario, Glosario & Flashcards</span>
+            </button>
+
             {/* Estrategia de Lectura & Skill IDD */}
             <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5">
               <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">

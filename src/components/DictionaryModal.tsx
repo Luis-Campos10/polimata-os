@@ -188,15 +188,15 @@ export default function DictionaryModal() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 left-4 z-40 p-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full shadow-2xl transition border border-purple-400/40 flex items-center gap-2 cursor-pointer active:scale-95 group"
+        className="fixed bottom-20 left-4 z-[99999] p-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full shadow-2xl transition border border-purple-400/40 flex items-center gap-2 cursor-pointer active:scale-95 group"
         title="Diccionario & Glosario Personal"
       >
-        <BookMarked className="w-5 h-5" />
+        <BookMarked className="w-5 h-5 animate-pulse" />
         <span className="hidden sm:inline text-xs font-bold font-mono">Diccionario & Glosario</span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+        <div className="fixed inset-0 z-[100000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-5 space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
             <button
