@@ -4,6 +4,18 @@ import * as schema from '@/lib/db/schema';
 import { eq, desc, like } from 'drizzle-orm';
 
 const PRESET_DICTIONARY: Record<string, { definition: string; etymology: string; category: string; example: string }> = {
+  rendimiento: {
+    definition: 'Proporción entre el producto o resultado obtenido y los recursos o esfuerzo invertidos. En ciencia cognitiva del aprendizaje (Dunlosky 2013), se distingue el rendimiento momentáneo durante el estudio del aprendizaje duradero a largo plazo.',
+    etymology: 'Del latín reddere (devolver/rendir) y el sufijo -miento.',
+    category: 'Ciencia Cognitiva & Aprendizaje',
+    example: 'El rendimiento durante la relectura crea una ilusión de dominio sin garantizar retención.'
+  },
+  duradero: {
+    definition: 'Que subsiste, permanece o produce efectos a lo largo del tiempo sin degradarse rápidamente.',
+    etymology: 'Del verbo durar (del latín durare) y el sufijo -dero.',
+    category: 'Vocabulario Académico',
+    example: 'El objetivo de la recuperación activa es el aprendizaje duradero.'
+  },
   metacognición: {
     definition: 'Capacidad de autoregular el propio aprendizaje: monitorear la brecha entre la confianza predicha y el conocimiento real.',
     etymology: 'Del griego metá (más allá) y el latín cognitio (conocimiento).',
@@ -45,38 +57,28 @@ const PRESET_DICTIONARY: Record<string, { definition: string; etymology: string;
 async function fetchWikipediaDefinition(word: string) {
   try {
     const formattedWord = word.trim().toLowerCase();
-    
-    // 1. Probar consulta directa
-    let url = `https://es.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&titles=${encodeURIComponent(formattedWord)}&format=json&origin=*`;
+    if (PRESET_DICTIONARY[formattedWord]) return PRESET_DICTIONARY[formattedWord];
+
+    // 1. Probar consulta de búsqueda directa
+    let url = `https://es.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(formattedWord)}&gsrlimit=3&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`;
     let res = await fetch(url, { headers: { 'User-Agent': 'PolimataOS/2.0' } });
     let data = await res.json();
     let pages = data?.query?.pages;
 
     let extract = '';
     if (pages) {
-      const pageId = Object.keys(pages)[0];
-      if (pageId !== '-1' && pages[pageId]?.extract) {
-        extract = pages[pageId].extract;
-      }
-    }
-
-    // 2. Si falló la directa, buscar con el generador de búsqueda de Wikipedia (soporta adjetivos como "duradero", formas plurales y derivadas)
-    if (!extract) {
-      url = `https://es.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(formattedWord)}&gsrlimit=1&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`;
-      res = await fetch(url, { headers: { 'User-Agent': 'PolimataOS/2.0' } });
-      data = await res.json();
-      pages = data?.query?.pages;
-      if (pages) {
-        const pageId = Object.keys(pages)[0];
-        if (pageId && pages[pageId]?.extract) {
-          extract = pages[pageId].extract;
+      for (const key of Object.keys(pages)) {
+        const p = pages[key];
+        if (p?.extract && !p.extract.toLowerCase().includes('puede referirse a:') && !p.extract.toLowerCase().includes('hace referencia a:')) {
+          extract = p.extract;
+          break;
         }
       }
     }
 
     if (!extract) return null;
 
-    const paragraphs = extract.split('\n').filter((p) => p.trim().length > 15);
+    const paragraphs = extract.split('\n').filter((p) => p.trim().length > 20 && !p.toLowerCase().includes('puede referirse a'));
     const mainDef = paragraphs[0] || extract.slice(0, 350);
 
     const etymologyPara = paragraphs.find((p) => p.toLowerCase().includes('etimológicamente') || p.toLowerCase().includes('del latín') || p.toLowerCase().includes('del griego') || p.toLowerCase().includes('del verbo') || p.toLowerCase().includes('del sufijo'));
@@ -86,7 +88,7 @@ async function fetchWikipediaDefinition(word: string) {
       definition: mainDef,
       etymology: etymologyText,
       category: 'Diccionario Enciclopédico Académico',
-      example: `Uso de "${word}" en contextos académicos y filosóficos.`
+      example: `Uso de "${word}" en contextos académicos y disciplinares.`
     };
   } catch (err) {
     console.error('Error fetching Wikipedia definition:', err);
@@ -125,7 +127,7 @@ export async function GET(req: Request) {
         });
       }
 
-      // 3. Buscar en Wikipedia/Wiktionary con soporte de adjetivos (ej: duradero) y derivados
+      // 3. Buscar en Wikipedia sin páginas de desambiguación
       const wikiData = await fetchWikipediaDefinition(query);
       if (wikiData) {
         return NextResponse.json({
@@ -148,8 +150,8 @@ export async function GET(req: Request) {
         result: {
           id: `FALLBACK_${Date.now()}`,
           term: query.toUpperCase(),
-          definition: `Definición conceptual para "${query}": Término clave del programa Polímata OS.`,
-          etymology: 'Origen y etimología registrada.',
+          definition: `Definición conceptual para "${query}": Término del plan de estudios Polímata.`,
+          etymology: 'Origen etimológico registrado.',
           category: 'Vocabulario General',
           example: `Uso de ${query} en el plan de estudio.`,
           createdAt: new Date().toISOString()
