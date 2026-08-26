@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { getAllWeeks, getPendingReviews } from '@/lib/db/queries';
 import { initDb } from '@/lib/db';
 import { Calendar, Play, CheckCircle2, Clock, Brain, AlertCircle, Sparkles, ArrowRight, ShieldAlert } from 'lucide-react';
+import SocraticExamSimulatorModal from '@/components/SocraticExamSimulatorModal';
+import GraduationCertificateModal from '@/components/GraduationCertificateModal';
+import InterdisciplinaryRadarChart from '@/components/InterdisciplinaryRadarChart';
+
 
 export default async function HoyPage() {
   await initDb();
@@ -132,6 +136,21 @@ export default async function HoyPage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* Accesos a Herramientas de Evaluación & Certificado */}
+      <section className="space-y-4 pt-2">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-400" />
+          Evaluación, Calibración & Certificación
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <SocraticExamSimulatorModal />
+          <GraduationCertificateModal />
+        </div>
+
+        <InterdisciplinaryRadarChart />
       </section>
 
       {/* Regla Pedagógica Visible */}
