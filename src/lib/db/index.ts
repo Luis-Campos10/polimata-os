@@ -185,6 +185,17 @@ export async function initDb() {
         created_at TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS glossary (
+        id TEXT PRIMARY KEY,
+        term TEXT NOT NULL,
+        definition TEXT NOT NULL,
+        etymology TEXT,
+        category TEXT NOT NULL DEFAULT 'General',
+        example TEXT,
+        created_at TEXT NOT NULL
+      );
+
+
       CREATE TABLE IF NOT EXISTS study_sessions (
         id TEXT PRIMARY KEY,
         target_type TEXT NOT NULL,

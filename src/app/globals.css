@@ -31,3 +31,19 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+/* Modo Lectura Nocturna OLED Pitch Black */
+html.oled-pitch-black,
+html.oled-pitch-black body {
+  background-color: #000000 !important;
+  color: #f1f5f9 !important;
+}
+
+html.oled-pitch-black .bg-slate-950,
+html.oled-pitch-black .bg-slate-900,
+html.oled-pitch-black .bg-slate-900\/90,
+html.oled-pitch-black .bg-slate-900\/80 {
+  background-color: #050505 !important;
+  border-color: #1e293b !important;
+}
+

@@ -28,23 +28,23 @@ export const weeks = sqliteTable('weeks', {
   title: text('title').notNull(),
   purpose: text('purpose').notNull(),
   targetHours: text('target_hours').notNull(),
-  guideQuestionsJson: text('guide_questions_json').notNull(), // Array de preguntas guía
-  resourcesJson: text('resources_json').notNull(), // Array de Libros/Papers prescritos con Autor, Título, Tipo, Prioridad, Qué Estudiar
-  laboratoryJson: text('laboratory_json').notNull(), // Tarea de laboratorio (Condición A vs B, etc.)
-  productPrescription: text('product_prescription').notNull(), // Ej: SEM01_MODELO_PERSONAL_DE_APRENDIZAJE.md
+  guideQuestionsJson: text('guide_questions_json').notNull(),
+  resourcesJson: text('resources_json').notNull(),
+  laboratoryJson: text('laboratory_json').notNull(),
+  productPrescription: text('product_prescription').notNull(),
   productDescription: text('product_description').notNull(),
-  examSpecification: text('exam_specification').notNull(), // Especificación del examen
+  examSpecification: text('exam_specification').notNull(),
 });
 
 // 4. Canon de 170 Obras (Años 1 al 10)
 export const works = sqliteTable('works', {
-  id: text('id').primaryKey(), // WORK_001 - WORK_170
+  id: text('id').primaryKey(),
   workNumber: integer('work_number').notNull(),
-  year: integer('year').notNull(), // 1 - 10
+  year: integer('year').notNull(),
   author: text('author').notNull(),
   title: text('title').notNull(),
-  level: text('level').notNull(), // A, B, C
-  documentType: text('document_type').notNull(), // BOOK, TEXTBOOK, REPORT, PAPER_EMPIRICAL, ESSAY...
+  level: text('level').notNull(),
+  documentType: text('document_type').notNull(),
   prescribedReading: text('prescribed_reading').notNull(),
   primaryQuestionsJson: text('primary_questions_json').notNull(),
   secondaryQuestionsJson: text('secondary_questions_json').notNull(),
@@ -54,7 +54,7 @@ export const works = sqliteTable('works', {
 export const knowledgeNodes = sqliteTable('knowledge_nodes', {
   id: text('id').primaryKey(),
   label: text('label').notNull(),
-  nodeType: text('node_type').notNull(), // Author, Work, Concept, Argument, Question
+  nodeType: text('node_type').notNull(),
   description: text('description'),
   createdAt: text('created_at').notNull(),
 });
@@ -63,7 +63,7 @@ export const knowledgeEdges = sqliteTable('knowledge_edges', {
   id: text('id').primaryKey(),
   sourceId: text('source_id').notNull().references(() => knowledgeNodes.id),
   targetId: text('target_id').notNull().references(() => knowledgeNodes.id),
-  relationType: text('relation_type').notNull(), // SUPPORTS, CRITIQUES, CONTRADICTS, DEPENDS_ON, ANSWERS
+  relationType: text('relation_type').notNull(),
   justification: text('justification'),
   approvedByUser: integer('approved_by_user').notNull().default(1),
   createdAt: text('created_at').notNull(),
@@ -79,7 +79,7 @@ export const studySessions = sqliteTable('study_sessions', {
   createdAt: text('created_at').notNull(),
 });
 
-// 7. Intentos de Recuerdo Activo (Bloqueo OWN_EFFORT_REQUIRED)
+// 7. Intentos de Recuerdo Activo
 export const attempts = sqliteTable('attempts', {
   id: text('id').primaryKey(),
   targetType: text('target_type').notNull(),
@@ -90,7 +90,7 @@ export const attempts = sqliteTable('attempts', {
   createdAt: text('created_at').notNull(),
 });
 
-// 8. Hallazgos de Auditoría (Perfil de Errores)
+// 8. Hallazgos de Auditoría
 export const auditFindings = sqliteTable('audit_findings', {
   id: text('id').primaryKey(),
   attemptId: text('attempt_id').notNull().references(() => attempts.id),
@@ -150,3 +150,13 @@ export const pdfDocuments = sqliteTable('pdf_documents', {
   createdAt: text('created_at').notNull(),
 });
 
+// 13. Glosario Personal Autogenerado desde el Diccionario
+export const glossary = sqliteTable('glossary', {
+  id: text('id').primaryKey(),
+  term: text('term').notNull(),
+  definition: text('definition').notNull(),
+  etymology: text('etymology'),
+  category: text('category').notNull().default('General'),
+  example: text('example'),
+  createdAt: text('created_at').notNull(),
+});

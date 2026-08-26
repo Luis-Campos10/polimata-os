@@ -92,17 +92,18 @@ export default function FocusTimer({
       </div>
 
       {/* Preset Selectors */}
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {[
-          { mins: 10, label: '10 min Recall' },
-          { mins: 25, label: '25 min Focus' },
-          { mins: 50, label: '50 min Profundo' },
+          { mins: 10, label: '10m Recall' },
+          { mins: 25, label: '25m Pomodoro' },
+          { mins: 50, label: '50m Profundo' },
+          { mins: 90, label: '90m Ultradiano' },
         ].map((preset) => (
           <button
             key={preset.mins}
             type="button"
             onClick={() => selectPreset(preset.mins)}
-            className={`flex-1 py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
+            className={`py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
               initialMinutes === preset.mins
                 ? 'bg-sky-600 text-white border-sky-400'
                 : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'

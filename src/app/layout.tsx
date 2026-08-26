@@ -23,6 +23,9 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+import DictionaryModal from "@/components/DictionaryModal";
+import OledThemeToggle from "@/components/OledThemeToggle";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,10 +39,12 @@ export default function RootLayout({
       </head>
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen">
         <OfflineStatusIndicator />
+        <OledThemeToggle />
         <div className="max-w-2xl mx-auto min-h-screen pb-20 px-4 pt-4">
           {children}
         </div>
         <GlobalSearchModal />
+        <DictionaryModal />
         <PwaRegister />
         <BottomNav />
       </body>
