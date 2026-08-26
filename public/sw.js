@@ -1,4 +1,4 @@
-const CACHE_NAME = 'polimata-os-v4';
+const CACHE_NAME = 'polimata-os-v5-network-first';
 const ASSETS_TO_CACHE = [
   '/',
   '/hoy',
@@ -12,7 +12,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('📦 Guardando respaldo offline PWA en memoria local...');
+      console.log('📦 Instalando nuevo Service Worker v5 (Network-First)...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
@@ -25,6 +25,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log('🧹 Limpiando caché antigua:', key);
             return caches.delete(key);
           }
         })
@@ -34,34 +35,23 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Estrategia Network-First: intentar siempre red primero cuando hay conexión para obtener las últimas mejoras y Flashcards
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Servir inmediatamente desde memoria local (Cache-First para uso offline sin internet)
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-            }
-          })
-          .catch(() => {});
-        return cachedResponse;
-      }
-
-      // Si no está en caché, intentar red
-      return fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          // Fallback offline garantizado cuando no hay internet
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fallback a memoria local cuando no hay conexión a internet
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
           return caches.match('/').then((mainCache) => {
             if (mainCache) return mainCache;
             return new Response(
@@ -70,6 +60,6 @@ self.addEventListener('fetch', (event) => {
             );
           });
         });
-    })
+      })
   );
 });

@@ -102,6 +102,16 @@ export default function DictionaryModal() {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleCustomSearch = (e: any) => {
+      if (e.detail) {
+        searchSpecificWord(e.detail);
+      }
+    };
+    window.addEventListener('polimata_search_word', handleCustomSearch);
+    return () => window.removeEventListener('polimata_search_word', handleCustomSearch);
+  }, []);
+
   const searchSpecificWord = async (wordToSearch: string) => {
     if (!wordToSearch.trim()) return;
     setQuery(wordToSearch);

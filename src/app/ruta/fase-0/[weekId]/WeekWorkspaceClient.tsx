@@ -669,7 +669,22 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   <span>Documento Cargado: <em className="text-emerald-300 font-mono font-normal">{pdfFileName}</em></span>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-wrap items-center space-x-2 gap-y-2">
+                  <div className="flex items-center space-x-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-purple-500/40">
+                    <BookOpen className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="📖 Definir palabra del PDF..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                          const queryVal = e.currentTarget.value.trim();
+                          window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: queryVal }));
+                        }
+                      }}
+                      className="bg-transparent text-xs text-slate-100 font-mono placeholder-slate-500 focus:outline-none w-36 sm:w-44"
+                    />
+                  </div>
+
                   {pdfBlobUrl && (
                     <button
                       type="button"
@@ -680,7 +695,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                       className="px-3 py-1.5 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-xs font-bold rounded-lg border border-sky-500/40 transition cursor-pointer flex items-center gap-1.5 shadow"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
-                      <span>↗️ Abrir en Pestaña Completa / Lector Nativo</span>
+                      <span>↗️ Pestaña Completa / Lector Nativo</span>
                     </button>
                   )}
 
