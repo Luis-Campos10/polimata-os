@@ -17,6 +17,8 @@ export const client = createClient({
 
 export const db = drizzle(client, { schema });
 
+import { ensureSeeded } from './seed';
+
 export async function initDb() {
   await client.executeMultiple(`
     CREATE TABLE IF NOT EXISTS questions (
@@ -151,4 +153,7 @@ export async function initDb() {
       created_at TEXT NOT NULL
     );
   `);
+
+  await ensureSeeded();
 }
+
