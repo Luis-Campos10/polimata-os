@@ -1202,28 +1202,49 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
               </div>
             </div>
 
-            <div className="flex-1 bg-slate-950 p-2 overflow-hidden">
-              {(pdfBlobUrl || pdfUrl) ? (
-                <iframe src={pdfBlobUrl || pdfUrl} className="w-full h-full rounded-lg border border-slate-800" title="Visor PDF" />
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-3 p-6 text-center">
-                  <FileText className="w-12 h-12 text-slate-600" />
-                  <p className="font-bold text-slate-300 text-sm">Modo Lectura Enfocada Activo</p>
-                  <p className="max-w-md text-slate-400 text-xs">
-                    Haz clic en <strong className="text-emerald-300">📂 Seleccionar PDF</strong> arriba para abrir cualquier archivo PDF de tu computadora o teléfono.
-                  </p>
-                  <label className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-400/30 flex items-center gap-2 cursor-pointer shadow-lg active:scale-95">
-                    <Upload className="w-4 h-4" />
-                    <span>Seleccionar Archivo PDF Ahora</span>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={handleMultiplePdfUpload}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-              )}
+            <div className="flex-1 bg-slate-950 p-2 overflow-hidden flex flex-col">
+              {(() => {
+                const execUrl = getExecutablePdfUrl(pdfBlobUrl || pdfUrl);
+                if (!execUrl) {
+                  return (
+                    <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-3 p-6 text-center">
+                      <FileText className="w-12 h-12 text-emerald-400" />
+                      <p className="font-bold text-slate-300 text-sm">Modo Lectura Enfocada Activo</p>
+                      <p className="max-w-md text-slate-400 text-xs">
+                        Selecciona o sube tu archivo PDF para comenzar a leer con las preguntas guía al lado.
+                      </p>
+                      <label className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-400/30 flex items-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <Upload className="w-4 h-4" />
+                        <span>Seleccionar Archivo PDF Ahora</span>
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          onChange={handleMultiplePdfUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  );
+                }
+                return (
+                  <div className="w-full h-full relative flex flex-col">
+                    <div className="p-2 bg-slate-900 border-b border-slate-800 flex justify-between items-center text-xs shrink-0">
+                      <span className="text-emerald-300 font-mono text-[11px] truncate max-w-xs">{pdfFileName || 'Documento PDF'}</span>
+                      <button
+                        type="button"
+                        onClick={() => window.open(execUrl, '_blank')}
+                        className="px-2.5 py-1 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-[11px] font-bold rounded border border-sky-500/40 cursor-pointer"
+                      >
+                        ↗️ Abrir en Pestaña Completa
+                      </button>
+                    </div>
+                    <object data={execUrl} type="application/pdf" className="w-full flex-1 rounded-b-lg border border-slate-800">
+                      <embed src={execUrl} type="application/pdf" className="w-full h-full" />
+                      <iframe src={execUrl} className="w-full h-full" title="Visor PDF Modal" />
+                    </object>
+                  </div>
+                );
+              })()}
             </div>
 
           </div>
