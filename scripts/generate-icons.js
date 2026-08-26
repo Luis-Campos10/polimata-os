@@ -1,0 +1,28 @@
+const fs = require('fs');
+const path = require('path');
+
+// Generar SVG limpio para Polímata OS Icon
+const svgIcon = `<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="100" fill="#0F172A"/>
+  <rect x="16" y="16" width="480" height="480" rx="84" stroke="#0284C7" stroke-width="8" stroke-dasharray="16 16"/>
+  <circle cx="256" cy="256" r="180" fill="url(#paint0_linear)" opacity="0.15"/>
+  <path d="M256 96L384 192V320L256 416L128 320V192L256 96Z" stroke="#38BDF8" stroke-width="16" stroke-linejoin="round"/>
+  <circle cx="256" cy="96" r="16" fill="#38BDF8"/>
+  <circle cx="384" cy="192" r="16" fill="#A855F7"/>
+  <circle cx="384" cy="320" r="16" fill="#10B981"/>
+  <circle cx="256" cy="416" r="16" fill="#F59E0B"/>
+  <circle cx="128" cy="320" r="16" fill="#EC4899"/>
+  <circle cx="128" cy="192" r="16" fill="#6366F1"/>
+  <path d="M256 160L336 220V300L256 360L176 300V220L256 160Z" fill="#0284C7" fill-opacity="0.3" stroke="#0284C7" stroke-width="8"/>
+  <text x="256" y="275" font-family="system-ui, sans-serif" font-size="80" font-weight="900" fill="#F8FAFC" text-anchor="middle">P</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="256" y1="76" x2="256" y2="436" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0284C7"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+</svg>`;
+
+const publicDir = path.join(__dirname, '..', 'public');
+fs.writeFileSync(path.join(publicDir, 'icon.svg'), svgIcon);
+console.log('✅ SVG Icon generated at public/icon.svg');
