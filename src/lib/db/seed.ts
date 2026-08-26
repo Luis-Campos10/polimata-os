@@ -661,107 +661,6 @@ function parseV6Works(filePath: string) {
   return worksList;
 }
 
-export async function ensureSeeded() {
-  try {
-    const checkWeeks = await client.execute("SELECT COUNT(*) as cnt FROM weeks");
-    const count = Number(checkWeeks.rows[0]?.cnt || 0);
-    if (count === 0) {
-      console.log('🌱 Base de datos vacía detectada. Sembrando datos automáticamente...');
-      
-      // 1. Sembrar Preguntas
-      for (const q of QUESTIONS_DATA) {
-        await db.insert(schema.questions).values(q).onConflictDoNothing();
-      }
-
-      // 2. Sembrar Entradas Iniciales del Question Ledger
-      const initialLedger = [
-        {
-          id: 'QL_Q01_2026',
-          questionId: 'Q01',
-          year: 2026,
-          positionSummary: 'El universo emergió hace 13.8 mil millones de años mediante el Big Bang. La vida surgió por abiogénesis en la Tierra primordial y evolucionó por selección natural.',
-          confidence: 85,
-          argumentsJson: JSON.stringify(['Radiación de fondo de microondas', 'Fósiles y secuenciación genómica']),
-          objectionsJson: JSON.stringify(['Incertidumbre sobre el mecanismo exacto del origen del código genético']),
-          evidenceJson: JSON.stringify(['Espectros estelares', 'Datación radiométrica']),
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: 'QL_Q03_2026',
-          questionId: 'Q03',
-          year: 2026,
-          positionSummary: 'El conocimiento requiere justificación empírica o deductiva robusta (FALSIFICABILIDAD de Popper + coherencia Bayesiana).',
-          confidence: 78,
-          argumentsJson: JSON.stringify(['Experimento controlado', 'Falsificación de Popper']),
-          objectionsJson: JSON.stringify(['Problema de la inducción de Hume']),
-          evidenceJson: JSON.stringify(['Éxito predictivo de la física moderna']),
-          createdAt: new Date().toISOString()
-        }
-      ];
-
-      for (const ql of initialLedger) {
-        await db.insert(schema.questionLedger).values(ql).onConflictDoNothing();
-      }
-
-      // 3. Sembrar Semanas Detalladas de Fase 0 (16 Semanas)
-      for (const w of PHASE_0_DETAILED_WEEKS) {
-        await db.insert(schema.weeks).values(w).onConflictDoNothing();
-      }
-
-      // 4. Sembrar Obras del V6 Master (170 Obras)
-      const v6Path = path.join(process.cwd(), 'PROYECTO_POLIMATA_V6_MASTER_EJECUTABLE_170 (1).md');
-      const parsedWorks = parseV6Works(v6Path);
-
-      if (parsedWorks.length > 0) {
-        for (const w of parsedWorks) {
-          await db.insert(schema.works).values(w).onConflictDoNothing();
-        }
-      }
-
-      // 5. Sembrar Nodos y Aristas Iniciales del Grafo
-      const initialNodes = [
-        { id: 'NODE_PLATON', label: 'Platón', nodeType: 'Author', description: 'Filósofo griego clásico', createdAt: new Date().toISOString() },
-        { id: 'NODE_APOLOGIA', label: 'Apología de Sócrates', nodeType: 'Work', description: 'Obra sobre la defensa de Sócrates', createdAt: new Date().toISOString() },
-        { id: 'NODE_ROEDIGER', label: 'Roediger & Karpicke', nodeType: 'Author', description: 'Investigadores de ciencia cognitiva de la memoria', createdAt: new Date().toISOString() },
-        { id: 'NODE_TESTING_EFFECT', label: 'Testing Effect (Efecto Evaluación)', nodeType: 'Concept', description: 'Recuperar información refuerza la memoria duradera más que releer', createdAt: new Date().toISOString() }
-      ];
-
-      for (const n of initialNodes) {
-        await db.insert(schema.knowledgeNodes).values(n).onConflictDoNothing();
-      }
-
-      const initialEdges = [
-        {
-          id: 'EDGE_01',
-          sourceId: 'NODE_PLATON',
-          targetId: 'NODE_APOLOGIA',
-          relationType: 'DEVELOPS',
-          justification: 'Platón escribió la Apología representando el juicio de Sócrates.',
-          approvedByUser: 1,
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: 'EDGE_02',
-          sourceId: 'NODE_ROEDIGER',
-          targetId: 'NODE_TESTING_EFFECT',
-          relationType: 'EVIDENCE_FOR',
-          justification: 'Experimento de 2006 demostró la superioridad del testing activo.',
-          approvedByUser: 1,
-          createdAt: new Date().toISOString()
-        }
-      ];
-
-      for (const e of initialEdges) {
-        await db.insert(schema.knowledgeEdges).values(e).onConflictDoNothing();
-      }
-
-      console.log('✅ Auto-sembrado completado con éxito.');
-    }
-  } catch (err) {
-    console.error('Error durante auto-sembrado:', err);
-  }
-}
-
 export async function seedDatabase() {
   console.log('🌱 Reiniciando tablas y sembrando datos detallados de Polímata OS...');
 
@@ -782,14 +681,104 @@ export async function seedDatabase() {
   `);
 
   await initDb();
-  await ensureSeeded();
+
+  // 1. Sembrar Preguntas
+  for (const q of QUESTIONS_DATA) {
+    await db.insert(schema.questions).values(q).onConflictDoNothing();
+  }
+  console.log(`✅ 18 Grandes Preguntas sembradas.`);
+
+  // 2. Sembrar Entradas Iniciales del Question Ledger
+  const initialLedger = [
+    {
+      id: 'QL_Q01_2026',
+      questionId: 'Q01',
+      year: 2026,
+      positionSummary: 'El universo emergió hace 13.8 mil millones de años mediante el Big Bang. La vida surgió por abiogénesis en la Tierra primordial y evolucionó por selección natural.',
+      confidence: 85,
+      argumentsJson: JSON.stringify(['Radiación de fondo de microondas', 'Fósiles y secuenciación genómica']),
+      objectionsJson: JSON.stringify(['Incertidumbre sobre el mecanismo exacto del origen del código genético']),
+      evidenceJson: JSON.stringify(['Espectros estelares', 'Datación radiométrica']),
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 'QL_Q03_2026',
+      questionId: 'Q03',
+      year: 2026,
+      positionSummary: 'El conocimiento requiere justificación empírica o deductiva robusta (FALSIFICABILIDAD de Popper + coherencia Bayesiana).',
+      confidence: 78,
+      argumentsJson: JSON.stringify(['Experimento controlado', 'Falsificación de Popper']),
+      objectionsJson: JSON.stringify(['Problema de la inducción de Hume']),
+      evidenceJson: JSON.stringify(['Éxito predictivo de la física moderna']),
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  for (const ql of initialLedger) {
+    await db.insert(schema.questionLedger).values(ql).onConflictDoNothing();
+  }
+  console.log(`✅ Entradas iniciales del Question Ledger sembradas.`);
+
+  // 3. Sembrar Semanas Detalladas de Fase 0 (16 Semanas)
+  for (const w of PHASE_0_DETAILED_WEEKS) {
+    await db.insert(schema.weeks).values(w).onConflictDoNothing();
+  }
+  console.log(`✅ 16 Semanas detalladas de Fase 0 sembradas con bibliografía completa.`);
+
+  // 4. Sembrar Obras del V6 Master (170 Obras)
+  const v6Path = path.join(process.cwd(), 'PROYECTO_POLIMATA_V6_MASTER_EJECUTABLE_170 (1).md');
+  const parsedWorks = parseV6Works(v6Path);
+
+  if (parsedWorks.length > 0) {
+    for (const w of parsedWorks) {
+      await db.insert(schema.works).values(w).onConflictDoNothing();
+    }
+    console.log(`✅ ${parsedWorks.length} obras sembradas desde PROYECTO_POLIMATA_V6_MASTER_EJECUTABLE_170 (1).md.`);
+  }
+
+  // 5. Sembrar Nodos y Aristas Iniciales del Grafo
+  const initialNodes = [
+    { id: 'NODE_PLATON', label: 'Platón', nodeType: 'Author', description: 'Filósofo griego clásico', createdAt: new Date().toISOString() },
+    { id: 'NODE_APOLOGIA', label: 'Apología de Sócrates', nodeType: 'Work', description: 'Obra sobre la defensa de Sócrates', createdAt: new Date().toISOString() },
+    { id: 'NODE_ROEDIGER', label: 'Roediger & Karpicke', nodeType: 'Author', description: 'Investigadores de ciencia cognitiva de la memoria', createdAt: new Date().toISOString() },
+    { id: 'NODE_TESTING_EFFECT', label: 'Testing Effect (Efecto Evaluación)', nodeType: 'Concept', description: 'Recuperar información refuerza la memoria duradera más que releer', createdAt: new Date().toISOString() }
+  ];
+
+  for (const n of initialNodes) {
+    await db.insert(schema.knowledgeNodes).values(n).onConflictDoNothing();
+  }
+
+  const initialEdges = [
+    {
+      id: 'EDGE_01',
+      sourceId: 'NODE_PLATON',
+      targetId: 'NODE_APOLOGIA',
+      relationType: 'DEVELOPS',
+      justification: 'Platón escribió la Apología representando el juicio de Sócrates.',
+      approvedByUser: 1,
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: 'EDGE_02',
+      sourceId: 'NODE_ROEDIGER',
+      targetId: 'NODE_TESTING_EFFECT',
+      relationType: 'EVIDENCE_FOR',
+      justification: 'Experimento de 2006 demostró la superioridad del testing activo.',
+      approvedByUser: 1,
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  for (const e of initialEdges) {
+    await db.insert(schema.knowledgeEdges).values(e).onConflictDoNothing();
+  }
+  console.log(`✅ Grafo de Conocimiento inicial sembrado.`);
+
+  console.log('🎉 Sembrado detallado completado con éxito.');
 }
 
-if (process.argv[1] && process.argv[1].endsWith('seed.ts')) {
-  seedDatabase().catch(err => {
-    console.error('❌ Error durante el sembrado:', err);
-    process.exit(1);
-  });
-}
-
+seedDatabase().catch(err => {
+  console.error('❌ Error durante el sembrado:', err);
+  process.exit(1);
+});
 
