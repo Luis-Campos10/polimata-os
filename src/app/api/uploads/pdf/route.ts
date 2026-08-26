@@ -102,10 +102,10 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'ID de documento requerido' }, { status: 400 });
     }
 
-    const doc = db.select().from(schema.pdfDocuments).where(eq(schema.pdfDocuments.id, id)).get();
-    if (doc) {
+    const doc = db.select().from(schema.pdfDocuments).where(eq(schema.pdfDocuments.id, id)).get() as any;
+    if (doc && doc.filePath) {
       // Eliminar archivo físico si existe en public/uploads/pdfs
-      const relativePath = doc.filePath.replace(/^\//, '');
+      const relativePath = String(doc.filePath).replace(/^\//, '');
       const fullPath = path.join(process.cwd(), 'public', relativePath);
       if (fs.existsSync(fullPath)) {
         fs.unlinkSync(fullPath);
