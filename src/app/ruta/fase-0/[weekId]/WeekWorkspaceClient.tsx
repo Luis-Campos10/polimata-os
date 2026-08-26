@@ -175,6 +175,13 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    // Abrir de inmediato el primer PDF en el visor cliente local (1ms)
+    try {
+      const localUrl = URL.createObjectURL(files[0]);
+      setPdfBlobUrl(localUrl);
+      setPdfFileName(files[0].name);
+    } catch (err) {}
+
     setIsUploadingPdfs(true);
     try {
       const formData = new FormData();
@@ -193,7 +200,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
       const data = await res.json();
       if (data.success) {
         fetchSavedPdfs();
-        if (data.documents && data.documents.length > 0) {
+        if (data.documents && data.documents.length > 0 && !pdfBlobUrl) {
           setPdfBlobUrl(data.documents[0].filePath);
           setPdfFileName(data.documents[0].fileName);
         }
