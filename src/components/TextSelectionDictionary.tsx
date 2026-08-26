@@ -12,8 +12,12 @@ export default function TextSelectionDictionary({ onSearchWord }: TextSelectionD
   const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    const handleSelection = () => {
+    let timeoutId: any = null;
+
+    const checkSelection = () => {
+      if (typeof window === 'undefined') return;
       const selection = window.getSelection();
+
       if (!selection || selection.isCollapsed) {
         setCoords(null);
         setSelectedWord('');
@@ -21,28 +25,44 @@ export default function TextSelectionDictionary({ onSearchWord }: TextSelectionD
       }
 
       const text = selection.toString().trim();
-      // Filtrar a palabras individuales o frases de 1 a 3 palabras
-      if (text.length > 1 && text.length < 50 && text.split(/\s+/).length <= 3) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+      // Limpiar puntuación inicial/final
+      const cleanWord = text.replace(/^[^\wáéíóúñÁÉÍÓÚÑ]+|[^\wáéíóúñÁÉÍÓÚÑ]+$/g, '');
 
-        setCoords({
-          x: Math.max(10, Math.min(window.innerWidth - 180, rect.left + rect.width / 2 - 80)),
-          y: Math.max(10, rect.top - 45 + window.scrollY),
-        });
-        setSelectedWord(text);
-      } else {
-        setCoords(null);
-        setSelectedWord('');
+      if (cleanWord.length >= 2 && cleanWord.length <= 40 && cleanWord.split(/\s+/).length <= 2) {
+        try {
+          const range = selection.getRangeAt(0);
+          const rect = range.getBoundingClientRect();
+
+          if (rect.width > 0 && rect.height > 0) {
+            setCoords({
+              x: Math.max(10, Math.min(window.innerWidth - 170, rect.left + rect.width / 2 - 75)),
+              y: Math.max(10, rect.top - 50 + window.scrollY),
+            });
+            setSelectedWord(cleanWord);
+          }
+        } catch (e) {
+          // Ignorar errores de selección fuera de ventana
+        }
       }
     };
 
-    document.addEventListener('mouseup', handleSelection);
-    document.addEventListener('keyup', handleSelection);
+    const handleDeferredSelection = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkSelection, 200);
+    };
+
+    // Escuchar eventos táctiles en celulares (touchend), ratón (mouseup), doble clic y cambio de selección
+    document.addEventListener('selectionchange', handleDeferredSelection);
+    document.addEventListener('mouseup', handleDeferredSelection);
+    document.addEventListener('touchend', handleDeferredSelection);
+    document.addEventListener('dblclick', handleDeferredSelection);
 
     return () => {
-      document.removeEventListener('mouseup', handleSelection);
-      document.removeEventListener('keyup', handleSelection);
+      clearTimeout(timeoutId);
+      document.removeEventListener('selectionchange', handleDeferredSelection);
+      document.removeEventListener('mouseup', handleDeferredSelection);
+      document.removeEventListener('touchend', handleDeferredSelection);
+      document.removeEventListener('dblclick', handleDeferredSelection);
     };
   }, []);
 
@@ -51,19 +71,21 @@ export default function TextSelectionDictionary({ onSearchWord }: TextSelectionD
   return (
     <div
       style={{ top: `${coords.y}px`, left: `${coords.x}px` }}
-      className="absolute z-50 animate-bounce cursor-pointer"
+      className="fixed z-[9999] animate-bounce cursor-pointer pointer-events-auto"
     >
       <button
         type="button"
         onClick={(e) => {
+          e.preventDefault();
           e.stopPropagation();
           onSearchWord(selectedWord);
           setCoords(null);
+          setSelectedWord('');
         }}
-        className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white text-xs font-bold rounded-full shadow-2xl border border-purple-300/40 flex items-center gap-1.5 active:scale-95 transition"
+        className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white text-xs font-bold rounded-full shadow-2xl border-2 border-purple-300/60 flex items-center gap-1.5 active:scale-95 transition cursor-pointer"
       >
-        <BookOpen className="w-3.5 h-3.5 text-amber-300" />
-        <span>📖 Definir "{selectedWord.length > 15 ? selectedWord.slice(0, 15) + '...' : selectedWord}"</span>
+        <BookOpen className="w-4 h-4 text-amber-300 shrink-0" />
+        <span>📖 Definir "{selectedWord.length > 12 ? selectedWord.slice(0, 12) + '...' : selectedWord}"</span>
       </button>
     </div>
   );

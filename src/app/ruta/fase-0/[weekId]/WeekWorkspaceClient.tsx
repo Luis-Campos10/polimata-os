@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Clock, CheckCircle2, Lock, Unlock, Play, ShieldAlert, Award, FileText, Send, Sparkles, BookOpen, HelpCircle, FlaskConical, ChevronRight, X, AlertCircle, Upload, Trash2, Mic, MicOff, Quote, PlusCircle } from 'lucide-react';
 import MarkdownEditor from '@/components/MarkdownEditor';
 import FocusTimer from '@/components/FocusTimer';
+import { savePdfToIndexedDb, getPdfsFromIndexedDb, deletePdfFromIndexedDb } from '@/lib/pdfIndexedDb';
+
 
 interface WeekData {
   id: string;
@@ -151,20 +153,66 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
     }
   };
 
-  // Biblioteca de PDFs Guardados Permanentemente en SQLite
+  // Biblioteca de PDFs Guardados Permanentemente en IndexedDB y SQLite
   const [savedPdfDocs, setSavedPdfDocs] = useState<Array<{ id: string; fileName: string; filePath: string; fileSize: number }>>([]);
   const [isUploadingPdfs, setIsUploadingPdfs] = useState(false);
 
   useEffect(() => {
     fetchSavedPdfs();
+    restoreLastReadingPosition();
   }, [week.id]);
+
+  const restoreLastReadingPosition = () => {
+    try {
+      if (typeof window === 'undefined') return;
+      const key = `polimata_last_reading_${week.id}`;
+      const savedState = localStorage.getItem(key);
+      if (savedState) {
+        const parsed = JSON.parse(savedState);
+        if (parsed.filePath && parsed.fileName) {
+          setPdfBlobUrl(parsed.filePath);
+          setPdfFileName(parsed.fileName);
+          setShowPdfViewer(true);
+        }
+      }
+    } catch (e) {}
+  };
+
+  const saveReadingPosition = (filePath: string, fileName: string) => {
+    try {
+      if (typeof window === 'undefined') return;
+      const key = `polimata_last_reading_${week.id}`;
+      localStorage.setItem(key, JSON.stringify({
+        filePath,
+        fileName,
+        timestamp: Date.now()
+      }));
+    } catch (e) {}
+  };
 
   const fetchSavedPdfs = async () => {
     try {
+      // 1. Cargar PDFs almacenados localmente en IndexedDB (inmune a cierres de navegador en celular)
+      const localPdfs = await getPdfsFromIndexedDb(week.id);
+      
+      // 2. Cargar PDFs de la base de datos API
       const res = await fetch(`/api/uploads/pdf?targetId=${week.id}&targetType=WEEK`);
       const data = await res.json();
-      if (data.success) {
-        setSavedPdfDocs(data.documents || []);
+      const remotePdfs = data.success ? data.documents || [] : [];
+
+      // Combinar sin duplicados
+      const mergedMap = new Map();
+      localPdfs.forEach(doc => mergedMap.set(doc.id, doc));
+      remotePdfs.forEach((doc: any) => mergedMap.set(doc.id, doc));
+
+      const mergedDocs = Array.from(mergedMap.values());
+      setSavedPdfDocs(mergedDocs);
+
+      if (mergedDocs.length > 0 && !pdfBlobUrl) {
+        const first = mergedDocs[0];
+        setPdfBlobUrl(first.filePath);
+        setPdfFileName(first.fileName);
+        saveReadingPosition(first.filePath, first.fileName);
       }
     } catch (err) {
       console.error('Error al cargar biblioteca de PDFs:', err);
@@ -175,38 +223,40 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // Abrir de inmediato el primer PDF en el visor cliente local (1ms)
-    try {
-      const localUrl = URL.createObjectURL(files[0]);
-      setPdfBlobUrl(localUrl);
-      setPdfFileName(files[0].name);
-    } catch (err) {}
-
     setIsUploadingPdfs(true);
     try {
-      const formData = new FormData();
-      formData.append('targetId', week.id);
-      formData.append('targetType', 'WEEK');
-
       for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
+        const file = files[i];
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const base64Data = `data:application/pdf;base64,${buffer.toString('base64')}`;
+        
+        const docId = `PDF_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        
+        const newDoc = {
+          id: docId,
+          targetId: week.id,
+          targetType: 'WEEK',
+          fileName: file.name,
+          filePath: base64Data,
+          fileSize: file.size,
+          createdAt: new Date().toISOString()
+        };
 
-      const res = await fetch('/api/uploads/pdf', {
-        method: 'POST',
-        body: formData,
-      });
+        // Guardar PERMANENTEMENTE en IndexedDB en el celular
+        await savePdfToIndexedDb(newDoc);
 
-      const data = await res.json();
-      if (data.success) {
-        fetchSavedPdfs();
-        if (data.documents && data.documents.length > 0 && !pdfBlobUrl) {
-          setPdfBlobUrl(data.documents[0].filePath);
-          setPdfFileName(data.documents[0].fileName);
+        if (i === 0) {
+          setPdfBlobUrl(base64Data);
+          setPdfFileName(file.name);
+          setShowPdfViewer(true);
+          saveReadingPosition(base64Data, file.name);
         }
       }
+
+      await fetchSavedPdfs();
     } catch (err) {
-      console.error('Error al subir múltiples PDFs:', err);
+      console.error('Error al guardar PDFs en celular:', err);
     } finally {
       setIsUploadingPdfs(false);
     }
@@ -215,17 +265,17 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
   const handleDeleteSavedPdf = async (docId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`/api/uploads/pdf?id=${docId}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (data.success) {
-        fetchSavedPdfs();
-        if (pdfBlobUrl && pdfBlobUrl.includes(docId)) {
-          setPdfBlobUrl(null);
-          setPdfFileName(null);
-        }
+      await deletePdfFromIndexedDb(docId);
+      await fetch(`/api/uploads/pdf?id=${docId}`, { method: 'DELETE' });
+      
+      setSavedPdfDocs(prev => prev.filter(d => d.id !== docId));
+      if (pdfBlobUrl && pdfBlobUrl.includes(docId)) {
+        setPdfBlobUrl(null);
+        setPdfFileName(null);
+        localStorage.removeItem(`polimata_last_reading_${week.id}`);
       }
     } catch (err) {
-      console.error('Error al eliminar PDF guardado:', err);
+      console.error('Error al eliminar PDF:', err);
     }
   };
 
