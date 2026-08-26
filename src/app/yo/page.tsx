@@ -2,6 +2,9 @@ import { User, BarChart3, Clock, Target, AlertTriangle, CheckCircle2, Shield, Sp
 import YoBackupActions from './YoBackupActions';
 import MetacognitiveScatterPlot from '@/components/MetacognitiveScatterPlot';
 import RetentionBadges from '@/components/RetentionBadges';
+import GraduationCertificateModal from '@/components/GraduationCertificateModal';
+import InterdisciplinaryRadarChart from '@/components/InterdisciplinaryRadarChart';
+import SocraticExamSimulatorModal from '@/components/SocraticExamSimulatorModal';
 
 export default function YoPage() {
   return (
@@ -61,8 +64,20 @@ export default function YoPage() {
         </div>
       </section>
 
+      {/* Generador y Exportador de Certificado de Graduación PDF */}
+      <GraduationCertificateModal />
+
+      {/* Simulador de Examen Diagnóstico Socrático & Calibración Metacognitiva */}
+      <SocraticExamSimulatorModal />
+
+
+      {/* Gráfico de Radar de Dominio Interdisciplinario */}
+      <InterdisciplinaryRadarChart />
+
+
       {/* Gráfico Metacognitivo de Dispersión */}
       <MetacognitiveScatterPlot />
+
 
       {/* Matriz & Logros de Retención Real */}
       <RetentionBadges />
