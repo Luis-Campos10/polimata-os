@@ -730,14 +730,11 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   {pdfBlobUrl && (
                     <button
                       type="button"
-                      onClick={() => {
-                        const execUrl = getExecutablePdfUrl(pdfBlobUrl);
-                        if (execUrl) window.open(execUrl, '_blank');
-                      }}
-                      className="px-3 py-1.5 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-xs font-bold rounded-lg border border-sky-500/40 transition cursor-pointer flex items-center gap-1.5 shadow"
+                      onClick={() => setShowPdfViewer(true)}
+                      className="px-3 py-1.5 bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-500 hover:to-purple-500 text-white text-xs font-bold rounded-lg border border-sky-400/40 transition cursor-pointer flex items-center gap-1.5 shadow"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
-                      <span>↗️ Pestaña Completa / Lector Nativo</span>
+                      <span>🔍 Abrir Pantalla Completa Inmersiva</span>
                     </button>
                   )}
 
@@ -757,7 +754,13 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   const execUrl = getExecutablePdfUrl(pdfBlobUrl);
                   if (!execUrl) return null;
                   return (
-                    <MobilePdfCanvasViewer pdfUrl={execUrl} fileName={pdfFileName || 'PDF'} />
+                    <MobilePdfCanvasViewer
+                      pdfUrl={execUrl}
+                      fileName={pdfFileName || 'PDF'}
+                      onOpenDictionary={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
+                      onOpenQuestions={() => setShowFullGuideQuestionsModal(true)}
+                      onOpenExtractor={() => setShowFullExtractorModal(true)}
+                    />
                   );
                 })()}
               </div>
@@ -1306,7 +1309,14 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                 }
                 return (
                   <div className="w-full h-full relative flex flex-col">
-                    <MobilePdfCanvasViewer pdfUrl={execUrl} fileName={pdfFileName || 'Documento PDF'} />
+                    <MobilePdfCanvasViewer
+                      pdfUrl={execUrl}
+                      fileName={pdfFileName || 'Documento PDF'}
+                      onOpenDictionary={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
+                      onOpenQuestions={() => setShowFullGuideQuestionsModal(true)}
+                      onOpenExtractor={() => setShowFullExtractorModal(true)}
+                      onClose={() => setShowPdfViewer(false)}
+                    />
                   </div>
                 );
               })()}

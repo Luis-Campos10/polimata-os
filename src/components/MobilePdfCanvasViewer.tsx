@@ -1,15 +1,25 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, ExternalLink, Moon, BookOpen, Search, Sparkles, RotateCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, Moon, BookOpen, Search, Sparkles, RotateCw, Maximize, Minimize, HelpCircle, Quote, X } from 'lucide-react';
 
 interface MobilePdfViewerProps {
   pdfUrl: string; // Base64 data:application/pdf;base64,... o Blob URL
   fileName?: string;
+  onOpenDictionary?: () => void;
+  onOpenQuestions?: () => void;
+  onOpenExtractor?: () => void;
   onClose?: () => void;
 }
 
-export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PDF', onClose }: MobilePdfViewerProps) {
+export default function MobilePdfCanvasViewer({
+  pdfUrl,
+  fileName = 'Documento PDF',
+  onOpenDictionary,
+  onOpenQuestions,
+  onOpenExtractor,
+  onClose
+}: MobilePdfViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const textLayerRef = useRef<HTMLDivElement | null>(null);
 
@@ -25,7 +35,8 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [selectedWord, setSelectedWord] = useState<string>('');
-  const [showDictionaryPopup, setShowDictionaryPopup] = useState<boolean>(false);
+  const [showSelectionPopup, setShowSelectionPopup] = useState<boolean>(false);
+  const [isLandscapeForced, setIsLandscapeForced] = useState<boolean>(false);
 
   // Restaurar página guardada en localStorage
   useEffect(() => {
@@ -87,7 +98,7 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
       } catch (err: any) {
         console.error('Error al renderizar PDF en Canvas Android:', err);
         if (isMounted) {
-          setErrorMessage('No se pudo renderizar el PDF en el visor nativo. Haz clic en "Pestaña Completa".');
+          setErrorMessage('No se pudo renderizar el PDF en el visor nativo. Intenta recargar la página.');
           setIsLoading(false);
         }
       }
@@ -117,7 +128,8 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        const viewport = page.getViewport({ scale });
+        const currentScale = isLandscapeForced ? scale * 1.3 : scale;
+        const viewport = page.getViewport({ scale: currentScale });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
@@ -162,24 +174,27 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         renderTask.cancel();
       }
     };
-  }, [pdfDoc, currentPage, scale]);
+  }, [pdfDoc, currentPage, scale, isLandscapeForced]);
 
-  // Forzar o Alternar Orientación Horizontal mediante Screen Orientation API
+  // Forzar Modo Horizontal con Fullscreen API + Screen Orientation + CSS Fallback
   const toggleScreenOrientation = async () => {
     try {
-      if (typeof window !== 'undefined' && window.screen && (window.screen as any).orientation) {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen().catch(() => {});
+      }
+
+      if (window.screen && (window.screen as any).orientation && (window.screen as any).orientation.lock) {
         const orientation = (window.screen as any).orientation;
         if (orientation.type.includes('portrait')) {
-          await orientation.lock('landscape');
+          await orientation.lock('landscape').catch(() => {});
         } else {
-          await orientation.lock('portrait-primary');
+          await orientation.lock('portrait').catch(() => {});
         }
-      } else {
-        alert('Gira físicamente tu teléfono con el ahorro de energía o rotación automática activada.');
       }
-    } catch (e) {
-      alert('Para ver en horizontal activa la "Rotación Automática" en la barra de notificaciones de tu celular y gira tu teléfono.');
-    }
+    } catch (e) {}
+
+    // Fallback de expansión de ancho horizontal CSS
+    setIsLandscapeForced((prev) => !prev);
   };
 
   // Capturar gestos táctiles de deslizamiento (Swipe Left / Swipe Right)
@@ -206,34 +221,42 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
     setTouchEndX(null);
   };
 
-  // Capturar selección de texto táctil para abrir Diccionario sin salir del PDF
+  // Capturar selección de texto táctil
   const handleTextSelection = () => {
     const selection = window.getSelection();
     if (selection) {
       const text = selection.toString().trim();
       if (text.length > 1) {
         setSelectedWord(text);
-        setShowDictionaryPopup(true);
+        setShowSelectionPopup(true);
       }
     }
   };
 
   const triggerDictionaryLookup = (word: string) => {
     window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: word }));
-    setShowDictionaryPopup(false);
+    setShowSelectionPopup(false);
+  };
+
+  const triggerQuoteExtraction = (text: string) => {
+    window.dispatchEvent(new CustomEvent('polimata_extract_quote', { detail: text }));
+    setShowSelectionPopup(false);
+    if (onOpenExtractor) onOpenExtractor();
   };
 
   return (
     <div className="w-full h-full flex flex-col bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative">
       
-      {/* BARRA SUPERIOR DE HERRAMIENTAS MÓVILES */}
-      <div className="p-2 bg-slate-900 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2 shrink-0 text-xs">
+      {/* BARRA SUPERIOR DE HERRAMIENTAS: DICCIONARIO, PREGUNTAS, EXTRACTOR, MODO NOCHE, GIRAR */}
+      <div className="p-2.5 bg-slate-900 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2 shrink-0 text-xs">
+        
+        {/* TITULO Y PÁGINA */}
         <div className="flex items-center space-x-2 truncate max-w-[140px] sm:max-w-xs">
           <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
           <span className="font-bold text-slate-200 font-mono truncate text-[11px]">{fileName}</span>
         </div>
 
-        {/* NAVEGACIÓN, ROTACIÓN HORIZONTAL Y Noche */}
+        {/* NAVEGACIÓN DE PÁGINAS Y ZOOM */}
         <div className="flex items-center space-x-1 font-mono text-[11px]">
           <button
             type="button"
@@ -263,12 +286,34 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
 
           <button
             type="button"
-            onClick={toggleScreenOrientation}
-            className="px-2 py-1 bg-purple-900/60 hover:bg-purple-800 text-purple-200 font-bold rounded border border-purple-500/40 cursor-pointer flex items-center gap-1 text-[10px]"
-            title="Girar a Modo Horizontal"
+            onClick={() => setScale((s) => Math.max(0.6, s - 0.2))}
+            className="p-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded cursor-pointer"
+            title="Reducir Zoom"
           >
-            <RotateCw className="w-3.5 h-3.5 text-purple-300" />
-            <span>Girar Horizontal</span>
+            <ZoomOut className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setScale((s) => Math.min(2.5, s + 0.2))}
+            className="p-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded cursor-pointer"
+            title="Aumentar Zoom"
+          >
+            <ZoomIn className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleScreenOrientation}
+            className={`px-2 py-1 font-bold rounded border cursor-pointer flex items-center gap-1 text-[10px] transition ${
+              isLandscapeForced
+                ? 'bg-cyan-600 text-white border-cyan-400 shadow-md'
+                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+            }`}
+            title="Girar Pantalla Horizontal"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+            <span>{isLandscapeForced ? 'Horizontal Activo' : 'Girar Horizontal'}</span>
           </button>
 
           <button
@@ -285,38 +330,80 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => window.open(pdfUrl, '_blank')}
-          className="px-2 py-1 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-[10px] font-bold rounded border border-sky-500/40 cursor-pointer flex items-center gap-1"
-        >
-          <ExternalLink className="w-3 h-3" />
-          <span className="hidden sm:inline">Pestaña Completa</span>
-        </button>
+        {/* BOTONES DIRECTOS: DICCIONARIO, PREGUNTAS, EXTRACTOR */}
+        <div className="flex items-center space-x-1.5 font-mono text-[11px]">
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenDictionary) onOpenDictionary();
+              else window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }));
+            }}
+            className="px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
+            title="Abrir Diccionario"
+          >
+            <BookOpen className="w-3 h-3" />
+            <span>Diccionario</span>
+          </button>
+
+          {onOpenQuestions && (
+            <button
+              type="button"
+              onClick={onOpenQuestions}
+              className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
+              title="Ver Preguntas Guía"
+            >
+              <HelpCircle className="w-3 h-3" />
+              <span>Preguntas</span>
+            </button>
+          )}
+
+          {onOpenExtractor && (
+            <button
+              type="button"
+              onClick={onOpenExtractor}
+              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
+              title="Abrir Extractor de Citas"
+            >
+              <Quote className="w-3 h-3" />
+              <span>Extractor</span>
+            </button>
+          )}
+
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded-lg border border-rose-500/30 cursor-pointer"
+              title="Cerrar Lector"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* AVISO DESLIZAMIENTO TÁCTIL (GESTO SWIPE) & BUSCADOR DICCIONARIO */}
-      <div className="bg-slate-900/90 text-slate-400 text-[10px] py-1 px-3 border-b border-slate-800 text-center font-mono flex items-center justify-between shrink-0">
+      {/* AVISO DE DESLIZAMIENTO TÁCTIL Y BUSCADOR DIRECTO */}
+      <div className="bg-slate-900/95 text-slate-400 text-[10px] py-1 px-3 border-b border-slate-800 text-center font-mono flex items-center justify-between shrink-0">
         <span>👈 Desliza para cambiar página 👉</span>
 
         <div className="flex items-center space-x-1">
           <BookOpen className="w-3 h-3 text-purple-400" />
           <input
             type="text"
-            placeholder="📖 Buscar palabra..."
+            placeholder="📖 Definir palabra..."
             onKeyDown={(e) => {
               if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                 triggerDictionaryLookup(e.currentTarget.value.trim());
               }
             }}
-            className="bg-slate-950 border border-purple-500/40 rounded px-1.5 py-0.5 text-[10px] text-slate-100 font-mono w-28 focus:outline-none focus:border-purple-400"
+            className="bg-slate-950 border border-purple-500/40 rounded px-1.5 py-0.5 text-[10px] text-slate-100 font-mono w-28 sm:w-36 focus:outline-none focus:border-purple-400"
           />
         </div>
       </div>
 
       {/* ÁREA PRINCIPAL CANVAS PDF */}
       <div
-        className="flex-1 overflow-auto p-2 sm:p-4 flex items-start justify-center bg-slate-900/90 relative min-h-[380px] touch-pan-y"
+        className="flex-1 overflow-auto p-2 sm:p-4 flex items-start justify-center bg-slate-900/90 relative min-h-[420px] touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -332,13 +419,6 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         {errorMessage ? (
           <div className="p-6 text-center space-y-3 max-w-sm">
             <p className="text-xs text-rose-300 font-bold">{errorMessage}</p>
-            <button
-              type="button"
-              onClick={() => window.open(pdfUrl, '_blank')}
-              className="px-4 py-2 bg-sky-600 text-white font-bold text-xs rounded-xl shadow cursor-pointer"
-            >
-              Abrir PDF en Lector Nativo
-            </button>
           </div>
         ) : (
           <div
@@ -355,22 +435,34 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         )}
       </div>
 
-      {/* POPUP AUTOMÁTICO AL SELECCIONAR UNA PALABRA (SIN CERRAR EL PDF) */}
-      {showDictionaryPopup && selectedWord && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[99999] bg-gradient-to-r from-purple-900 to-sky-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl border border-purple-400/50 flex items-center gap-3 animate-bounce">
-          <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>Definir "<strong className="text-amber-300">{selectedWord}</strong>"</span>
+      {/* POPUP FLOTANTE DE OPCIONES AL SELECCIONAR TEXTO */}
+      {showSelectionPopup && selectedWord && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[99999] bg-gradient-to-r from-purple-950 via-slate-900 to-emerald-950 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl border border-purple-400/50 flex items-center gap-2 animate-bounce">
+          <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+          <span className="truncate max-w-[120px]">"{selectedWord}"</span>
+
           <button
             type="button"
             onClick={() => triggerDictionaryLookup(selectedWord)}
-            className="px-3 py-1 bg-white text-purple-950 rounded-full text-[11px] font-extrabold hover:bg-slate-100 shadow cursor-pointer"
+            className="px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
           >
-            Buscar en Diccionario
+            <BookOpen className="w-3 h-3" />
+            <span>Diccionario</span>
           </button>
+
           <button
             type="button"
-            onClick={() => setShowDictionaryPopup(false)}
-            className="text-slate-300 hover:text-white text-xs"
+            onClick={() => triggerQuoteExtraction(selectedWord)}
+            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
+          >
+            <Quote className="w-3 h-3" />
+            <span>Citar</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowSelectionPopup(false)}
+            className="text-slate-400 hover:text-white text-xs ml-1"
           >
             ✕
           </button>
