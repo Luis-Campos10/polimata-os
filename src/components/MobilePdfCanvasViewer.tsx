@@ -9,6 +9,7 @@ interface MobilePdfViewerProps {
   onOpenDictionary?: () => void;
   onOpenQuestions?: () => void;
   onOpenExtractor?: () => void;
+  onOpenFlashcards?: () => void;
   onClose?: () => void;
 }
 
@@ -18,6 +19,7 @@ export default function MobilePdfCanvasViewer({
   onOpenDictionary,
   onOpenQuestions,
   onOpenExtractor,
+  onOpenFlashcards,
   onClose
 }: MobilePdfViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -330,8 +332,32 @@ export default function MobilePdfCanvasViewer({
           </button>
         </div>
 
-        {/* BOTONES DIRECTOS: DICCIONARIO, PREGUNTAS, EXTRACTOR */}
-        <div className="flex items-center space-x-1.5 font-mono text-[11px]">
+        {/* BOTONES DIRECTOS: PREGUNTAS, FLASHCARDS, DICCIONARIO, EXTRACTOR */}
+        <div className="flex items-center space-x-1.5 font-mono text-[11px] flex-wrap gap-1">
+          {onOpenQuestions && (
+            <button
+              type="button"
+              onClick={onOpenQuestions}
+              className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
+              title="Ver y Contestar Preguntas Guía"
+            >
+              <HelpCircle className="w-3 h-3" />
+              <span>✍️ Preguntas</span>
+            </button>
+          )}
+
+          {onOpenFlashcards && (
+            <button
+              type="button"
+              onClick={onOpenFlashcards}
+              className="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
+              title="Hacer y Repasar Flashcards FSRS"
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>🎴 Flashcards</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => {
@@ -342,20 +368,8 @@ export default function MobilePdfCanvasViewer({
             title="Abrir Diccionario"
           >
             <BookOpen className="w-3 h-3" />
-            <span>Diccionario</span>
+            <span>📘 Diccionario</span>
           </button>
-
-          {onOpenQuestions && (
-            <button
-              type="button"
-              onClick={onOpenQuestions}
-              className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer text-[10px]"
-              title="Ver Preguntas Guía"
-            >
-              <HelpCircle className="w-3 h-3" />
-              <span>Preguntas</span>
-            </button>
-          )}
 
           {onOpenExtractor && (
             <button
@@ -365,7 +379,7 @@ export default function MobilePdfCanvasViewer({
               title="Abrir Extractor de Citas"
             >
               <Quote className="w-3 h-3" />
-              <span>Extractor</span>
+              <span>📑 Citar</span>
             </button>
           )}
 

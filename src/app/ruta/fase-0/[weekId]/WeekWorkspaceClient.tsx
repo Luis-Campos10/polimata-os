@@ -100,6 +100,15 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
   const [quoteInsertedToast, setQuoteInsertedToast] = useState(false);
   const [showFullGuideQuestionsModal, setShowFullGuideQuestionsModal] = useState(false);
   const [showFullExtractorModal, setShowFullExtractorModal] = useState(false);
+  const [showAnswerQuestionsModal, setShowAnswerQuestionsModal] = useState(false);
+  const [showFlashcardsReaderModal, setShowFlashcardsReaderModal] = useState(false);
+  const [activeFlashcardIndex, setActiveFlashcardIndex] = useState(0);
+  const [isFlashcardFlipped, setIsFlashcardFlipped] = useState(false);
+  const [readerAnswers, setReaderAnswers] = useState<Record<number, string>>({});
+  const [newCardTerm, setNewCardTerm] = useState('');
+  const [newCardDef, setNewCardDef] = useState('');
+  const [cardSavedSuccess, setCardSavedSuccess] = useState(false);
+  const [answersSavedSuccess, setAnswersSavedSuccess] = useState(false);
 
   // Función para dictado por voz (Speech Recognition API)
   const toggleVoiceRecording = () => {
@@ -1217,331 +1226,264 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
         </div>
       )}
 
-      {/* MODO LECTURA PROFUNDA A PANTALLA COMPLETA (PDF + PREGUNTAS GUÍA & SKILL IDD) */}
-      {showPdfViewer && selectedResource && (
-        <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col sm:flex-row overflow-hidden">
-          {/* Columna Izquierda: Visor PDF amplio */}
-          <div className="flex-1 flex flex-col h-full bg-slate-900 border-r border-slate-800">
-            <div className="p-3 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-slate-100 truncate max-w-xs font-mono">
-                  {selectedResource.author} — {selectedResource.title}
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-1.5 flex-wrap gap-1">
-                <button
-                  type="button"
-                  onClick={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
-                  className="px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
-                  title="Abrir Diccionario y Glosario"
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Diccionario</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowFullGuideQuestionsModal(true)}
-                  className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
-                  title="Ver Preguntas Guía"
-                >
-                  <HelpCircle className="w-3.5 h-3.5" />
-                  <span>Preguntas</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowFullExtractorModal(true)}
-                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
-                  title="Abrir Extractor de Citas"
-                >
-                  <Quote className="w-3.5 h-3.5" />
-                  <span>Extractor</span>
-                </button>
-
-                <label className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold rounded-lg border border-slate-700 flex items-center gap-1 cursor-pointer shadow">
-                  <Upload className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Subir PDF</span>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={handleMultiplePdfUpload}
-                    className="hidden"
-                  />
-                </label>
-
-                <button
-                  type="button"
-                  onClick={() => setShowPdfViewer(false)}
-                  className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded-lg cursor-pointer border border-rose-500/30"
-                  title="Salir de Pantalla Completa"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 bg-slate-950 p-2 overflow-hidden flex flex-col">
-              {(() => {
-                const execUrl = getExecutablePdfUrl(pdfBlobUrl || pdfUrl);
-                if (!execUrl) {
-                  return (
-                    <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-3 p-6 text-center">
-                      <FileText className="w-12 h-12 text-emerald-400" />
-                      <p className="font-bold text-slate-300 text-sm">Modo Lectura Enfocada Activo</p>
-                      <p className="max-w-md text-slate-400 text-xs">
-                        Selecciona o sube tu archivo PDF para comenzar a leer con las preguntas guía al lado.
-                      </p>
-                      <label className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-400/30 flex items-center gap-2 cursor-pointer shadow-lg active:scale-95">
-                        <Upload className="w-4 h-4" />
-                        <span>Seleccionar Archivo PDF Ahora</span>
-                        <input
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handleMultiplePdfUpload}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                  );
-                }
-                return (
-                  <div className="w-full h-full relative flex flex-col">
-                    <MobilePdfCanvasViewer
-                      pdfUrl={execUrl}
-                      fileName={pdfFileName || 'Documento PDF'}
-                      onOpenDictionary={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
-                      onOpenQuestions={() => setShowFullGuideQuestionsModal(true)}
-                      onOpenExtractor={() => setShowFullExtractorModal(true)}
-                      onClose={() => setShowPdfViewer(false)}
-                    />
+      {/* MODO LECTURA INMERSIVA A PANTALLA COMPLETA 100% VIEWPORT */}
+      {showPdfViewer && (
+        <div className="fixed inset-0 z-[100000] bg-slate-950 flex flex-col overflow-hidden">
+          {(() => {
+            const execUrl = getExecutablePdfUrl(pdfBlobUrl || pdfUrl);
+            if (!execUrl) {
+              return (
+                <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-3 p-6 text-center">
+                  <FileText className="w-12 h-12 text-emerald-400" />
+                  <p className="font-bold text-slate-300 text-sm">Modo Lectura Enfocada Activo</p>
+                  <p className="max-w-md text-slate-400 text-xs">
+                    Selecciona o sube tu archivo PDF para comenzar a leer con las herramientas interactivas integradas.
+                  </p>
+                  <div className="flex items-center space-x-3">
+                    <label className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border border-emerald-400/30 flex items-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                      <Upload className="w-4 h-4" />
+                      <span>Seleccionar Archivo PDF</span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={handleMultiplePdfUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowPdfViewer(false)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl cursor-pointer"
+                    >
+                      Cerrar
+                    </button>
                   </div>
-                );
-              })()}
+                </div>
+              );
+            }
+            return (
+              <div className="w-full h-full relative flex flex-col">
+                <MobilePdfCanvasViewer
+                  pdfUrl={execUrl}
+                  fileName={pdfFileName || selectedResource?.title || 'Documento PDF'}
+                  onOpenDictionary={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
+                  onOpenQuestions={() => setShowAnswerQuestionsModal(true)}
+                  onOpenFlashcards={() => setShowFlashcardsReaderModal(true)}
+                  onOpenExtractor={() => setShowFullExtractorModal(true)}
+                  onClose={() => setShowPdfViewer(false)}
+                />
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* MODAL RESPONDER PREGUNTAS GUÍA DE LA SEMANA */}
+      {showAnswerQuestionsModal && (
+        <div className="fixed inset-0 z-[100001] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 border border-sky-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setShowAnswerQuestionsModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center space-x-2 text-sky-400">
+              <HelpCircle className="w-5 h-5" />
+              <h3 className="text-base font-bold text-white">Preguntas Guía & Respuestas de la Semana</h3>
             </div>
 
-          </div>
+            <p className="text-xs text-slate-300">
+              Escribe tus respuestas y recuerdos activos sin consultar notas para entrenar el recall duradero:
+            </p>
 
-          {/* Columna Derecha (Panel de Orientación Pedagógica & Skill IDD) */}
-          <div className="w-full sm:w-80 md:w-96 bg-slate-900 p-4 space-y-4 overflow-y-auto border-t sm:border-t-0 sm:border-l border-slate-800 shrink-0">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-                <HelpCircle className="w-4 h-4" /> Panel de Guiado Pedagógico
-              </span>
+            <div className="space-y-4 font-mono text-xs">
+              {guideQuestions.map((q, idx) => (
+                <div key={idx} className="p-3.5 bg-slate-900 rounded-2xl border border-slate-800 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <strong className="text-sky-300 text-[11px]">Pregunta {idx + 1}:</strong>
+                    <button
+                      type="button"
+                      onClick={() => speakText(q)}
+                      className="text-slate-400 hover:text-sky-300 p-0.5"
+                      title="Escuchar en voz alta"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <p className="text-slate-200 text-xs font-sans leading-relaxed">{q}</p>
+                  <textarea
+                    rows={3}
+                    placeholder="Escribe tu respuesta con tus propias palabras aquí..."
+                    value={readerAnswers[idx] || ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setReaderAnswers(prev => ({ ...prev, [idx]: val }));
+                    }}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+              ))}
+
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const formatted = Object.entries(readerAnswers)
+                      .map(([i, ans]) => `### Pregunta ${parseInt(i, 10) + 1}: ${guideQuestions[parseInt(i, 10)]}\n**Mi Respuesta:** ${ans}\n`)
+                      .join('\n');
+                    setDeliverableContent((prev: string) => `${prev}\n\n## Respuestas a Preguntas Guía (Lectura):\n${formatted}`);
+                    setAnswersSavedSuccess(true);
+                    setTimeout(() => {
+                      setAnswersSavedSuccess(false);
+                      setShowAnswerQuestionsModal(false);
+                    }, 1500);
+                  }}
+                  className="flex-1 py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer active:scale-95"
+                >
+                  {answersSavedSuccess ? '¡Guardado en Entregable! ✓' : '💾 Guardar Respuestas en Borrador .MD'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL HACER Y REPASAR FLASHCARDS FSRS DESDE EL LECTOR */}
+      {showFlashcardsReaderModal && (
+        <div className="fixed inset-0 z-[100001] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setShowFlashcardsReaderModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center space-x-2 text-amber-400">
+              <Sparkles className="w-5 h-5" />
+              <h3 className="text-base font-bold text-amber-100 font-serif">Crear & Repasar Flashcards FSRS</h3>
+            </div>
+
+            {/* FORMULARIO PARA CREAR NUEVA FLASHCARD DESDE EL LIBRO */}
+            <div className="p-4 bg-slate-900 rounded-2xl border border-amber-900/40 space-y-3 font-mono text-xs">
+              <span className="font-bold text-amber-300 block text-[11px]">➕ Crear Tarjeta desde este libro:</span>
+              <div>
+                <label className="block text-slate-400 text-[10px] mb-1">Concepto o Pregunta:</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Testing Effect, Metacognición..."
+                  value={newCardTerm}
+                  onChange={(e) => setNewCardTerm(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-100 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 text-[10px] mb-1">Definición o Respuesta:</label>
+                <textarea
+                  rows={2}
+                  placeholder="Explicación en tus propias palabras..."
+                  value={newCardDef}
+                  onChange={(e) => setNewCardDef(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-100 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
               <button
                 type="button"
-                onClick={() => setShowPdfViewer(false)}
-                className="text-xs text-slate-400 hover:text-white font-bold cursor-pointer"
+                onClick={async () => {
+                  if (!newCardTerm.trim() || !newCardDef.trim()) return;
+                  try {
+                    await fetch('/api/glossary', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        term: newCardTerm.trim(),
+                        definition: newCardDef.trim(),
+                        category: selectedResource?.title || 'Lectura Semanal'
+                      })
+                    });
+                    setCardSavedSuccess(true);
+                    setNewCardTerm('');
+                    setNewCardDef('');
+                    setTimeout(() => setCardSavedSuccess(false), 2000);
+                  } catch (e) {}
+                }}
+                disabled={!newCardTerm.trim() || !newCardDef.trim()}
+                className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer active:scale-95"
               >
-                Cerrar ✕
+                {cardSavedSuccess ? '¡Flashcard Guardada en FSRS! ✓' : '💾 Guardar en mi Mazo FSRS'}
               </button>
             </div>
 
-            {/* BOTÓN RÁPIDO PARA DICCIONARIO & FLASHCARDS DENTRO DEL LECTOR PDF */}
-            <button
-              type="button"
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }));
-              }}
-              className="w-full py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 text-xs font-bold rounded-xl border border-purple-500/40 transition cursor-pointer flex items-center justify-center gap-1.5 shadow"
-            >
-              <BookOpen className="w-4 h-4 text-purple-400" />
-              <span>📖 Abrir Diccionario, Glosario & Flashcards</span>
-            </button>
-
-            {/* Estrategia de Lectura & Skill IDD */}
-            <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-1.5">
-              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
-                Estrategia / Skill IDD Prescrita:
-              </span>
-              <p className="text-xs text-slate-200 leading-relaxed font-mono">
-                {selectedResource.whatToStudy}
-              </p>
+            <div className="pt-2 border-t border-slate-800 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFlashcardsReaderModal(false);
+                  window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }));
+                }}
+                className="text-xs text-purple-400 hover:text-purple-300 font-bold font-mono underline cursor-pointer"
+              >
+                Abrir Repaso de Todas mis Flashcards
+              </button>
             </div>
 
-            {/* EXTRACTOR DE CITAS AL BORRADOR MARKDOWN */}
-            <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EXTRACTOR DE CITAS */}
+      {showFullExtractorModal && (
+        <div className="fixed inset-0 z-[100001] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+            <button
+              type="button"
+              onClick={() => setShowFullExtractorModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              ✕
+            </button>
+            <div className="flex items-center space-x-2 text-emerald-400">
+              <Quote className="w-5 h-5" />
+              <h3 className="text-base font-bold text-white">Extractor de Citas al Borrador</h3>
+            </div>
+            <div className="space-y-3 font-mono text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                  <Quote className="w-3.5 h-3.5 text-emerald-400" /> Extractor de Citas al Borrador
-                </span>
-                
+                <span className="text-slate-300">Copia o pega una cita del PDF:</span>
                 <button
                   type="button"
                   onClick={handlePasteClipboardQuote}
-                  className="px-2 py-0.5 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-[10px] font-bold rounded border border-emerald-500/40 transition cursor-pointer flex items-center gap-1"
-                  title="Pegar lo último que copiaste con Ctrl+C con 1 clic"
+                  className="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-bold rounded border border-emerald-500/40 cursor-pointer flex items-center gap-1"
                 >
-                  <Sparkles className="w-3 h-3 text-amber-300" />
-                  <span>📋 Pegar 1-Clic</span>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Pegar 1-Clic</span>
                 </button>
               </div>
-
               <textarea
-                rows={3}
-                placeholder="Copia/pega o escribe aquí un fragmento relevante del PDF..."
+                rows={4}
+                placeholder="Escribe o pega aquí la cita del libro..."
                 value={pdfQuoteText}
                 onChange={(e) => setPdfQuoteText(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
               />
-
               <button
                 type="button"
-                onClick={handleInsertPdfQuoteToDeliverable}
+                onClick={() => {
+                  handleInsertPdfQuoteToDeliverable();
+                  setShowFullExtractorModal(false);
+                }}
                 disabled={!pdfQuoteText.trim()}
-                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-lg transition shadow cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
               >
-                <PlusCircle className="w-3.5 h-3.5" /> Insertar Cita en Entregable .MD
+                Insertar Cita en Entregable .MD
               </button>
-
-              {quoteInsertedToast && (
-                <div className="p-2 bg-emerald-950 text-emerald-300 text-[11px] font-bold rounded-lg border border-emerald-500/40 text-center animate-fadeIn">
-                  ¡Cita insertada con éxito en tu borrador Markdown!
-                </div>
-              )}
-            </div>
-
-
-            {/* Preguntas Guía de la Semana con Reproductor de Voz TTS */}
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                Preguntas a Responder Durante la Lectura:
-              </span>
-              <div className="space-y-2">
-                {guideQuestions.map((q, idx) => (
-                  <div key={idx} className="p-3 bg-slate-950 rounded-xl border border-slate-800/90 text-xs text-slate-300 space-y-1 relative group">
-                    <div className="flex justify-between items-start">
-                      <strong className="text-sky-400 text-[10px] font-mono">Pregunta {idx + 1}:</strong>
-                      <button
-                        type="button"
-                        onClick={() => speakText(q)}
-                        className="text-slate-400 hover:text-sky-300 p-0.5 cursor-pointer"
-                        title="Escuchar pregunta en voz alta"
-                      >
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    <p className="leading-relaxed">{q}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
-
-          {/* BARRA FLOTANTE DE CONTROL DE LECTURA (1-CLIC DICCIONARIO, PREGUNTAS, EXTRACTOR, FLASHCARDS) */}
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[99999] bg-slate-950/90 backdrop-blur-md border border-purple-500/40 rounded-full px-3 py-2 shadow-2xl flex items-center space-x-2 text-xs">
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
-              className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Diccionario</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowFullGuideQuestionsModal(true)}
-              className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
-            >
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>Preguntas</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowFullExtractorModal(true)}
-              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
-            >
-              <Quote className="w-3.5 h-3.5" />
-              <span>Extractor</span>
-            </button>
-          </div>
-
-          {/* MODAL OVERLAY PREGUNTAS GUÍA SOBRE EL PDF */}
-          {showFullGuideQuestionsModal && (
-            <div className="fixed inset-0 z-[100000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-              <div className="bg-slate-950 border border-sky-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative max-h-[80vh] overflow-y-auto">
-                <button
-                  type="button"
-                  onClick={() => setShowFullGuideQuestionsModal(false)}
-                  className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
-                >
-                  ✕
-                </button>
-                <div className="flex items-center space-x-2 text-sky-400">
-                  <HelpCircle className="w-5 h-5" />
-                  <h3 className="text-base font-bold text-white">Preguntas Guía de la Semana</h3>
-                </div>
-                <div className="space-y-2.5">
-                  {guideQuestions.map((q, idx) => (
-                    <div key={idx} className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-200 space-y-1">
-                      <div className="flex justify-between items-start">
-                        <strong className="text-sky-300 font-mono text-[10px]">Pregunta {idx + 1}:</strong>
-                        <button type="button" onClick={() => speakText(q)} className="text-slate-400 hover:text-sky-300">
-                          <Volume2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                      <p className="leading-relaxed">{q}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* MODAL OVERLAY EXTRACTOR DE CITAS SOBRE EL PDF */}
-          {showFullExtractorModal && (
-            <div className="fixed inset-0 z-[100000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-              <div className="bg-slate-950 border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
-                <button
-                  type="button"
-                  onClick={() => setShowFullExtractorModal(false)}
-                  className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
-                >
-                  ✕
-                </button>
-                <div className="flex items-center space-x-2 text-emerald-400">
-                  <Quote className="w-5 h-5" />
-                  <h3 className="text-base font-bold text-white">Extractor de Citas al Borrador</h3>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-300">Copia cualquier texto del PDF o portapapeles:</span>
-                    <button
-                      type="button"
-                      onClick={handlePasteClipboardQuote}
-                      className="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-bold rounded border border-emerald-500/40 cursor-pointer flex items-center gap-1"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                      <span>Pegar 1-Clic</span>
-                    </button>
-                  </div>
-                  <textarea
-                    rows={4}
-                    placeholder="Escribe o pega aquí la cita del libro..."
-                    value={pdfQuoteText}
-                    onChange={(e) => setPdfQuoteText(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleInsertPdfQuoteToDeliverable();
-                      setShowFullExtractorModal(false);
-                    }}
-                    disabled={!pdfQuoteText.trim()}
-                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
-                  >
-                    Insertar Cita en Entregable .MD
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
         </div>
       )}
     </main>
