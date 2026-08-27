@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle } from 'lucide-react';
+import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers } from 'lucide-react';
 
 interface Week {
   id: string;
@@ -23,6 +23,14 @@ interface Work {
   primaryQuestionsJson: string;
 }
 
+interface HistoricalEpoch {
+  name: string;
+  period: string;
+  description: string;
+  gradient: string;
+  worksFilter: (w: Work) => boolean;
+}
+
 export default function RutaClient({
   weeks,
   works,
@@ -33,6 +41,7 @@ export default function RutaClient({
   const [selectedWork, setSelectedWork] = useState<Work | null>(null);
   const [sessionStarted, setSessionStarted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [viewMode, setViewMode] = useState<'YEARS' | 'TIMELINE'>('YEARS');
 
   // Agrupar obras por Año (1 al 10)
   const worksByYear = Array.from({ length: 10 }, (_, i) => {
@@ -42,6 +51,60 @@ export default function RutaClient({
       works: works.filter((w) => w.year === yearNum),
     };
   });
+
+  // Agrupar obras por Época Histórica
+  const historicalEpochs: HistoricalEpoch[] = [
+    {
+      name: 'Antigüedad Clásica & Helenismo',
+      period: '800 a.C. — 500 d.C.',
+      description: 'Nacimiento de la filosofía socrática, la lógica aristotélica, la geometría euclidiana y el estoicismo.',
+      gradient: 'from-amber-950/60 to-slate-900 border-amber-500/30 text-amber-300',
+      worksFilter: (w) => {
+        const a = w.author.toLowerCase();
+        return a.includes('platón') || a.includes('platon') || a.includes('aristóteles') || a.includes('aristoteles') || a.includes('homero') || a.includes('séneca') || a.includes('seneca') || a.includes('epicteto') || a.includes('aurelio') || a.includes('euclides') || a.includes('lucrecio') || a.includes('tucídides');
+      }
+    },
+    {
+      name: 'Edad Media & Renacimiento',
+      period: '500 — 1600',
+      description: 'Escolástica, teología racional, humanismo renacentista y nacimiento de la ciencia política.',
+      gradient: 'from-purple-950/60 to-slate-900 border-purple-500/30 text-purple-300',
+      worksFilter: (w) => {
+        const a = w.author.toLowerCase();
+        return a.includes('agustín') || a.includes('agustin') || a.includes('aquino') || a.includes('dante') || a.includes('maquiavelo') || a.includes('montaigne') || a.includes('erasmo');
+      }
+    },
+    {
+      name: 'Revolución Científica & Ilustración',
+      period: '1600 — 1800',
+      description: 'El método empírico, el racionalismo cartesiano, la física newtoniana, el contrato social y la economía clásica.',
+      gradient: 'from-sky-950/60 to-slate-900 border-sky-500/30 text-sky-300',
+      worksFilter: (w) => {
+        const a = w.author.toLowerCase();
+        return a.includes('bacon') || a.includes('descartes') || a.includes('spinoza') || a.includes('locke') || a.includes('newton') || a.includes('hume') || a.includes('kant') || a.includes('smith') || a.includes('rousseau') || a.includes('leibniz');
+      }
+    },
+    {
+      name: 'Siglo XIX: Evolución & Modernidad',
+      period: '1800 — 1900',
+      description: 'Teoría de la evolución biológica, dialéctica materialista, electromagnetismo y crítica existencial.',
+      gradient: 'from-emerald-950/60 to-slate-900 border-emerald-500/30 text-emerald-300',
+      worksFilter: (w) => {
+        const a = w.author.toLowerCase();
+        return a.includes('darwin') || a.includes('marx') || a.includes('nietzsche') || a.includes('mill') || a.includes('maxwell') || a.includes('schopenhauer') || a.includes('dostoievski') || a.includes('tolstoi') || a.includes('frege');
+      }
+    },
+    {
+      name: 'Siglo XX & Era de la Información',
+      period: '1900 — Actualidad',
+      description: 'Relatividad, mecánica cuántica, computación teórica, teoría de la información y ciencia cognitiva.',
+      gradient: 'from-blue-950/60 to-slate-900 border-blue-500/30 text-blue-300',
+      worksFilter: (w) => {
+        const a = w.author.toLowerCase();
+        return a.includes('einstein') || a.includes('popper') || a.includes('turing') || a.includes('shannon') || a.includes('kahneman') || a.includes('feynman') || a.includes('neumann') || a.includes('wiener') || a.includes('gödel') || a.includes('godel') || a.includes('kuhn') || a.includes('rawls') || a.includes('taleb');
+      }
+    }
+  ];
 
   async function handleStartWorkSession() {
     if (!selectedWork) return;
@@ -76,13 +139,13 @@ export default function RutaClient({
     <main className="space-y-6 pb-16">
       {/* Cabecera */}
       <header className="relative overflow-hidden bg-gradient-to-r from-sky-950/60 via-slate-900 to-slate-900 p-6 rounded-2xl border border-sky-800/30 shadow-xl space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-300 text-xs font-semibold uppercase tracking-wider">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-300 text-xs font-semibold uppercase tracking-wider font-mono">
           <Compass className="w-3.5 h-3.5 text-sky-400" />
           <span>Mapa de Aprendizaje — 10 Años + Fase 0</span>
         </div>
         <h1 className="text-2xl font-extrabold text-slate-50 tracking-tight">Ruta Interdisciplinaria</h1>
         <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-          16 semanas preparatorias de laboratorio cognitivo + 170 obras/rutas núcleo organizadas año por año. Haz clic en cualquier obra para abrir su ficha de lectura.
+          16 semanas preparatorias de laboratorio cognitivo + 170 obras núcleo organizadas año por año o por línea de tiempo histórica.
         </p>
       </header>
 
@@ -93,7 +156,7 @@ export default function RutaClient({
             <Award className="w-5 h-5 text-amber-400" />
             FASE 0 — Aprender a Aprender (16 Semanas)
           </h2>
-          <span className="text-xs text-amber-400 font-semibold bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">
+          <span className="text-xs text-amber-400 font-semibold bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 font-mono">
             Laboratorio Cognitivo
           </span>
         </div>
@@ -106,7 +169,7 @@ export default function RutaClient({
               className="group flex items-center justify-between p-4 bg-slate-900/90 hover:bg-slate-800/90 rounded-2xl border border-slate-800 hover:border-sky-500/40 transition-all duration-200 shadow-sm"
             >
               <div className="flex items-center space-x-3.5">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-extrabold text-xs shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-extrabold text-xs shrink-0 font-mono">
                   W{week.weekNumber}
                 </div>
                 <div>
@@ -122,71 +185,155 @@ export default function RutaClient({
         </div>
       </section>
 
-      {/* Seccion AÑOS 1 al 10 (170 OBRAS) */}
+      {/* Seccion AÑOS 1 al 10 (170 OBRAS) CON SELECTOR DE VISTA */}
       <section className="space-y-4 pt-6 border-t border-slate-800">
-        <div className="flex items-center space-x-2">
-          <BookOpen className="w-5 h-5 text-sky-400" />
-          <h2 className="text-base font-bold text-slate-100 uppercase tracking-wide">
-            CANON DE 170 OBRAS (Años 1 al 10)
-          </h2>
-        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2">
+            <BookOpen className="w-5 h-5 text-sky-400" />
+            <h2 className="text-base font-bold text-slate-100 uppercase tracking-wide">
+              Canon de 170 Obras Núcleo
+            </h2>
+          </div>
 
-        <div className="space-y-3">
-          {worksByYear.map(({ year, works }) => (
-            <details
-              key={year}
-              className="bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden group shadow-sm"
-              open={year === 1}
+          {/* BOTONES DE ALTERNANCIA DE VISTA: POR AÑOS VS LÍNEA DE TIEMPO */}
+          <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 font-mono text-xs self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setViewMode('YEARS')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'YEARS'
+                  ? 'bg-sky-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-slate-800/70 transition list-none font-bold text-sm text-slate-100">
-                <div className="flex items-center space-x-3">
-                  <span className="w-8 h-8 rounded-xl bg-slate-800 text-sky-400 flex items-center justify-center text-xs font-black border border-slate-700">
-                    A{year}
-                  </span>
-                  <span>AÑO {year} — Canon Principal</span>
-                </div>
-                <span className="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
-                  {works.length} obras
-                </span>
-              </summary>
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Por Años (1-10)</span>
+            </button>
 
-              <div className="p-4 border-t border-slate-800/80 space-y-3 bg-slate-950/60">
-                {works.map((work) => (
-                  <div
-                    key={work.id}
-                    onClick={() => setSelectedWork(work)}
-                    className="p-4 bg-slate-900 rounded-xl border border-slate-800/90 hover:border-sky-500/40 transition cursor-pointer space-y-2 group"
-                  >
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-                            #{work.workNumber}
-                          </span>
-                          <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
-                            Nivel {work.level}
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-mono">
-                            {work.documentType}
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-bold text-slate-100 mt-1.5 group-hover:text-sky-300 transition-colors">
-                          {work.author} — <em className="text-sky-300 font-normal">{work.title}</em>
-                        </h4>
-                      </div>
-                      <span className="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md font-mono shrink-0">
-                        {work.primaryQuestionsJson ? JSON.parse(work.primaryQuestionsJson).join(', ') : ''}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed">
-                      <strong className="text-slate-200">Qué leer:</strong> {work.prescribedReading}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </details>
-          ))}
+            <button
+              type="button"
+              onClick={() => setViewMode('TIMELINE')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'TIMELINE'
+                  ? 'bg-purple-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <History className="w-3.5 h-3.5" />
+              <span>Línea Histórica</span>
+            </button>
+          </div>
         </div>
+
+        {/* VISTA 1: POR AÑOS DEL PROGRAMA (1 AL 10) */}
+        {viewMode === 'YEARS' && (
+          <div className="space-y-3">
+            {worksByYear.map(({ year, works }) => (
+              <details
+                key={year}
+                className="bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden group shadow-sm"
+                open={year === 1}
+              >
+                <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-slate-800/70 transition list-none font-bold text-sm text-slate-100">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 rounded-xl bg-slate-800 text-sky-400 flex items-center justify-center text-xs font-black border border-slate-700 font-mono">
+                      A{year}
+                    </span>
+                    <span>AÑO {year} — Canon Principal</span>
+                  </div>
+                  <span className="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700 font-mono">
+                    {works.length} obras
+                  </span>
+                </summary>
+
+                <div className="p-4 border-t border-slate-800/80 space-y-3 bg-slate-950/60">
+                  {works.map((work) => (
+                    <div
+                      key={work.id}
+                      onClick={() => setSelectedWork(work)}
+                      className="p-4 bg-slate-900 rounded-xl border border-slate-800/90 hover:border-sky-500/40 transition cursor-pointer space-y-2 group"
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div>
+                          <div className="flex items-center gap-2 font-mono">
+                            <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
+                              #{work.workNumber}
+                            </span>
+                            <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                              Nivel {work.level}
+                            </span>
+                            <span className="text-[10px] text-slate-400">
+                              {work.documentType}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-100 mt-1.5 group-hover:text-sky-300 transition-colors">
+                            {work.author} — <em className="text-sky-300 font-normal">{work.title}</em>
+                          </h4>
+                        </div>
+                        <span className="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md font-mono shrink-0">
+                          {work.primaryQuestionsJson ? JSON.parse(work.primaryQuestionsJson).join(', ') : ''}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed font-mono">
+                        <strong className="text-slate-200">Qué leer:</strong> {work.prescribedReading}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        )}
+
+        {/* VISTA 2: LÍNEA DE TIEMPO CRONOLÓGICA HISTÓRICA */}
+        {viewMode === 'TIMELINE' && (
+          <div className="space-y-4">
+            <div className="p-3 bg-purple-950/30 rounded-xl border border-purple-800/40 text-xs text-purple-200 font-mono">
+              ⏳ Visualización cronológica de las 170 obras desde la Grecia Clásica hasta la era moderna de la computación.
+            </div>
+
+            {historicalEpochs.map((epoch, idx) => {
+              const epochWorks = works.filter(epoch.worksFilter);
+              return (
+                <div key={idx} className="bg-slate-900 rounded-2xl border border-slate-800 p-5 space-y-3 shadow-xl">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 block">
+                        {epoch.period}
+                      </span>
+                      <h3 className="text-base font-extrabold text-white">{epoch.name}</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">{epoch.description}</p>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-black/60 text-xs font-mono font-bold text-slate-300 border border-slate-700">
+                      {epochWorks.length} obras representadas
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    {epochWorks.length === 0 ? (
+                      <p className="text-xs text-slate-500 italic p-2">Consulta el catálogo por año para más obras de esta época.</p>
+                    ) : (
+                      epochWorks.map((work) => (
+                        <div
+                          key={work.id}
+                          onClick={() => setSelectedWork(work)}
+                          className="p-3 bg-slate-950 rounded-xl border border-slate-800/80 hover:border-purple-500/40 transition cursor-pointer space-y-1"
+                        >
+                          <div className="flex justify-between items-center text-[10px] font-mono">
+                            <span className="text-sky-400 font-bold">Año {work.year} · #{work.workNumber}</span>
+                            <span className="text-purple-400">Nivel {work.level}</span>
+                          </div>
+                          <h4 className="text-xs font-bold text-slate-100">{work.author}</h4>
+                          <p className="text-xs text-slate-300 italic">{work.title}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* MODAL DETALLE DE OBRA DEL CANON */}
@@ -196,7 +343,7 @@ export default function RutaClient({
             <button
               type="button"
               onClick={() => setSelectedWork(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -238,7 +385,7 @@ export default function RutaClient({
               type="button"
               onClick={handleStartWorkSession}
               disabled={isSaving}
-              className="w-full py-3 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg"
+              className="w-full py-3 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
             >
               <Play className="w-4 h-4 fill-current" />
               {isSaving ? 'Registrando Sesión...' : 'Iniciar Sesión de Lectura para esta Obra'}
