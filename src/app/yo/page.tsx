@@ -63,27 +63,23 @@ export default function YoPage() {
           <p className="text-xs text-slate-500">Tiempo acumulado en el temporizador Focus</p>
         </div>
 
-        {/* ÍNDICE DE DIVERSIDAD INTELECTUAL (ENTROPÍA DE SHANNON) */}
-        <div className="p-5 bg-gradient-to-br from-purple-950/40 via-slate-900 to-sky-950/40 rounded-2xl border border-purple-800/40 space-y-2 shadow-sm sm:col-span-2">
-          <div className="flex items-center justify-between text-purple-300 text-xs font-bold font-mono">
-            <span className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-300" /> Índice de Diversidad Intelectual (Shannon Entropy)
+        {/* ÍNDICE DE DIVERSIDAD INTELECTUAL (ENTROPÍA DE SHANNON) - INICIO LIMPIO EN CERO */}
+        <div className="p-5 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-2 shadow-sm sm:col-span-2">
+          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span className="flex items-center gap-1.5 font-mono">
+              <Sparkles className="w-4 h-4 text-slate-500" /> Índice de Diversidad Intelectual (Shannon Entropy)
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-500/30">
-              88 / 100 · Polimatía Activa
+            <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-mono text-[11px]">
+              0 / 100 · Sin lecturas registradas
             </span>
           </div>
 
           <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800 flex">
-            <div className="bg-sky-500 h-full" style={{ width: '25%' }} title="Ciencias Exactas 25%" />
-            <div className="bg-purple-500 h-full" style={{ width: '25%' }} title="Filosofía & Epistemología 25%" />
-            <div className="bg-emerald-500 h-full" style={{ width: '20%' }} title="Biología & Sistemas 20%" />
-            <div className="bg-amber-500 h-full" style={{ width: '15%' }} title="Psicología & Cognición 15%" />
-            <div className="bg-rose-500 h-full" style={{ width: '15%' }} title="Economía & Estrategia 15%" />
+            <div className="bg-slate-700 h-full" style={{ width: '0%' }} />
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed font-sans">
-            Tu espectro de aprendizaje está equilibrado entre ciencias formales, filosofía y sistemas vivos. Mantén la rotación semanal para evitar sesgos de hiperespecialización.
+          <p className="text-xs text-slate-500 leading-relaxed font-sans">
+            Comienza a registrar sesiones de lectura y flashcards en diversas disciplinas para calcular la entropía y el balance de tu polimatía.
           </p>
         </div>
       </section>

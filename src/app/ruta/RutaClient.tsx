@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers } from 'lucide-react';
+import InteractiveTimeline from '@/components/InteractiveTimeline';
 
 interface Week {
   id: string;
@@ -285,54 +286,12 @@ export default function RutaClient({
           </div>
         )}
 
-        {/* VISTA 2: LÍNEA DE TIEMPO CRONOLÓGICA HISTÓRICA */}
+        {/* VISTA 2: LÍNEA DE TIEMPO CRONOLÓGICA HISTÓRICA INTERACTIVA */}
         {viewMode === 'TIMELINE' && (
-          <div className="space-y-4">
-            <div className="p-3 bg-purple-950/30 rounded-xl border border-purple-800/40 text-xs text-purple-200 font-mono">
-              ⏳ Visualización cronológica de las 170 obras desde la Grecia Clásica hasta la era moderna de la computación.
-            </div>
-
-            {historicalEpochs.map((epoch, idx) => {
-              const epochWorks = works.filter(epoch.worksFilter);
-              return (
-                <div key={idx} className="bg-slate-900 rounded-2xl border border-slate-800 p-5 space-y-3 shadow-xl">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
-                    <div>
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 block">
-                        {epoch.period}
-                      </span>
-                      <h3 className="text-base font-extrabold text-white">{epoch.name}</h3>
-                      <p className="text-xs text-slate-400 mt-0.5">{epoch.description}</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-black/60 text-xs font-mono font-bold text-slate-300 border border-slate-700">
-                      {epochWorks.length} obras representadas
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                    {epochWorks.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic p-2">Consulta el catálogo por año para más obras de esta época.</p>
-                    ) : (
-                      epochWorks.map((work) => (
-                        <div
-                          key={work.id}
-                          onClick={() => setSelectedWork(work)}
-                          className="p-3 bg-slate-950 rounded-xl border border-slate-800/80 hover:border-purple-500/40 transition cursor-pointer space-y-1"
-                        >
-                          <div className="flex justify-between items-center text-[10px] font-mono">
-                            <span className="text-sky-400 font-bold">Año {work.year} · #{work.workNumber}</span>
-                            <span className="text-purple-400">Nivel {work.level}</span>
-                          </div>
-                          <h4 className="text-xs font-bold text-slate-100">{work.author}</h4>
-                          <p className="text-xs text-slate-300 italic">{work.title}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <InteractiveTimeline
+            works={works}
+            onSelectWork={(w) => setSelectedWork(w)}
+          />
         )}
       </section>
 
