@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tv, Film, Sparkles, BookOpen, Play, HelpCircle, ChevronRight, Search, Tag } from 'lucide-react';
 
 interface MediaItem {
@@ -242,17 +242,106 @@ export default function PolimataMultimediaPage() {
   const [filter, setFilter] = useState<'TODOS' | 'Anime' | 'Documental' | 'Pelicula'>('TODOS');
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
-  const filteredItems = MEDIA_CATALOG.filter((item) => filter === 'TODOS' || item.category === filter);
+  // Estado para custom multimedia agregados por el usuario
+  const [customCatalog, setCustomCatalog] = useState<MediaItem[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newCategory, setNewCategory] = useState<'Anime' | 'Documental' | 'Pelicula'>('Anime');
+  const [newDescription, setNewDescription] = useState('');
+
+  // Cargar multimedia guardados por el usuario desde localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('polimata_custom_multimedia');
+        if (saved) {
+          setCustomCatalog(JSON.parse(saved));
+        }
+      }
+    } catch (e) {}
+  }, []);
+
+  // Motor de Auto-Etiquetado Inteligente por Análisis de Palabras Clave
+  const handleAutoTagAndAddMedia = () => {
+    if (!newTitle.trim()) return;
+
+    const fullText = `${newTitle} ${newDescription}`.toLowerCase();
+
+    // 1. Determinar Disciplina por Palabras Clave
+    let discipline = 'Análisis Interdisciplinario & Filosofía';
+    if (fullText.includes('física') || fullText.includes('química') || fullText.includes('ciencia') || fullText.includes('espacio') || fullText.includes('universo')) {
+      discipline = 'Física, Química & Método Científico';
+    } else if (fullText.includes('ética') || fullText.includes('moral') || fullText.includes('guerra') || fullText.includes('justicia')) {
+      discipline = 'Ética, Filosofía Moral & Justicia';
+    } else if (fullText.includes('mente') || fullText.includes('psicología') || fullText.includes('cerebro') || fullText.includes('memoria') || fullText.includes('sesgo')) {
+      discipline = 'Psicología Cognitiva & Neurociencia';
+    } else if (fullText.includes('ia') || fullText.includes('robot') || fullText.includes('futuro') || fullText.includes('tecnología') || fullText.includes('digital')) {
+      discipline = 'Inteligencia Artificial & Posthumanismo';
+    } else if (fullText.includes('historia') || fullText.includes('sociedad') || fullText.includes('política') || fullText.includes('poder')) {
+      discipline = 'Filosofía Política & Historia Social';
+    }
+
+    // 2. Generar Preguntas Socráticas Automáticas
+    const socraticQuestions = [
+      `¿Qué principios fundamentales de ${discipline.split('&')[0]} se ponen a prueba en "${newTitle}"?`,
+      `¿Cómo desafía esta obra las suposiciones tradicionales del observador?`
+    ];
+
+    const newItem: MediaItem = {
+      id: `CUSTOM_M_${Date.now()}`,
+      title: newTitle.trim(),
+      category: newCategory,
+      discipline,
+      description: newDescription.trim() || `Obra ${newCategory} añadida al catálogo polímata.`,
+      whatToObserve: `Observa la aplicación práctica de los conceptos de ${discipline} a lo largo del desarrollo de la trama.`,
+      socraticQuestions,
+      coverGradient: newCategory === 'Anime'
+        ? 'from-purple-950 to-slate-900 border-purple-500/50'
+        : newCategory === 'Documental'
+        ? 'from-sky-950 to-slate-900 border-sky-500/50'
+        : 'from-amber-950 to-slate-900 border-amber-500/50'
+    };
+
+    const updatedCatalog = [newItem, ...customCatalog];
+    setCustomCatalog(updatedCatalog);
+
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('polimata_custom_multimedia', JSON.stringify(updatedCatalog));
+      }
+    } catch (e) {}
+
+    setNewTitle('');
+    setNewDescription('');
+    setShowAddModal(false);
+  };
+
+  const allItems = [...customCatalog, ...MEDIA_CATALOG];
+  const filteredItems = allItems.filter((item) => filter === 'TODOS' || item.category === filter);
 
   return (
     <main className="space-y-6 pb-16">
-      {/* CABECERA Y TITULO */}
-      <div className="bg-gradient-to-r from-purple-950/70 via-slate-900 to-slate-900 p-6 rounded-2xl border border-purple-800/40 shadow-xl space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-300 text-xs font-bold uppercase">
-          <Tv className="w-3.5 h-3.5 text-purple-400" />
-          <span>Polímata Multimedia & Cine de Ideas</span>
+      {/* CABECERA Y TITULO CON BOTÓN AGREGAR */}
+      <div className="bg-gradient-to-r from-purple-950/70 via-slate-900 to-slate-900 p-6 rounded-2xl border border-purple-800/40 shadow-xl space-y-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="space-y-1">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-300 text-xs font-bold uppercase">
+              <Tv className="w-3.5 h-3.5 text-purple-400" />
+              <span>Polímata Multimedia & Cine de Ideas</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white">Catálogo de Anime, Películas y Documentales</h1>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
+          >
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>➕ Añadir Obra con Auto-Etiquetado</span>
+          </button>
         </div>
-        <h1 className="text-xl sm:text-2xl font-extrabold text-white">Catálogo de Anime, Películas y Documentales</h1>
+
         <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
           Selección curada de obras audiovisuales analizadas bajo la lupa del aprendizaje interdisciplinario, la epistemología y el método científico.
         </p>
@@ -359,6 +448,77 @@ export default function PolimataMultimediaPage() {
               Cerrar Ficha
             </button>
 
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FORMULARIO AÑADIR NUEVA OBRA MULTIMEDIA CON AUTO-ETIQUETADO */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-[100000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 border border-purple-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+            <button
+              type="button"
+              onClick={() => setShowAddModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center space-x-2 text-purple-300">
+              <Sparkles className="w-5 h-5 text-amber-300" />
+              <h3 className="text-base font-bold text-white">Añadir Obra Multimedia con Auto-Etiquetado</h3>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs">
+              <div>
+                <label className="block text-slate-300 mb-1 font-bold">Título de la Obra:</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Attack on Titan, Interstellar..."
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 mb-1 font-bold">Categoría:</label>
+                <select
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value as any)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-purple-500 cursor-pointer"
+                >
+                  <option value="Anime">Anime</option>
+                  <option value="Documental">Documental</option>
+                  <option value="Pelicula">Película</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 mb-1 font-bold">Descripción u Observaciones:</label>
+                <textarea
+                  rows={3}
+                  placeholder="Describe brevemente la trama o conceptos que trata (ej: ética, mente, física, historia)..."
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <div className="p-3 bg-purple-950/40 rounded-xl border border-purple-800/40 text-[11px] text-purple-200">
+                <span className="font-bold block text-amber-300 mb-0.5">✨ Motor de Auto-Etiquetado Inteligente:</span>
+                Al guardar, la app analizará las palabras clave para asignar la disciplina, generar preguntas socráticas y el gradiente visual.
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAutoTagAndAddMedia}
+                disabled={!newTitle.trim()}
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer active:scale-95"
+              >
+                Auto-Etiquetar & Añadir al Catálogo
+              </button>
+            </div>
           </div>
         </div>
       )}

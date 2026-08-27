@@ -103,7 +103,80 @@ export default function LecturasNocturnasPage() {
   const [selectedResourceIndex, setSelectedResourceIndex] = useState<number>(0);
   const [readingPdfUrl, setReadingPdfUrl] = useState<string | null>(null);
 
-  const currentWeek = PHASE0_WEEKS.find((w) => w.weekNumber === selectedWeekNumber) || PHASE0_WEEKS[0];
+  // Estado para libros nocturnos personalizados añadidos por el usuario
+  const [customNightBooks, setCustomNightBooks] = useState<Record<number, Resource[]>>({});
+  const [showAddBookModal, setShowAddBookModal] = useState(false);
+  const [newBookTitle, setNewBookTitle] = useState('');
+  const [newBookAuthor, setNewBookAuthor] = useState('');
+  const [newBookWeek, setNewBookWeek] = useState<number>(1);
+  const [newBookNotes, setNewBookNotes] = useState('');
+
+  // Cargar libros nocturnos personalizados desde localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('polimata_custom_night_books');
+        if (saved) {
+          setCustomNightBooks(JSON.parse(saved));
+        }
+      }
+    } catch (e) {}
+  }, []);
+
+  // Motor de Auto-Etiquetado Inteligente para Libros Nocturnos
+  const handleAutoTagAndAddBook = () => {
+    if (!newBookTitle.trim() || !newBookAuthor.trim()) return;
+
+    const fullText = `${newBookTitle} ${newBookAuthor} ${newBookNotes}`.toLowerCase();
+
+    // 1. Determinar Tipo y Categoría Automáticamente
+    let type = 'Libro Académico';
+    if (fullText.includes('descartes') || fullText.includes('popper') || fullText.includes('aristóteles') || fullText.includes('platón') || fullText.includes('filosofía') || fullText.includes('ética')) {
+      type = 'Obra Filosófica Clásica';
+    } else if (fullText.includes('marco aurelio') || fullText.includes('séneca') || fullText.includes('epicteto') || fullText.includes('estoico')) {
+      type = 'Filosofía Estoica Nocturna';
+    } else if (fullText.includes('ciencia') || fullText.includes('física') || fullText.includes('química') || fullText.includes('biología') || fullText.includes('cerebro')) {
+      type = 'Divulgación Científica';
+    }
+
+    // 2. Determinar Prioridad por Auto-Etiquetado
+    const priority = fullText.includes('clave') || fullText.includes('núcleo') || fullText.includes('esencial') ? 'NÚCLEO' : 'COMPLEMENTARIO';
+
+    // 3. Generar Estrategia de Lectura Automática
+    const whatToStudy = newBookNotes.trim()
+      ? newBookNotes.trim()
+      : `Lectura nocturna pausada de ${newBookTitle}. Enfócate en la tesis principal del autor y realiza una breve pausa de recuerdo activo al cerrar el libro.`;
+
+    const newResource: Resource = {
+      title: newBookTitle.trim(),
+      author: newBookAuthor.trim(),
+      type,
+      priority,
+      whatToStudy
+    };
+
+    const updatedWeekBooks = [...(customNightBooks[newBookWeek] || []), newResource];
+    const updatedAllCustom = { ...customNightBooks, [newBookWeek]: updatedWeekBooks };
+    setCustomNightBooks(updatedAllCustom);
+
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('polimata_custom_night_books', JSON.stringify(updatedAllCustom));
+      }
+    } catch (e) {}
+
+    setNewBookTitle('');
+    setNewBookAuthor('');
+    setNewBookNotes('');
+    setShowAddBookModal(false);
+  };
+
+  const baseWeek = PHASE0_WEEKS.find((w) => w.weekNumber === selectedWeekNumber) || PHASE0_WEEKS[0];
+  const weekCustomResources = customNightBooks[selectedWeekNumber] || [];
+  const currentWeek = {
+    ...baseWeek,
+    resources: [...weekCustomResources, ...baseWeek.resources]
+  };
   const currentResource = currentWeek.resources[selectedResourceIndex] || currentWeek.resources[0];
 
   const speakText = (textToSpeak: string) => {
@@ -128,21 +201,32 @@ export default function LecturasNocturnasPage() {
     <main className={`min-h-screen p-4 sm:p-6 rounded-3xl transition-colors duration-500 space-y-6 pb-24 ${
       warmMode ? 'bg-[#0c0a07] text-[#e6d5bc]' : 'bg-slate-950 text-slate-200'
     }`}>
-      {/* CABECERA MODO NOCHE */}
-      <div className="flex justify-between items-center border-b border-amber-900/30 pb-4">
+      {/* CABECERA MODO NOCHE Y BOTÓN AGREGAR */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-900/30 pb-4">
         <div className="flex items-center space-x-2">
           <Moon className="w-5 h-5 text-amber-400 animate-pulse" />
           <h1 className="text-lg font-bold font-serif tracking-wide">Lecturas Nocturnas por Semana</h1>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setWarmMode(!warmMode)}
-          className="px-3 py-1.5 rounded-full border border-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5 bg-amber-950/40 hover:bg-amber-900/50 cursor-pointer"
-        >
-          {warmMode ? <Sun className="w-3.5 h-3.5 text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-purple-300" />}
-          <span>{warmMode ? 'Filtro Ámbar Cálido Activo' : 'Modo Oscuro Estándar'}</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={() => setShowAddBookModal(true)}
+            className="px-3.5 py-1.5 rounded-full border border-amber-500/40 text-xs font-bold font-mono transition flex items-center gap-1.5 bg-amber-900/60 hover:bg-amber-800 text-amber-100 cursor-pointer shadow-lg active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>➕ Añadir Libro Nocturno</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setWarmMode(!warmMode)}
+            className="px-3 py-1.5 rounded-full border border-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5 bg-amber-950/40 hover:bg-amber-900/50 cursor-pointer"
+          >
+            {warmMode ? <Sun className="w-3.5 h-3.5 text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-purple-300" />}
+            <span>{warmMode ? 'Filtro Ámbar Activo' : 'Modo Oscuro'}</span>
+          </button>
+        </div>
       </div>
 
       {/* SELECTOR DE SEMANA Y CAMBIO FLUIDO */}
@@ -246,6 +330,90 @@ export default function LecturasNocturnasPage() {
           </div>
         )}
       </div>
+
+      {/* MODAL FORMULARIO AÑADIR NUEVO LIBRO NOCTURNO CON AUTO-ETIQUETADO */}
+      {showAddBookModal && (
+        <div className="fixed inset-0 z-[100000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative text-amber-100">
+            <button
+              type="button"
+              onClick={() => setShowAddBookModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center space-x-2 text-amber-400">
+              <Sparkles className="w-5 h-5" />
+              <h3 className="text-base font-bold text-amber-100 font-serif">Añadir Libro Nocturno con Auto-Etiquetado</h3>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs">
+              <div>
+                <label className="block text-amber-300 mb-1 font-bold">Título del Libro:</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Meditaciones, Discurso del Método..."
+                  value={newBookTitle}
+                  onChange={(e) => setNewBookTitle(e.target.value)}
+                  className="w-full bg-slate-900 border border-amber-900/60 rounded-xl p-2.5 text-amber-100 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-amber-300 mb-1 font-bold">Autor:</label>
+                <input
+                  type="text"
+                  placeholder="Ej. René Descartes, Marco Aurelio..."
+                  value={newBookAuthor}
+                  onChange={(e) => setNewBookAuthor(e.target.value)}
+                  className="w-full bg-slate-900 border border-amber-900/60 rounded-xl p-2.5 text-amber-100 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-amber-300 mb-1 font-bold">Semana a Asociar:</label>
+                <select
+                  value={newBookWeek}
+                  onChange={(e) => setNewBookWeek(parseInt(e.target.value, 10))}
+                  className="w-full bg-slate-900 border border-amber-900/60 rounded-xl p-2.5 text-amber-100 focus:outline-none focus:border-amber-400 cursor-pointer"
+                >
+                  {PHASE0_WEEKS.map((w) => (
+                    <option key={w.id} value={w.weekNumber}>
+                      Semana {String(w.weekNumber).padStart(2, '0')} — {w.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-amber-300 mb-1 font-bold">Notas o Qué Estudiar (Opcional):</label>
+                <textarea
+                  rows={2}
+                  placeholder="Instrucción de lectura nocturna..."
+                  value={newBookNotes}
+                  onChange={(e) => setNewBookNotes(e.target.value)}
+                  className="w-full bg-slate-900 border border-amber-900/60 rounded-xl p-2.5 text-amber-100 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="p-3 bg-amber-950/40 rounded-xl border border-amber-500/30 text-[11px] text-amber-200">
+                <span className="font-bold block text-amber-300 mb-0.5">✨ Auto-Etiquetado Inteligente:</span>
+                Asignará automáticamente la prioridad (NÚCLEO/COMPLEMENTARIO) y la categoría temática del libro.
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAutoTagAndAddBook}
+                disabled={!newBookTitle.trim() || !newBookAuthor.trim()}
+                className="w-full py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer active:scale-95"
+              >
+                Auto-Etiquetar & Añadir Libro
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
