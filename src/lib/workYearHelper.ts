@@ -1,202 +1,222 @@
 /**
- * Utilidad histórica para obtener el año en que fue escrita / publicada cada obra del canon.
+ * Utilidad histórica exhaustiva para obtener el año y el período histórico exacto
+ * en que fue escrita / publicada cada una de las 170 obras del canon.
  */
 
-const HISTORICAL_YEAR_MAP: Record<number, string> = {
-  // --- AÑO 1: Big History & Grecia Clásica ---
-  1: '2016 d.C.', // OpenStax - Astronomy 2e
-  2: '2021 d.C.', // Andrew H. Knoll - A Brief History of Earth
-  3: '2005 d.C.', // Chris Scarre - The Human Past
-  4: '2009 d.C.', // Richard G. Klein - The Human Career
-  5: '2003 d.C.', // Steven Mithen - After the Ice
-  6: '2005 d.C.', // Peter Bellwood - First Farmers
-  7: '2004 d.C.', // Marc Van De Mieroop - A History of the Ancient Near East
-  8: '2000 d.C.', // Ian Shaw - Oxford History of Ancient Egypt
-  9: '2002 d.C.', // Romila Thapar - Early India
-  10: '2007 d.C.', // Mark Edward Lewis - Early Chinese Empires
-  11: '1996 d.C.', // Robin Osborne - Greece in the Making
-  12: '~399 a.C.', // Platón - Apología de Sócrates
-  13: '~385 a.C.', // Platón - Fedón
-  14: '~380 a.C.', // Platón - Banquete
-  15: '~375 a.C.', // Platón - República
-  16: '~340 a.C.', // Aristóteles - Ética a Nicómaco
+export interface WorkYearInfo {
+  year: string;
+  period: string;
+  badgeText: string;
+}
 
-  // --- AÑO 2: Helenismo, Roma & Ciencia Clásica ---
-  17: '~335 a.C.', // Aristóteles - Metafísica
-  18: '~330 a.C.', // Aristóteles - Política
-  19: '~350 a.C.', // Aristóteles - Analíticos primeros y segundos
-  20: '~330 a.C.', // Aristóteles - Física
-  21: '~325 a.C.', // Aristóteles - Poética
-  22: '~108 d.C.', // Epicteto - Disertaciones + Enquiridión
-  23: '~170 d.C.', // Marco Aurelio - Meditaciones
-  24: '~65 d.C.', // Séneca - Epístolas morales a Lucilio
-  25: '~400 a.C.', // Tucídides - Historia de la guerra del Peloponeso
-  26: '~300 a.C.', // Euclides - Elementos
-  27: '~250 a.C.', // Arquímedes - Sobre la esfera y el cilindro
-  28: '~55 a.C.', // Lucrecio - De rerum natura
-  29: '~150 d.C.', // Ptolomeo - Almagesto
-  30: '~170 d.C.', // Galeno - Tratados médicos
-  31: '~250 d.C.', // Plotino - Enéadas
-  32: '~200 d.C.', // Sexto Empírico - Esbozos pirrónicos
-  33: '~100 a.C.', // Sima Qian - Shiji (Memorias históricas)
-  34: '~300 a.C.', // Kautilya - Arthashastra
+const HISTORICAL_WORKS_DATA: Record<number, { year: string; period: string }> = {
+  // --- AÑO 1: Cosmología, Orígenes & Filosofía Antigua ---
+  1: { year: '2016 d.C.', period: 'Astrofísica & Cosmología' },
+  2: { year: '2021 d.C.', period: 'Geología & Historia Planetaria' },
+  3: { year: '2005 d.C.', period: 'Arqueología & Prehistoria' },
+  4: { year: '2009 d.C.', period: 'Evolución Humana & Paleoantropología' },
+  5: { year: '2003 d.C.', period: 'Paleolítico & Holoceno' },
+  6: { year: '2005 d.C.', period: 'Revolución Neolítica' },
+  7: { year: '2006 d.C.', period: 'Poblamiento Temprano de América' },
+  8: { year: '1995 d.C.', period: 'Mesoamérica Indígena' },
+  9: { year: '2004 d.C.', period: 'Historiografía de México' },
+  10: { year: '~475 a.C.', period: 'Filosofía Oriental (China Clásica)' },
+  11: { year: '~600 a.C.', period: 'Filosofía Oriental (Vedismo & Upanishads)' },
+  12: { year: '~399 a.C.', period: 'Filosofía Clásica Griega (Socrática)' },
+  13: { year: '~385 a.C.', period: 'Filosofía Clásica Griega (Platonismo)' },
+  14: { year: '~380 a.C.', period: 'Filosofía Clásica Griega (Platonismo)' },
+  15: { year: '~375 a.C.', period: 'Filosofía Clásica Griega (Platonismo)' },
+  16: { year: '~340 a.C.', period: 'Filosofía Clásica Griega (Aristotelismo)' },
 
-  // --- AÑO 3: Escolástica, Edad Media & Teología ---
-  35: '~397 d.C.', // San Agustín - Confesiones
-  36: '~426 d.C.', // San Agustín - La ciudad de Dios
-  37: '~524 d.C.', // Boecio - La consolación de la filosofía
-  38: '~1078 d.C.', // San Anselmo - Proslogion
-  39: '~1190 d.C.', // Maimónides - Guía de perplejos
-  40: '~1180 d.C.', // Averroes - Tahafut al-Tahafut (Incoherencia de la incoherencia)
-  41: '~1020 d.C.', // Avicena - Canon de medicina
-  42: '~1270 d.C.', // Tomás de Aquino - Suma Teológica
-  43: '~1260 d.C.', // Tomás de Aquino - Suma contra los gentiles
-  44: '~1320 d.C.', // Dante Alighieri - Divina Comedia
-  45: '~1320 d.C.', // Dante Alighieri - De Monarchia
-  46: '~1324 d.C.', // Marsilio de Padua - Defensor Pacis
-  47: '~1320 d.C.', // Guillermo de Ockham - Suma de lógica
-  48: '~1377 d.C.', // Ibn Jaldún - Muqaddimah (Prolegómenos)
-  49: '~1202 d.C.', // Fibonacci - Liber Abaci
-  50: '~1440 d.C.', // Nicolás de Cusa - De docta ignorantia
-  51: '1509 d.C.', // Erasmo de Rotterdam - Elogio de la locura
+  // --- AÑO 2: Helenismo, Roma, Ciencia Antigua & Escolástica Temprana ---
+  17: { year: '~335 a.C.', period: 'Filosofía Clásica Griega (Ontología)' },
+  18: { year: '~330 a.C.', period: 'Filosofía Clásica Griega (Política)' },
+  19: { year: '~350 a.C.', period: 'Lógica Clásica & Silogística' },
+  20: { year: '~300 a.C.', period: 'Taoísmo Clásico' },
+  21: { year: '~150 d.C.', period: 'Budismo Mahāyāna & Mādhyamaka' },
+  22: { year: '~108 d.C.', period: 'Estoicismo Romano' },
+  23: { year: '~170 d.C.', period: 'Estoicismo Romano' },
+  24: { year: '~430 a.C.', period: 'Historiografía Clásica Griega' },
+  25: { year: '~400 a.C.', period: 'Historiografía & Realismo Político Clásico' },
+  26: { year: '~300 a.C.', period: 'Geometría Clásica Alejandrina' },
+  27: { year: '~397 d.C.', period: 'Patrística & Filosofía Cristiana Antigua' },
+  28: { year: '~1078 d.C.', period: 'Escolástica Medieval (Argumento Ontológico)' },
+  29: { year: '~1270 d.C.', period: 'Escolástica Medieval & Tomismo' },
+  30: { year: '~1020 d.C.', period: 'Filosofía Islámica Clásica (Avicenismo)' },
+  31: { year: '~1190 d.C.', period: 'Filosofía Medieval Judía' },
 
-  // --- AÑO 4: Renacimiento & Revolución Científica ---
-  52: '1513 d.C.', // Maquiavelo - El Príncipe
-  53: '1517 d.C.', // Maquiavelo - Discursos sobre la primera década de Tito Livio
-  54: '1516 d.C.', // Tomás Moro - Utopía
-  55: '1543 d.C.', // Copérnico - De revolutionibus orbium coelestium
-  56: '1543 d.C.', // Vesalio - De humani corporis fabrica
-  57: '1580 d.C.', // Montaigne - Ensayos
-  58: '1605 d.C.', // Francis Bacon - El avance del saber
-  59: '1620 d.C.', // Francis Bacon - Novum Organum
-  60: '1610 d.C.', // Galileo Galilei - Sidereus Nuncius
-  61: '1632 d.C.', // Galileo Galilei - Diálogo sobre los dos máximos sistemas del mundo
-  62: '1638 d.C.', // Galileo Galilei - Discursos y demostraciones matemáticas
-  63: '1609 d.C.', // Johannes Kepler - Astronomia Nova
-  64: '1619 d.C.', // Johannes Kepler - Harmonices Mundi
-  65: '1628 d.C.', // William Harvey - De motu cordis
-  66: '1637 d.C.', // René Descartes - Discurso del método
-  67: '1641 d.C.', // René Descartes - Meditaciones metafísicas
-  68: '1651 d.C.', // Thomas Hobbes - Leviatán
+  // --- AÑO 3: Renacimiento, Revolución Científica & La Ilustración ---
+  32: { year: '~1377 d.C.', period: 'Filosofía de la Historia & Sociología Árabe' },
+  33: { year: '1513 d.C.', period: 'Renacimiento & Ciencia Política Moderna' },
+  34: { year: '1620 d.C.', period: 'Revolución Científica & Empirismo' },
+  35: { year: '1632 d.C.', period: 'Revolución Científica & Heliocentrismo' },
+  36: { year: '1637 d.C.', period: 'Racionalismo & Método Cartesiano' },
+  37: { year: '1641 d.C.', period: 'Racionalismo & Epistemología Moderna' },
+  38: { year: '1651 d.C.', period: 'Contractualismo & Filosofía Política Moderna' },
+  39: { year: '1677 d.C.', period: 'Racionalismo / Ilustración Temprana' },
+  40: { year: '1689 d.C.', period: 'Empirismo Clásico' },
+  41: { year: '1714 d.C.', period: 'Racionalismo & Filosofía Monadológica' },
+  42: { year: '1687 d.C.', period: 'Mecánica Clásica & Revolución Newtoniana' },
+  43: { year: '1748 d.C.', period: 'Empirismo & Escepticismo Ilustrado' },
+  44: { year: '1779 d.C.', period: 'La Ilustración Escocesa' },
+  45: { year: '1762 d.C.', period: 'La Ilustración & Teoría Democrática' },
+  46: { year: '1759 d.C.', period: 'Ilustración Escocesa & Filosofía Moral' },
+  47: { year: '1776 d.C.', period: 'Economía Política Clásica' },
+  48: { year: '1781 d.C.', period: 'Idealismo Trascendental (Ilustración Alemana)' },
+  49: { year: '1785 d.C.', period: 'Ética Deontológica Ilustrada' },
+  50: { year: '1790 d.C.', period: 'Estética & Teleología Ilustrada' },
 
-  // --- AÑO 5: La Ilustración & Revolución Newtoniana ---
-  69: '1677 d.C.', // Baruch Spinoza - Ética
-  70: '1670 d.C.', // Baruch Spinoza - Tratado teológico-político
-  71: '1687 d.C.', // Isaac Newton - Principia Mathematica
-  72: '1704 d.C.', // Isaac Newton - Opticks
-  73: '1689 d.C.', // John Locke - Segundo tratado sobre el gobierno civil
-  74: '1689 d.C.', // John Locke - Ensayo sobre el entendimiento humano
-  75: '1714 d.C.', // Gottfried Leibniz - Monadología
-  76: '1710 d.C.', // George Berkeley - Tratado sobre los principios del conocimiento humano
-  77: '1739 d.C.', // David Hume - Tratado de la naturaleza humana
-  78: '1748 d.C.', // David Hume - Investigación sobre el entendimiento humano
-  79: '1748 d.C.', // Montesquieu - El espíritu de las leyes
-  80: '1762 d.C.', // Jean-Jacques Rousseau - El contrato social
-  81: '1762 d.C.', // Jean-Jacques Rousseau - Emilio, o De la educación
-  82: '1776 d.C.', // Adam Smith - La riqueza de las naciones
-  83: '1759 d.C.', // Adam Smith - Teoría de los sentimientos morales
-  84: '1781 d.C.', // Immanuel Kant - Crítica de la razón pura
-  85: '1788 d.C.', // Immanuel Kant - Crítica de la razón práctica
+  // --- AÑO 4: Siglo XIX (Idealismo, Evolución, Industria & Crítica) ---
+  51: { year: '1807 d.C.', period: 'Idealismo Alemán / Siglo XIX' },
+  52: { year: '1819 d.C.', period: 'Pesimismo Filosófico / Siglo XIX' },
+  53: { year: '1859 d.C.', period: 'Liberalismo & Utilitarismo / Siglo XIX' },
+  54: { year: '1867 d.C.', period: 'Materialismo Histórico & Crítica de la Economía' },
+  55: { year: '1817 d.C.', period: 'Economía Clásica & Teoría del Valor' },
+  56: { year: '1835 d.C.', period: 'Sociología Política / Siglo XIX' },
+  57: { year: '1847 d.C.', period: 'Existencialismo Cristiano / Siglo XIX' },
+  58: { year: '1887 d.C.', period: 'Filosofía de la Sospecha / Siglo XIX' },
+  59: { year: '1886 d.C.', period: 'Crítica de la Moral / Siglo XIX' },
+  60: { year: '1859 d.C.', period: 'Biología Evolutiva & Selección Natural' },
+  61: { year: '1866 d.C.', period: 'Genética Clásica' },
+  62: { year: '1949 d.C.', period: 'Historiografía (Escuela de los Annales)' },
+  63: { year: '1907 d.C.', period: 'Pragmatismo Filosófico Americano' },
+  64: { year: '1902 d.C.', period: 'Psicología & Fenomenología Religiosa' },
+  65: { year: '1890 d.C.', period: 'Psicología Experimental Temprana' },
+  66: { year: '1905 d.C.', period: 'Sociología Clásica' },
+  67: { year: '1922 d.C.', period: 'Sociología Comprensiva' },
 
-  // --- AÑO 6: Siglo XIX, Historia, Evolución & Pensamiento Crítico ---
-  86: '1790 d.C.', // Immanuel Kant - Crítica del juicio
-  87: '1807 d.C.', // G.W.F. Hegel - Fenomenología del espíritu
-  88: '1821 d.C.', // G.W.F. Hegel - Filosofía del derecho
-  89: '1819 d.C.', // Arthur Schopenhauer - El mundo como voluntad y representación
-  90: '1970 d.C.', // Philip Curtin - Atlantic Slave Trade
-  91: '1969 d.C.', // Tulio Halperín Donghi - Historia contemporánea de América Latina
-  92: '1987 d.C.', // Paul Kennedy - The Rise and Fall of the Great Powers
-  93: '1983 d.C.', // Benedict Anderson - Comunidades imaginadas
-  94: '1988 d.C.', // Joseph Tainter - The Collapse of Complex Societies
-  95: '1959 d.C.', // Miguel León-Portilla - Visión de los vencidos
-  96: '1835 d.C.', // Alexis de Tocqueville - La democracia en América
-  97: '1859 d.C.', // John Stuart Mill - Sobre la libertad
-  98: '1861 d.C.', // John Stuart Mill - El utilitarismo
-  99: '1848 d.C.', // Karl Marx & Engels - Manifiesto Comunista
-  100: '1867 d.C.', // Karl Marx - El Capital (Tomo I)
-  101: '1883 d.C.', // Friedrich Nietzsche - Así habló Zaratustra
-  102: '1887 d.C.', // Friedrich Nietzsche - Genealogía de la moral
+  // --- AÑO 5: Siglo XX (Fenomenología, Lógica, Existencialismo & Mente) ---
+  68: { year: '1913 d.C.', period: 'Fenomenología Pura' },
+  69: { year: '1927 d.C.', period: 'Ontología Fundamental & Existencialismo' },
+  70: { year: '1921 d.C.', period: 'Filosofía Analítica & Lógica' },
+  71: { year: '1953 d.C.', period: 'Filosofía del Lenguaje Ordinario' },
+  72: { year: '1946 d.C.', period: 'Existencialismo Francés' },
+  73: { year: '1942 d.C.', period: 'Filosofía del Absurdo' },
+  74: { year: '1949 d.C.', period: 'Teoría Crítica & Feminismo Existencial' },
+  75: { year: '1946 d.C.', period: 'Psicología Humanista & Logoterapia' },
+  76: { year: '1936 d.C.', period: 'Psicología del Desarrollo Cognitivo' },
+  77: { year: '1957 d.C.', period: 'Racionalidad Limitada & Ciencias de la Decisión' },
+  78: { year: '2011 d.C.', period: 'Economía Conductual & Sesgos Cognitivos' },
+  79: { year: '2012 d.C.', period: 'Psicología Moral' },
+  80: { year: '1949 d.C.', period: 'Historia Estructural de Larga Duración' },
+  81: { year: '2002 d.C.', period: 'Historia Antigua de la India' },
+  82: { year: '1974 d.C.', period: 'Historia de la Civilización Islámica' },
+  83: { year: '1995 d.C.', period: 'Historia del Continente Africano' },
+  84: { year: '1990 d.C.', period: 'Historia de la China Moderna' },
+  85: { year: '2004 d.C.', period: 'Historia Global / Siglo XIX' },
 
-  // --- AÑO 7: Siglo XIX (Física, Termodinámica & Lógica) ---
-  103: '1859 d.C.', // Charles Darwin - El origen de las especies
-  104: '1871 d.C.', // Charles Darwin - El origen del hombre
-  105: '1866 d.C.', // Gregor Mendel - Experimentos sobre hibridación de plantas
-  106: '1824 d.C.', // Sadi Carnot - Reflexiones sobre la potencia motriz del fuego
-  107: '1850 d.C.', // Rudolf Clausius - Sobre la fuerza motriz del calor
-  108: '1873 d.C.', // James Clerk Maxwell - Tratado sobre electricidad y magnetismo
-  109: '1877 d.C.', // Ludwig Boltzmann - Sobre la relación entre la segunda ley y la probabilidad
-  110: '1879 d.C.', // Gottlob Frege - Begriffsschrift (Conceptografía)
-  111: '1884 d.C.', // Gottlob Frege - Los fundamentos de la aritmética
-  112: '1890 d.C.', // William James - Principios de psicología
-  113: '1899 d.C.', // Sigmund Freud - La interpretación de los sueños
-  114: '1880 d.C.', // Fiódor Dostoievski - Los hermanos Karamazov
-  115: '1869 d.C.', // León Tolstói - Guerra y paz
-  116: '1902 d.C.', // Henri Poincaré - La ciencia y la hipótesis
-  117: '1905 d.C.', // Henri Poincaré - El valor de la ciencia
-  118: '1910 d.C.', // Bertrand Russell & Whitehead - Principia Mathematica
-  119: '1912 d.C.', // Bertrand Russell - Los problemas de la filosofía
+  // --- AÑO 6: Historia Global, América Latina & Colapso de Sistemas ---
+  86: { year: '2009 d.C.', period: 'Historia Global del Siglo XIX' },
+  87: { year: '1962 d.C.', period: 'Historia Contemporánea (Era de la Revolución)' },
+  88: { year: '1994 d.C.', period: 'Historia del Siglo XX Corto' },
+  89: { year: '2000 d.C.', period: 'Historia Económica Comparada' },
+  90: { year: '1969 d.C.', period: 'Historia del Comercio Atlántico' },
+  91: { year: '1969 d.C.', period: 'Historiografía Latinoamericana Contemporánea' },
+  92: { year: '1987 d.C.', period: 'Geopolítica & Gran Estrategia' },
+  93: { year: '1983 d.C.', period: 'Teoría del Nacionalismo & Antropología Política' },
+  94: { year: '1988 d.C.', period: 'Sistemas Complejos & Arqueología del Colapso' },
+  95: { year: '1959 d.C.', period: 'Etnohistoria & Crónica Indígena de la Conquista' },
+  96: { year: '1632 d.C.', period: 'Crónica Virreinal Novohispana' },
+  97: { year: '1522 d.C.', period: 'Crónicas de la Conquista de México' },
+  98: { year: '1992 d.C.', period: 'Historia Cultural de la Conquista' },
+  99: { year: '1958 d.C.', period: 'Filosofía de la Historia Mexicana' },
+  100: { year: '1971 d.C.', period: 'Historia Económica Colonial Novohispana' },
+  101: { year: '2002 d.C.', period: 'Historiografía de las Identidades Mexicanas' },
+  102: { year: '1968 d.C.', period: 'Historia de las Ideas Políticas en México' },
 
-  // --- AÑO 8: Siglo XX (Física Moderna, Relatividad & Cuántica) ---
-  120: '1905 d.C.', // Albert Einstein - Sobre la electrodinámica de los cuerpos en movimiento
-  121: '1915 d.C.', // Albert Einstein - Fundamentos de la teoría de la relatividad general
-  122: '1900 d.C.', // Max Planck - Sobre la ley de distribución de energía del espectro normal
-  123: '1913 d.C.', // Niels Bohr - Sobre la constitución de átomos y moléculas
-  124: '1925 d.C.', // Werner Heisenberg - Reinterpretación mecánico-cuántica
-  125: '1926 d.C.', // Erwin Schrödinger - Cuantización como problema de valores propios
-  126: '1930 d.C.', // Paul Dirac - Principios de mecánica cuántica
-  127: '1931 d.C.', // Kurt Gödel - Sobre proposiciones formalmente indecidibles
-  128: '1921 d.C.', // Ludwig Wittgenstein - Tractatus Logico-Philosophicus
-  129: '1953 d.C.', // Ludwig Wittgenstein - Investigaciones filosóficas
-  130: '1934 d.C.', // Karl Popper - La lógica de la investigación científica
-  131: '1945 d.C.', // Karl Popper - La sociedad abierta y sus enemigos
-  132: '1962 d.C.', // Thomas Kuhn - La estructura de las revoluciones científicas
-  133: '1970 d.C.', // Imre Lakatos - La metodología de los programas de investigación científica
-  134: '1975 d.C.', // Paul Feyerabend - Contra el método
-  135: '1965 d.C.', // Richard Feynman - El carácter de la ley física
-  136: '1963 d.C.', // Richard Feynman - Lecciones de física de Feynman
+  // --- AÑO 7: Siglo XX (Guerra, Revolución & Filosofía Política) ---
+  103: { year: '1989 d.C.', period: 'Sociología Histórica de la Revolución Mexicana' },
+  104: { year: '1986 d.C.', period: 'Historia de la Revolución Mexicana' },
+  105: { year: '1972 d.C.', period: 'Análisis Político del México Contemporáneo' },
+  106: { year: '1968 d.C.', period: 'Microhistoria Mexicana' },
+  107: { year: '1950 d.C.', period: 'Ensayo & Fenomenología de la Identidad' },
+  108: { year: '2014 d.C.', period: 'Filosofía Náhuatl & Epistemología Indígena' },
+  109: { year: '2013 d.C.', period: 'Historia Política Contemporánea de México' },
+  110: { year: '1977 d.C.', period: 'Filosofía de la Liberación Latinoamericana' },
+  111: { year: '1980 d.C.', period: 'Filosofía Africana Contemporánea' },
+  112: { year: '1958 d.C.', period: 'Teoría Política / Posguerra' },
+  113: { year: '1951 d.C.', period: 'Análisis del Totalitarismo' },
+  114: { year: '1958 d.C.', period: 'Filosofía Política Analítica (Dos Libertades)' },
+  115: { year: '1971 d.C.', period: 'Teoría de la Justicia & Filosofía Política' },
+  116: { year: '2009 d.C.', period: 'Filosofía de la Justicia & Enfoque de Capacidades' },
+  117: { year: '1975 d.C.', period: 'Filosofía del Poder & Arqueología del Saber' },
+  118: { year: '1944 d.C.', period: 'Economía Institucional & Crítica del Mercado' },
+  119: { year: '1936 d.C.', period: 'Macroeconomía Keynesiana' },
+  120: { year: '1942 d.C.', period: 'Teoría Económica & Destrucción Creativa' },
 
-  // --- AÑO 9: Lógica, Computación, Información & Biología Molecular ---
-  137: '1936 d.C.', // Alan Turing - Sobre números computables con aplicación al Entscheidungsproblem
-  138: '1950 d.C.', // Alan Turing - Maquinaria computacional e inteligencia
-  139: '1948 d.C.', // Claude Shannon - Teoría matemática de la comunicación
-  140: '1948 d.C.', // Norbert Wiener - Cibernética o el control y comunicación en animales y máquinas
-  141: '1944 d.C.', // John von Neumann & Morgenstern - Teoría de juegos y comportamiento económico
-  142: '1945 d.C.', // John von Neumann - Primer borrador de un informe sobre el EDVAC
-  143: '1944 d.C.', // Erwin Schrödinger - ¿Qué es la vida?
-  144: '1953 d.C.', // Watson & Crick - Estructura molecular de los ácidos nucleicos
-  145: '1970 d.C.', // Jacques Monod - El azar y la necesidad
-  146: '1976 d.C.', // Richard Dawkins - El gen egoísta
-  147: '1985 d.C.', // David Deutsch - Teoría cuántica, principio de Church-Turing y computadoras universales
-  148: '1979 d.C.', // Douglas Hofstadter - Gödel, Escher, Bach: un Eterno y Grácil Bucle
-  149: '1957 d.C.', // Noam Chomsky - Estructuras sintácticas
-  150: '1969 d.C.', // Herbert Simon - Las ciencias de lo artificial
-  151: '1971 d.C.', // John Rawls - Teoría de la justicia
-  152: '1974 d.C.', // Robert Nozick - Anarquía, estado y utopía
-  153: '1981 d.C.', // Alasdair MacIntyre - Tras la virtud
+  // --- AÑO 8: Epistemología, Economía & Ciencias Naturales Modernas ---
+  121: { year: '1973 d.C.', period: 'Filosofía Jurídica & Orden Espontáneo' },
+  122: { year: '1962 d.C.', period: 'Economía Neoliberal / Monetarismo' },
+  123: { year: '1990 d.C.', period: 'Nueva Economía Institucional' },
+  124: { year: '1990 d.C.', period: 'Gobernanza de Recursos Comunes (Nobel)' },
+  125: { year: '2013 d.C.', period: 'Economía de la Desigualdad' },
+  126: { year: '2012 d.C.', period: 'Economía Política & Desarrollo Institucional' },
+  127: { year: '1934 d.C.', period: 'Filosofía de la Ciencia (Falsacionismo)' },
+  128: { year: '1962 d.C.', period: 'Filosofía de la Ciencia (Paradigmas)' },
+  129: { year: '1970 d.C.', period: 'Metodología de Programas Científicos' },
+  130: { year: '1975 d.C.', period: 'Anarquismo Epistemológico' },
+  131: { year: '1944 d.C.', period: 'Biofísica & Origen Físico de la Vida' },
+  132: { year: '1970 d.C.', period: 'Biología Molecular & Epistemología' },
+  133: { year: '1916 d.C.', period: 'Física Moderna (Relatividad Especial y General)' },
+  134: { year: '1965 d.C.', period: 'Física Cuántica & Epistemología' },
+  135: { year: '1962 d.C.', period: 'Ecología Moderna & Medio Ambiente' },
+  136: { year: '2017 d.C.', period: 'Energía & Dinámica de la Civilización' },
 
-  // --- AÑO 10: Sistemas Complejos, Cognición, IA & Antifragilidad ---
-  154: '1963 d.C.', // Edward Lorenz - Flujo determinista no periódico (Efecto Mariposa)
-  155: '1972 d.C.', // Philip W. Anderson - More Is Different (Emergencia)
-  156: '1977 d.C.', // Ilya Prigogine - Estructuras disipativas y autoorganización
-  157: '1982 d.C.', // John Hopfield - Redes neuronales y sistemas físicos
-  158: '1986 d.C.', // Rumelhart, Hinton & Williams - Aprendizaje de representaciones por retropropagación
-  159: '1998 d.C.', // Watts & Strogatz - Dinámica colectiva de redes de mundo pequeño
-  160: '1999 d.C.', // Barabási & Albert - Emergencia del escalamiento en redes aleatorias
-  161: '1974 d.C.', // Amos Tversky & Daniel Kahneman - Juicio bajo incertidumbre: heurísticas y sesgos
-  162: '2011 d.C.', // Daniel Kahneman - Pensar rápido, pensar despacio
-  163: '1995 d.C.', // Antonio Damasio - El error de Descartes
-  164: '1998 d.C.', // Andy Clark & David Chalmers - La mente extendida
-  165: '2007 d.C.', // Nassim Nicholas Taleb - El cisne negro
-  166: '2012 d.C.', // Nassim Nicholas Taleb - Antifrágil: las cosas que se benefician del desorden
-  167: '1997 d.C.', // Jared Diamond - Armas, gérmenes y acero
-  168: '2011 d.C.', // Steven Pinker - Los ángeles que llevamos dentro
-  169: '2018 d.C.', // Judea Pearl - El libro del porqué: la nueva ciencia de la causa y el efecto
-  170: '2020 d.C.'  // Stuart Russell - Compatible con humanos: la IA y el problema del control
+  // --- AÑO 9: Lógica Matemática, Computación, IA & Mente ---
+  137: { year: '1931 d.C.', period: 'Lógica Matemática (Teoremas de Incompletitud)' },
+  138: { year: '1936 d.C.', period: 'Computación Teórica (Máquina de Turing)' },
+  139: { year: '1948 d.C.', period: 'Teoría Matemática de la Información' },
+  140: { year: '1948 d.C.', period: 'Cibernética & Teoría del Control' },
+  141: { year: '1985 d.C.', period: 'Estructura e Interpretación de Programas (MIT)' },
+  142: { year: '2018 d.C.', period: 'Causalidad & Razonamiento Inferencial' },
+  143: { year: '1995 d.C.', period: 'Inteligencia Artificial Clásica y Moderna' },
+  144: { year: '2016 d.C.', period: 'Física Teórica & Filosofía Natural' },
+  145: { year: '2015 d.C.', period: 'Redes Neuronales Artificiales & Deep Learning' },
+  146: { year: '1979 d.C.', period: 'Ciencia Cognitiva & Lógica Recursiva (GEB)' },
+  147: { year: '1986 d.C.', period: 'Arquitectura de la Mente & Inteligencia Artificial' },
+  148: { year: '2014 d.C.', period: 'Neurociencia de la Conciencia' },
+  149: { year: '1998 d.C.', period: 'Filosofía de la Mente & Cognición Extendida' },
+  150: { year: '1974 d.C.', period: 'Filosofía de la Mente & Subjetividad' },
+  151: { year: '1995 d.C.', period: 'El Problema Difícil de la Conciencia' },
+  152: { year: '1984 d.C.', period: 'Identidad Personal & Ética Normativa' },
+  153: { year: '1953 d.C.', period: 'Filosofía Analítica & Epistemología Naturalizada' },
+
+  // --- AÑO 10: Sistemas Complejos, Redes, Antifragilidad & Futuro ---
+  154: { year: '1972 d.C.', period: 'Lógica Modal & Filosofía del Lenguaje' },
+  155: { year: '1960 d.C.', period: 'Hermenéutica Filosófica' },
+  156: { year: '2008 d.C.', period: 'Pensamiento Sistémico & Cibernética Aplicada' },
+  157: { year: '1968 d.C.', period: 'Teoría General de Sistemas' },
+  158: { year: '2009 d.C.', period: 'Ciencia de la Complejidad' },
+  159: { year: '2003 d.C.', period: 'Sincronización & Dinámica No Lineal' },
+  160: { year: '2017 d.C.', period: 'Leyes de Escalamiento Biológico y Urbano' },
+  161: { year: '2007 d.C.', period: 'Epistemología de la Incertidumbre (Cisne Negro)' },
+  162: { year: '2012 d.C.', period: 'Sistemas Complejos & Antifragilidad' },
+  163: { year: '~500 a.C.', period: 'Estrategia Clásica Oriental' },
+  164: { year: '1832 d.C.', period: 'Filosofía de la Estrategia & Teoría de la Guerra' },
+  165: { year: '1944 d.C.', period: 'Teoría de Juegos & Modelado Estratégico' },
+  166: { year: '1960 d.C.', period: 'Estrategia del Conflicto & Teoría de Negociación' },
+  167: { year: '1989 d.C.', period: 'Sociología de la Modernidad Líquida' },
+  168: { year: '1998 d.C.', period: 'Consiliencia & Unificación del Conocimiento' },
+  169: { year: '1990 d.C.', period: 'Organizaciones de Aprendizaje & Pensamiento Sistémico' },
+  170: { year: '1995 d.C.', period: 'Evolución de la Mente & Conciencia Darwiniana' }
 };
 
-export function getWorkPublicationYear(workNumber: number): string {
-  if (HISTORICAL_YEAR_MAP[workNumber]) {
-    return HISTORICAL_YEAR_MAP[workNumber];
+export function getWorkHistoricalData(workNumber: number): WorkYearInfo {
+  const data = HISTORICAL_WORKS_DATA[workNumber];
+  if (data) {
+    return {
+      year: data.year,
+      period: data.period,
+      badgeText: `✍️ ${data.year} · ${data.period}`
+    };
   }
-  return 'Época histórica';
+  return {
+    year: 'Fecha histórica',
+    period: 'Canon Interdisciplinario',
+    badgeText: '✍️ Canon Interdisciplinario'
+  };
+}
+
+export function getWorkPublicationYear(workNumber: number): string {
+  return getWorkHistoricalData(workNumber).badgeText;
 }
