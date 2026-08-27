@@ -183,6 +183,7 @@ export default function SaberClient({
   const [newPosition, setNewPosition] = useState('');
   const [newConfidence, setNewConfidence] = useState(75);
   const [newArgument, setNewArgument] = useState('');
+  const [newFalsationCriteria, setNewFalsationCriteria] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -199,6 +200,7 @@ export default function SaberClient({
           positionSummary: newPosition,
           confidence: newConfidence,
           argument: newArgument,
+          falsationCriteria: newFalsationCriteria,
         }),
       });
       const data = await res.json();
@@ -209,6 +211,7 @@ export default function SaberClient({
           setShowNewPositionModal(false);
           setNewPosition('');
           setNewArgument('');
+          setNewFalsationCriteria('');
         }, 1500);
       }
     } catch (err) {
@@ -631,8 +634,21 @@ export default function SaberClient({
                 type="text"
                 value={newArgument}
                 onChange={(e) => setNewArgument(e.target.value)}
-                placeholder="Ej. Falsificación de Popper..."
+                placeholder="Ej. Evidencia empírica, lógica o estudio..."
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-purple-300 mb-1 font-mono">
+                🔬 Criterio de Falsación (Karl Popper):
+              </label>
+              <textarea
+                rows={2}
+                value={newFalsationCriteria}
+                onChange={(e) => setNewFalsationCriteria(e.target.value)}
+                placeholder="¿Qué hecho, descubrimiento o evidencia concreta demostraría que tu postura actual es errónea?"
+                className="w-full bg-slate-950 border border-purple-800/40 rounded-xl p-2.5 text-xs text-purple-200 font-mono focus:outline-none focus:border-purple-400 placeholder:text-slate-600"
               />
             </div>
 

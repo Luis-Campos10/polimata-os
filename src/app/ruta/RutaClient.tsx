@@ -363,15 +363,25 @@ export default function RutaClient({
 
             <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
               <div>
-                <strong className="text-slate-200 text-[11px] uppercase font-bold block">Prescripción de Lectura:</strong>
+                <strong className="text-slate-200 text-[11px] uppercase font-bold block font-mono">Prescripción de Lectura:</strong>
                 <p className="leading-relaxed mt-0.5">{selectedWork.prescribedReading}</p>
               </div>
 
-              <div className="pt-2 border-t border-slate-900 flex justify-between items-center text-[11px]">
+              <div className="pt-2 border-t border-slate-900 flex justify-between items-center text-[11px] font-mono">
                 <span className="text-slate-400">Preguntas Primarias:</span>
-                <span className="font-mono text-purple-300 font-bold">
+                <span className="text-purple-300 font-bold">
                   {selectedWork.primaryQuestionsJson ? JSON.parse(selectedWork.primaryQuestionsJson).join(', ') : ''}
                 </span>
+              </div>
+
+              {/* PUENTE TRANSDISCIPLINAR (DIÁLOGO ENTRE SIGLOS) */}
+              <div className="pt-2 border-t border-slate-900 text-[11px] space-y-1">
+                <span className="text-sky-400 font-bold font-mono flex items-center gap-1">
+                  🌐 Puente Transdisciplinar:
+                </span>
+                <p className="text-slate-400 text-[11px] leading-relaxed">
+                  Esta obra conecta directamente con las preguntas ontológicas y epistemológicas analizadas en el <strong className="text-slate-200">Question Ledger</strong> y en el <strong className="text-slate-200">Grafo de Conocimiento</strong>.
+                </p>
               </div>
             </div>
 

@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { questionId, positionSummary, confidence, argument } = body;
+    const { questionId, positionSummary, confidence, argument, falsationCriteria } = body;
 
     if (!questionId || !positionSummary) {
       return NextResponse.json({ error: 'Faltan parámetros requeridos' }, { status: 400 });
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       positionSummary,
       confidence: Number(confidence) || 75,
       argumentsJson: argument ? JSON.stringify([argument]) : JSON.stringify([]),
-      objectionsJson: JSON.stringify([]),
+      objectionsJson: falsationCriteria ? JSON.stringify([falsationCriteria]) : JSON.stringify([]),
       evidenceJson: JSON.stringify([]),
       createdAt,
     });
