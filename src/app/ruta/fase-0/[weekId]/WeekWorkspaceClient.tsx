@@ -217,9 +217,18 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
     restoreLastReadingPosition();
   }, [week.id]);
 
-  const restoreLastReadingPosition = () => {
+  const restoreLastReadingPosition = async () => {
     try {
       if (typeof window === 'undefined') return;
+      // 1. Cargar permanentemente desde IndexedDB
+      const localPdfs = await getPdfsFromIndexedDb(week.id);
+      if (localPdfs && localPdfs.length > 0) {
+        setPdfBlobUrl(localPdfs[0].filePath);
+        setPdfFileName(localPdfs[0].fileName);
+        return;
+      }
+
+      // 2. Cargar desde localStorage como respaldo
       const key = `polimata_last_reading_${week.id}`;
       const savedState = localStorage.getItem(key);
       if (savedState) {
@@ -227,7 +236,6 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
         if (parsed.filePath && parsed.fileName) {
           setPdfBlobUrl(parsed.filePath);
           setPdfFileName(parsed.fileName);
-          setShowPdfViewer(true);
         }
       }
     } catch (e) {}
@@ -1219,10 +1227,40 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <label className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg border border-emerald-400/30 flex items-center gap-1 cursor-pointer shadow">
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>📂 Seleccionar PDF</span>
+              <div className="flex items-center space-x-1.5 flex-wrap gap-1">
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
+                  className="px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
+                  title="Abrir Diccionario y Glosario"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Diccionario</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowFullGuideQuestionsModal(true)}
+                  className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
+                  title="Ver Preguntas Guía"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                  <span>Preguntas</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowFullExtractorModal(true)}
+                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg transition flex items-center gap-1 shadow cursor-pointer"
+                  title="Abrir Extractor de Citas"
+                >
+                  <Quote className="w-3.5 h-3.5" />
+                  <span>Extractor</span>
+                </button>
+
+                <label className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold rounded-lg border border-slate-700 flex items-center gap-1 cursor-pointer shadow">
+                  <Upload className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Subir PDF</span>
                   <input
                     type="file"
                     accept="application/pdf"
@@ -1231,17 +1269,10 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   />
                 </label>
 
-                <input
-                  type="text"
-                  placeholder="O pega un enlace de PDF web..."
-                  value={pdfUrl}
-                  onChange={(e) => setPdfUrl(e.target.value)}
-                  className="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 font-mono w-40 sm:w-56"
-                />
                 <button
                   type="button"
                   onClick={() => setShowPdfViewer(false)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg cursor-pointer"
+                  className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 rounded-lg cursor-pointer border border-rose-500/30"
                   title="Salir de Pantalla Completa"
                 >
                   <X className="w-4 h-4" />
