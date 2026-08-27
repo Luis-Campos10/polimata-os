@@ -305,22 +305,22 @@ export default function SaberClient({
 
       {/* MODAL 2: GRAFO DE CONOCIMIENTO 2D VISUAL */}
       {showGraphModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-[100000] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full max-h-[96vh] overflow-y-auto p-4 sm:p-6 space-y-3 shadow-2xl relative">
             <button
               type="button"
               onClick={() => setShowGraphModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 z-20"
+              className="absolute top-3.5 right-3.5 text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 z-20 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="space-y-1">
-              <div className="flex items-center space-x-2 text-sky-400 text-xs font-bold uppercase">
+              <div className="flex items-center space-x-2 text-sky-400 text-xs font-bold uppercase font-mono">
                 <Network className="w-4 h-4" />
                 <span>Visualizador Gráfico 2D del Grafo</span>
               </div>
-              <h2 className="text-xl font-bold text-slate-100">Grafo de Conocimiento Interactivo (2D Canvas)</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-100">Grafo de Conocimiento Interactivo (2D Canvas)</h2>
               <p className="text-xs text-slate-400">
                 Arrastra los nodos, filtra por tipo y agrega nuevas conexiones persistentes en SQLite.
               </p>

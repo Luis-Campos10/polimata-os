@@ -126,12 +126,15 @@ export default function MobilePdfCanvasViewer({
         const page = await pdfDoc.getPage(currentPage);
         const canvas = canvasRef.current;
         if (!canvas) return;
-
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        const currentScale = isLandscapeForced ? scale * 1.3 : scale;
-        const viewport = page.getViewport({ scale: currentScale });
+        const containerWidth = canvas.parentElement?.clientWidth || window.innerWidth || 360;
+        const unscaledViewport = page.getViewport({ scale: 1.0 });
+        const autoFitScale = (containerWidth - 24) / unscaledViewport.width;
+        const effectiveScale = isLandscapeForced ? scale * 1.4 : scale * Math.max(0.85, Math.min(1.8, autoFitScale));
+
+        const viewport = page.getViewport({ scale: effectiveScale });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
