@@ -140,11 +140,55 @@ export default function SaberClient({
                 Visualiza {nodes.length} nodos y {edges.length} relaciones en un lienzo 2D interactivo.
               </p>
               <span className="inline-flex items-center text-[11px] font-semibold text-sky-400 pt-1">
-                Abrir lienzo gráfico 2D <ArrowRight className="w-3 h-3 ml-1" />
+                Abrir Grafo 2D <ArrowRight className="w-3 h-3 ml-1" />
               </span>
             </div>
           </div>
         </button>
+
+        <a
+          href="/multimedia"
+          className="group text-left p-5 bg-purple-950/40 hover:bg-purple-950/70 rounded-2xl border border-purple-800/40 transition-all duration-300 shadow-md active:scale-98"
+        >
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-xl group-hover:scale-105 transition-transform">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+                🎬 Polímata Multimedia
+              </h3>
+              <p className="text-xs text-slate-300">
+                Anime científico, documentales y cine de pensamiento crítico analizados con guía socrática.
+              </p>
+              <span className="inline-flex items-center text-[11px] font-semibold text-purple-300 pt-1">
+                Explorar Catálogo <ArrowRight className="w-3 h-3 ml-1" />
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <a
+          href="/lecturas-nocturnas"
+          className="group text-left p-5 bg-amber-950/30 hover:bg-amber-950/60 rounded-2xl border border-amber-800/40 transition-all duration-300 shadow-md active:scale-98"
+        >
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded-xl group-hover:scale-105 transition-transform">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-amber-200 group-hover:text-amber-100 transition-colors">
+                🌙 Lecturas Nocturnas
+              </h3>
+              <p className="text-xs text-amber-300/80">
+                Meditaciones estoicas y reflexiones filosóficas nocturnas con filtro cálido sin luz azul.
+              </p>
+              <span className="inline-flex items-center text-[11px] font-semibold text-amber-300 pt-1">
+                Abrir Lecturas <ArrowRight className="w-3 h-3 ml-1" />
+              </span>
+            </div>
+          </div>
+        </a>
       </div>
 
       {/* Sección Las 18 Grandes Preguntas */}

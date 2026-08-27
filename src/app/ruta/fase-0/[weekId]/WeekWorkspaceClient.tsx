@@ -7,7 +7,9 @@ import { ArrowLeft, Clock, CheckCircle2, Lock, Unlock, Play, ShieldAlert, Award,
 
 import MarkdownEditor from '@/components/MarkdownEditor';
 import FocusTimer from '@/components/FocusTimer';
+import MobilePdfCanvasViewer from '@/components/MobilePdfCanvasViewer';
 import { savePdfToIndexedDb, getPdfsFromIndexedDb, deletePdfFromIndexedDb } from '@/lib/pdfIndexedDb';
+
 
 
 interface WeekData {
@@ -745,9 +747,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                   const execUrl = getExecutablePdfUrl(pdfBlobUrl);
                   if (!execUrl) return null;
                   return (
-                    <object data={execUrl} type="application/pdf" className="w-full h-full">
-                      <iframe src={execUrl} className="w-full h-full" title="Visor Lector PDF Integrado Abajo" />
-                    </object>
+                    <MobilePdfCanvasViewer pdfUrl={execUrl} fileName={pdfFileName || 'PDF'} />
                   );
                 })()}
               </div>
@@ -1273,20 +1273,7 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
                 }
                 return (
                   <div className="w-full h-full relative flex flex-col">
-                    <div className="p-2 bg-slate-900 border-b border-slate-800 flex justify-between items-center text-xs shrink-0">
-                      <span className="text-emerald-300 font-mono text-[11px] truncate max-w-xs">{pdfFileName || 'Documento PDF'}</span>
-                      <button
-                        type="button"
-                        onClick={() => window.open(execUrl, '_blank')}
-                        className="px-2.5 py-1 bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 text-[11px] font-bold rounded border border-sky-500/40 cursor-pointer"
-                      >
-                        ↗️ Abrir en Pestaña Completa
-                      </button>
-                    </div>
-                    <object data={execUrl} type="application/pdf" className="w-full flex-1 rounded-b-lg border border-slate-800">
-                      <embed src={execUrl} type="application/pdf" className="w-full h-full" />
-                      <iframe src={execUrl} className="w-full h-full" title="Visor PDF Modal" />
-                    </object>
+                    <MobilePdfCanvasViewer pdfUrl={execUrl} fileName={pdfFileName || 'Documento PDF'} />
                   </div>
                 );
               })()}

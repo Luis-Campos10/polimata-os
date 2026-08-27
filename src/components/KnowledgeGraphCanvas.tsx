@@ -206,18 +206,18 @@ export default function KnowledgeGraphCanvas({
 
   return (
     <div className="space-y-4">
-      {/* Barra de Filtros, Búsqueda y Controles del Grafo */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900 p-3 rounded-2xl border border-slate-800">
-        <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
-          <Filter className="w-4 h-4 text-slate-400 shrink-0 mr-1" />
+      {/* FILTROS Y CONTROLES DEL GRAFO */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900 p-3 rounded-2xl border border-slate-800">
+        <div className="flex items-center space-x-1 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 font-mono text-xs no-scrollbar">
+          <Filter className="w-4 h-4 text-sky-400 mr-1 shrink-0" />
           {['ALL', 'Author', 'Work', 'Concept', 'Question'].map((type) => (
             <button
               key={type}
               type="button"
               onClick={() => setSelectedType(type)}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer ${
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                 selectedType === type
-                  ? 'bg-sky-600 text-white shadow'
+                  ? 'bg-sky-600 text-white'
                   : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
               }`}
             >
@@ -226,22 +226,21 @@ export default function KnowledgeGraphCanvas({
           ))}
         </div>
 
-        {/* Buscador y Controles de Zoom */}
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
           <input
             type="text"
             placeholder="Buscar nodo..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1 text-xs text-slate-200 focus:outline-none focus:border-sky-500 w-36"
+            className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-100 placeholder-slate-500 focus:outline-none w-28 sm:w-36 font-mono"
           />
 
-          <div className="flex bg-slate-950 rounded-xl border border-slate-800 p-0.5 text-xs">
+          <div className="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-xl border border-slate-800">
             <button
               type="button"
               onClick={() => setZoom((z) => Math.min(2.5, z + 0.2))}
               title="Acercar (+)"
-              className="px-2 py-1 hover:bg-slate-800 text-slate-300 font-bold rounded cursor-pointer"
+              className="px-1.5 py-0.5 hover:bg-slate-800 text-slate-300 font-bold rounded cursor-pointer text-xs"
             >
               +
             </button>
@@ -249,7 +248,7 @@ export default function KnowledgeGraphCanvas({
               type="button"
               onClick={() => { setZoom(1); setPanOffset({ x: 0, y: 0 }); }}
               title="Restablecer vista"
-              className="px-2 py-1 hover:bg-slate-800 text-slate-400 font-mono text-[10px] rounded cursor-pointer"
+              className="px-1.5 py-0.5 hover:bg-slate-800 text-slate-400 font-mono text-[10px] rounded cursor-pointer"
             >
               100%
             </button>
@@ -257,27 +256,29 @@ export default function KnowledgeGraphCanvas({
               type="button"
               onClick={() => setZoom((z) => Math.max(0.5, z - 0.2))}
               title="Alejar (-)"
-              className="px-2 py-1 hover:bg-slate-800 text-slate-300 font-bold rounded cursor-pointer"
+              className="px-1.5 py-0.5 hover:bg-slate-800 text-slate-300 font-bold rounded cursor-pointer text-xs"
             >
               -
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowAddNodeModal(true)}
-            className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" /> Nodo
-          </button>
+          <div className="flex items-center space-x-1.5">
+            <button
+              type="button"
+              onClick={() => setShowAddNodeModal(true)}
+              className="px-2.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" /> Nodo
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setShowAddEdgeModal(true)}
-            className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow cursor-pointer"
-          >
-            <Zap className="w-3.5 h-3.5" /> Conectar
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowAddEdgeModal(true)}
+              className="px-2.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow cursor-pointer"
+            >
+              <Zap className="w-3.5 h-3.5" /> Conectar
+            </button>
+          </div>
         </div>
       </div>
 
