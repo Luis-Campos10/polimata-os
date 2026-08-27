@@ -98,6 +98,8 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
   const [suggestedNodes, setSuggestedNodes] = useState<Array<{ label: string; nodeType: string; description: string }>>([]);
   const [insertedNodesSuccess, setInsertedNodesSuccess] = useState(false);
   const [quoteInsertedToast, setQuoteInsertedToast] = useState(false);
+  const [showFullGuideQuestionsModal, setShowFullGuideQuestionsModal] = useState(false);
+  const [showFullExtractorModal, setShowFullExtractorModal] = useState(false);
 
   // Función para dictado por voz (Speech Recognition API)
   const toggleVoiceRecording = () => {
@@ -1386,6 +1388,119 @@ export default function WeekWorkspaceClient({ week }: { week: WeekData }) {
               </div>
             </div>
           </div>
+
+          {/* BARRA FLOTANTE DE CONTROL DE LECTURA (1-CLIC DICCIONARIO, PREGUNTAS, EXTRACTOR, FLASHCARDS) */}
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[99999] bg-slate-950/90 backdrop-blur-md border border-purple-500/40 rounded-full px-3 py-2 shadow-2xl flex items-center space-x-2 text-xs">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('polimata_search_word', { detail: ' ' }))}
+              className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Diccionario</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFullGuideQuestionsModal(true)}
+              className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>Preguntas</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFullExtractorModal(true)}
+              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer text-[11px]"
+            >
+              <Quote className="w-3.5 h-3.5" />
+              <span>Extractor</span>
+            </button>
+          </div>
+
+          {/* MODAL OVERLAY PREGUNTAS GUÍA SOBRE EL PDF */}
+          {showFullGuideQuestionsModal && (
+            <div className="fixed inset-0 z-[100000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div className="bg-slate-950 border border-sky-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative max-h-[80vh] overflow-y-auto">
+                <button
+                  type="button"
+                  onClick={() => setShowFullGuideQuestionsModal(false)}
+                  className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+                >
+                  ✕
+                </button>
+                <div className="flex items-center space-x-2 text-sky-400">
+                  <HelpCircle className="w-5 h-5" />
+                  <h3 className="text-base font-bold text-white">Preguntas Guía de la Semana</h3>
+                </div>
+                <div className="space-y-2.5">
+                  {guideQuestions.map((q, idx) => (
+                    <div key={idx} className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-200 space-y-1">
+                      <div className="flex justify-between items-start">
+                        <strong className="text-sky-300 font-mono text-[10px]">Pregunta {idx + 1}:</strong>
+                        <button type="button" onClick={() => speakText(q)} className="text-slate-400 hover:text-sky-300">
+                          <Volume2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <p className="leading-relaxed">{q}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL OVERLAY EXTRACTOR DE CITAS SOBRE EL PDF */}
+          {showFullExtractorModal && (
+            <div className="fixed inset-0 z-[100000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div className="bg-slate-950 border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+                <button
+                  type="button"
+                  onClick={() => setShowFullExtractorModal(false)}
+                  className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+                >
+                  ✕
+                </button>
+                <div className="flex items-center space-x-2 text-emerald-400">
+                  <Quote className="w-5 h-5" />
+                  <h3 className="text-base font-bold text-white">Extractor de Citas al Borrador</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-slate-300">Copia cualquier texto del PDF o portapapeles:</span>
+                    <button
+                      type="button"
+                      onClick={handlePasteClipboardQuote}
+                      className="px-2.5 py-1 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-bold rounded border border-emerald-500/40 cursor-pointer flex items-center gap-1"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Pegar 1-Clic</span>
+                    </button>
+                  </div>
+                  <textarea
+                    rows={4}
+                    placeholder="Escribe o pega aquí la cita del libro..."
+                    value={pdfQuoteText}
+                    onChange={(e) => setPdfQuoteText(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleInsertPdfQuoteToDeliverable();
+                      setShowFullExtractorModal(false);
+                    }}
+                    disabled={!pdfQuoteText.trim()}
+                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
+                  >
+                    Insertar Cita en Entregable .MD
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       )}
     </main>

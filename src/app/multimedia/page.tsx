@@ -92,6 +92,149 @@ const MEDIA_CATALOG: MediaItem[] = [
       '¿Puede el conocimiento ser éticamente neutro?'
     ],
     coverGradient: 'from-rose-900 to-slate-900 border-rose-500/40'
+  },
+  {
+    id: 'M07',
+    title: 'Vinland Saga',
+    category: 'Anime',
+    discipline: 'Ética Estoica, Violencia & Filosofía Política',
+    description: 'Un joven vikingo busca venganza pero descubre la filosofía de la no-violencia y la búsqueda de una sociedad justa sin esclavitud.',
+    whatToObserve: 'Contrasta la ética de la fuerza bruta con el pacifismo activo de Thorfinn y la filosofía de Canuto sobre el amor divino.',
+    socraticQuestions: [
+      '¿Es la venganza un acto de justicia o una prisión psicológica?',
+      '¿Qué constituye a un "verdadero guerrero" en sentido socrático?'
+    ],
+    coverGradient: 'from-amber-950 to-slate-900 border-amber-600/40'
+  },
+  {
+    id: 'M08',
+    title: 'Ghost in the Shell: Stand Alone Complex',
+    category: 'Anime',
+    discipline: 'Posthumanismo, Filosofía de la Mente & Ciberseguridad',
+    description: 'En una sociedad donde la mente (Ghost) se conecta a cuerpos sintéticos (Shell), la mayor Kusanagi investiga crímenes informáticos e identidad.',
+    whatToObserve: 'Analiza el concepto de "fenómeno emergente no planificado" en el episodio de los Laughing Man.',
+    socraticQuestions: [
+      'Si se reemplazan todos tus recuerdos con datos digitales, ¿sigues siendo la misma persona?',
+      '¿Dónde reside la frontera entre el organismo y la herramienta?'
+    ],
+    coverGradient: 'from-cyan-950 to-slate-900 border-cyan-500/40'
+  },
+  {
+    id: 'M09',
+    title: 'Monster (Naoki Urasawa)',
+    category: 'Anime',
+    discipline: 'Psicología Forense, Ética Médica & Existencialismo',
+    description: 'El neurocirujano Kenzo Tenma salva la vida de un niño que años más tarde se convierte en un sociópata brillante.',
+    whatToObserve: 'Examina el imperativo categórico kantiano: "Todas las vidas humanas tienen valor equivalente".',
+    socraticQuestions: [
+      '¿Tiene un médico el deber de salvar a cualquier paciente sin juzgar sus actos futuros?',
+      '¿Nace el monstruo por naturaleza o por condicionamiento psicológico?'
+    ],
+    coverGradient: 'from-slate-950 to-slate-900 border-slate-700/60'
+  },
+  {
+    id: 'M10',
+    title: 'Serial Experiments Lain',
+    category: 'Anime',
+    discipline: 'Ontología, Redes Digitales & Solipsismo',
+    description: 'Una joven solitaria explora "The Wired", la red informática global, donde las fronteras entre realidad y conciencia se disuelven.',
+    whatToObserve: 'Observa la profecía de 1998 sobre las redes sociales, la conciencia colectiva y la memoria digital.',
+    socraticQuestions: [
+      'Si una persona existe solo en la memoria de los demás, ¿está viva?',
+      '¿Es la red un reflejo o un sustituto de la realidad empírica?'
+    ],
+    coverGradient: 'from-teal-950 to-slate-900 border-teal-500/40'
+  },
+  {
+    id: 'M11',
+    title: 'The Ascent of Man (Jacob Bronowski)',
+    category: 'Documental',
+    discipline: 'Historia de la Ciencia & Antropología',
+    description: 'Serie documental seminal de la BBC que recorre la evolución del conocimiento humano desde la agricultura hasta la física nuclear.',
+    whatToObserve: 'Presta atención al episodio en Göttingen y Auschwitz: la advertencia de Bronowski sobre el dogmatismo absoluto.',
+    socraticQuestions: [
+      '¿Por qué el conocimiento científico requiere la duda constante frente al dogma?',
+      '¿Cómo el dominio del fuego y la geometría transformó la mente humana?'
+    ],
+    coverGradient: 'from-amber-900 to-slate-900 border-amber-500/40'
+  },
+  {
+    id: 'M12',
+    title: 'Connections (James Burke)',
+    category: 'Documental',
+    discipline: 'Pensamiento Interdisciplinario & Grafo de Invenciones',
+    description: 'Demuestra cómo inventos aparentemente desconectados en la historia se unen para generar revoluciones tecnológicas no anticipadas.',
+    whatToObserve: 'Observa cómo la rueda de agua condujo a la imprenta, las tarjetas perforadas y la computadora moderna.',
+    socraticQuestions: [
+      '¿Existen descubrimientos aislados o todo avance es un nodo en una red previa?',
+      '¿Por qué el polímata conecta ideas mejor que el especialista aislado?'
+    ],
+    coverGradient: 'from-sky-950 to-slate-900 border-sky-500/40'
+  },
+  {
+    id: 'M13',
+    title: 'Mind Field (Michael Stevens / Vsauce)',
+    category: 'Documental',
+    discipline: 'Psicología Cognitiva & Neurociencia',
+    description: 'Experimentos rigurosos sobre aislamiento sensorial, ilusión de libre albedrío, la obediencia y la memoria falsa.',
+    whatToObserve: 'Examina la maleabilidad de la memoria humana y la facilidad con que se implantan falsos recuerdos.',
+    socraticQuestions: [
+      '¿Es fiable nuestra propia memoria autobiográfica sin registros externos?',
+      '¿Hasta qué punto la autoridad altera el juicio ético personal?'
+    ],
+    coverGradient: 'from-violet-950 to-slate-900 border-violet-500/40'
+  },
+  {
+    id: 'M14',
+    title: 'Good Will Hunting (La Mente Indomable)',
+    category: 'Pelicula',
+    discipline: 'Genio Autodidacta, Matemáticas & Psicología',
+    description: 'Un joven conserje con inteligencia matemática prodigiosa aprende a superar traumas mediante la honestidad emocional con su terapeuta.',
+    whatToObserve: 'Compara la lectura memorística de libros con la experiencia viva y la calibración emocional.',
+    socraticQuestions: [
+      '¿Es suficiente la erudición teórica sin experiencia humana vivida?',
+      '¿Qué distingue el talento bruto de la maestría cultivada?'
+    ],
+    coverGradient: 'from-emerald-950 to-slate-900 border-emerald-500/40'
+  },
+  {
+    id: 'M15',
+    title: 'Blade Runner (1982 / Ridley Scott)',
+    category: 'Pelicula',
+    discipline: 'Filosofía Existencial, Empatía & Posthumanismo',
+    description: 'Un cazador de androides Replicantes cuestiona su propia humanidad al enfrentar a seres creados artificialmente que anhelan vivir.',
+    whatToObserve: 'Analiza el famoso monólogo "Lágrimas en la lluvia" de Roy Batty y la prueba Voight-Kampff de empatía.',
+    socraticQuestions: [
+      '¿Qué define a un ser humano: la biología o la capacidad de sentir empatía y amar?',
+      '¿Es la mortalidad la condición que otorga significado a la vida?'
+    ],
+    coverGradient: 'from-rose-950 to-slate-900 border-rose-500/40'
+  },
+  {
+    id: 'M16',
+    title: 'Primer (Shane Carruth)',
+    category: 'Pelicula',
+    discipline: 'Física Teórica, Lógica Causal & Paradojas',
+    description: 'Dos ingenieros descubren accidentalmente cómo construir un bucle temporal en un garaje, enfrentando contradicciones lógicas complejas.',
+    whatToObserve: 'Examina la coherencia lógica de las líneas temporales y las fallas de comunicación humana.',
+    socraticQuestions: [
+      '¿Se puede alterar el pasado sin destruir la causalidad del presente?',
+      '¿Por qué el secreto y la ambición destruyen las alianzas científicas?'
+    ],
+    coverGradient: 'from-zinc-900 to-slate-900 border-zinc-700/60'
+  },
+  {
+    id: 'M17',
+    title: 'Gattaca (Andrew Niccol)',
+    category: 'Pelicula',
+    discipline: 'Genética, Bioética & Determinismo',
+    description: 'En una sociedad donde los hijos son seleccionados genéticamente, un joven concebido naturalmente desafía el sistema para ser astronauta.',
+    whatToObserve: 'Observa la lucha entre el determinismo biológico y la fuerza de la voluntad humana ("No dejé nada para el viaje de regreso").',
+    socraticQuestions: [
+      '¿Determina el ADN el límite absoluto del logro humano?',
+      '¿Qué riesgos éticos conlleva la discriminación genética (eugenesia social)?'
+    ],
+    coverGradient: 'from-blue-950 to-slate-900 border-blue-500/40'
   }
 ];
 
