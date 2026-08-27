@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers } from 'lucide-react';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
+import { getWorkPublicationYear } from '@/lib/workYearHelper';
 
 interface Week {
   id: string;
@@ -256,9 +257,12 @@ export default function RutaClient({
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div>
-                          <div className="flex items-center gap-2 font-mono">
+                          <div className="flex flex-wrap items-center gap-1.5 font-mono">
                             <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
                               #{work.workNumber}
+                            </span>
+                            <span className="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                              ✍️ {getWorkPublicationYear(work.workNumber)}
                             </span>
                             <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
                               Nivel {work.level}
@@ -307,11 +311,14 @@ export default function RutaClient({
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-2">
-              <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20 font-mono">
+            <div className="flex flex-wrap items-center gap-1.5 font-mono">
+              <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
                 OBRA #{selectedWork.workNumber} · AÑO {selectedWork.year}
               </span>
-              <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20 font-mono">
+              <span className="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                ✍️ Escrita en: {getWorkPublicationYear(selectedWork.workNumber)}
+              </span>
+              <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
                 Nivel {selectedWork.level}
               </span>
             </div>

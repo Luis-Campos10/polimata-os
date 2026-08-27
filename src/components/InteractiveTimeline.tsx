@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Clock, Calendar, BookOpen, ArrowRight, Sparkles, Compass, ChevronLeft, ChevronRight, Search, Layers } from 'lucide-react';
+import { getWorkPublicationYear } from '@/lib/workYearHelper';
 
 interface Work {
   id: string;
@@ -291,10 +292,15 @@ export default function InteractiveTimeline({
                 onClick={() => onSelectWork(work)}
                 className="p-4 bg-slate-950/80 hover:bg-slate-900 rounded-2xl border border-white/10 hover:border-purple-500/50 transition cursor-pointer space-y-2 group shadow-md active:scale-98"
               >
-                <div className="flex justify-between items-center text-[10px] font-mono">
-                  <span className="text-sky-400 font-bold bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-                    Año {work.year} · #{work.workNumber}
-                  </span>
+                <div className="flex flex-wrap justify-between items-center gap-1.5 text-[10px] font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sky-400 font-bold bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
+                      Año {work.year} · #{work.workNumber}
+                    </span>
+                    <span className="text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                      ✍️ {getWorkPublicationYear(work.workNumber)}
+                    </span>
+                  </div>
                   <span className="text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
                     Nivel {work.level}
                   </span>
