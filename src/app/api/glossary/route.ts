@@ -46,6 +46,96 @@ const PRESET_DICTIONARY: Record<string, { definition: string; etymology: string;
     category: 'Dificultades Deseables',
     example: 'Estudiar problemas de física, química y lógica intercalados.'
   },
+  razón: {
+    definition: 'Facultad humana de discurrir, juzgar y reflexionar para extraer conclusiones verdaderas mediante principios lógicos.',
+    etymology: 'Del latín ratio (cálculo/razón).',
+    category: 'Filosofía & Epistemología',
+    example: 'Descartes fundamenta el conocimiento en el ejercicio de la razón pura.'
+  },
+  método: {
+    definition: 'Procedimiento sistemático y estructurado seguido para alcanzar un objetivo cognoscitivo o demostración de verdad.',
+    etymology: 'Del griego metá (hacia/a través) y hodos (camino).',
+    category: 'Epistemología & Método',
+    example: 'El método cartesiano consta de cuatro reglas de evidencia y análisis.'
+  },
+  memoria: {
+    definition: 'Proceso cognitivo de codificación, almacenamiento y recuperación de información y experiencias previas.',
+    etymology: 'Del latín memoria.',
+    category: 'Ciencia Cognitiva',
+    example: 'La memoria de trabajo tiene capacidad limitada frente a la memoria de largo plazo.'
+  },
+  hipótesis: {
+    definition: 'Proposición provisional formulada para responder un problema que debe ser contrastada con la experiencia.',
+    etymology: 'Del griego hypó (debajo) y thesis (posición/colocación).',
+    category: 'Método Científico',
+    example: 'Formular una hipótesis refutable es el primer paso de la contrastación.'
+  },
+  deducción: {
+    definition: 'Forma de razonamiento que deriva una conclusión necesaria a partir de premisas generales dadas.',
+    etymology: 'Del latín deductio (conducir desde).',
+    category: 'Lógica & Filosofía',
+    example: 'Si todas las premisas son verdaderas, la conclusión deductiva es necesariamente verdadera.'
+  },
+  inducción: {
+    definition: 'Razonamiento que extrae principios generales a partir de la observación de casos particulares.',
+    etymology: 'Del latín inductio (conducir hacia adentro).',
+    category: 'Epistemología',
+    example: 'Francis Bacon promovió la inducción empírica en el Novum Organum.'
+  },
+  dialéctica: {
+    definition: 'Arte del diálogo y la confrontación de ideas opuestas (tesis y antítesis) para alcanzar una síntesis superior.',
+    etymology: 'Del griego dialektikē (técnica conversacional).',
+    category: 'Filosofía Socrática',
+    example: 'La dialéctica socrática busca purgar la falsa sabiduría mediante preguntas.'
+  },
+  paradoja: {
+    definition: 'Enunciado que parece conducir a una contradicción lógica o desafiar la intuición común pese a premisas válidas.',
+    etymology: 'Del griego pará (contra) y doxa (opinión).',
+    category: 'Lógica',
+    example: 'La paradoja de Zenón cuestiona la naturaleza continua del movimiento.'
+  },
+  heurística: {
+    definition: 'Atajo mental o estrategia simplificada de resolución de problemas sin garantía de solución óptima pero eficiente.',
+    etymology: 'Del griego heuriskein (hallar/descubrir).',
+    category: 'Ciencia Cognitiva & Sesgos',
+    example: 'Las heurísticas cognitivas permiten decisiones rápidas pero pueden generar sesgos.'
+  },
+  sesgo: {
+    definition: 'Desviación sistemática del juicio racional provocada por atajos cognitivos o distorsiones interpretativas.',
+    etymology: 'Del provenzal sesgar (atravesar al sesgo).',
+    category: 'Psicología Cognitiva',
+    example: 'El sesgo de confirmación lleva a buscar solo evidencia que apoya la propia creencia.'
+  },
+  conciencia: {
+    definition: 'Experiencia subjetiva directa de apercepción y darse cuenta de la propia existencia y el entorno.',
+    etymology: 'Del latín conscientia (con conocimiento compartido).',
+    category: 'Filosofía de la Mente',
+    example: 'El "problema duro" de la conciencia indaga cómo la materia genera experiencia cualitativa.'
+  },
+  causa: {
+    definition: 'Principio u origen que produce o da razón de la existencia de un efecto o fenómeno.',
+    etymology: 'Del latín causa.',
+    category: 'Metafísica & Física',
+    example: 'Aristóteles distinguió cuatro causas: material, formal, eficiente y final.'
+  },
+  metafísica: {
+    definition: 'Rama de la filosofía que estudia la naturaleza fundamental de la realidad, el ser y lo existente.',
+    etymology: 'Del griego metá ta physiká (más allá de la física).',
+    category: 'Filosofía',
+    example: 'La ontología es la parte central de la metafísica.'
+  },
+  empirismo: {
+    definition: 'Doctrina filosófica que sostiene que todo conocimiento deriva fundamentalmente de la experiencia sensorial.',
+    etymology: 'Del griego empeiria (experiencia).',
+    category: 'Epistemología',
+    example: 'John Locke concibe la mente humana al nacer como una tabula rasa.'
+  },
+  racionalismo: {
+    definition: 'Corriente filosófica que afirma que la razón es la fuente principal e independiente del conocimiento humano.',
+    etymology: 'Del latín ratio (razón) y el sufijo -ismo.',
+    category: 'Epistemología',
+    example: 'Descartes y Spinoza son figuras señeras del racionalismo moderno.'
+  },
   steelman: {
     definition: 'Técnica socrática que consiste en construir la versión más fuerte y defendible del argumento contrario antes de criticarlo.',
     etymology: 'Del inglés steel (acero) y man (hombre).',

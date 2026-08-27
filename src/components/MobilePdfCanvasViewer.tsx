@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, ExternalLink, Moon, BookOpen, Search, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, ExternalLink, Moon, BookOpen, Search, Sparkles, RotateCw } from 'lucide-react';
 
 interface MobilePdfViewerProps {
   pdfUrl: string; // Base64 data:application/pdf;base64,... o Blob URL
@@ -26,6 +26,31 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [selectedWord, setSelectedWord] = useState<string>('');
   const [showDictionaryPopup, setShowDictionaryPopup] = useState<boolean>(false);
+
+  // Restaurar página guardada en localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && fileName) {
+        const savedPage = localStorage.getItem(`polimata_pdf_page_${fileName}`);
+        if (savedPage) {
+          const pageNum = parseInt(savedPage, 10);
+          if (!isNaN(pageNum) && pageNum > 0) {
+            setCurrentPage(pageNum);
+          }
+        }
+      }
+    } catch (e) {}
+  }, [fileName]);
+
+  // Guardar página actual en localStorage al cambiar de página
+  const changePage = (newPage: number) => {
+    setCurrentPage(newPage);
+    try {
+      if (typeof window !== 'undefined' && fileName) {
+        localStorage.setItem(`polimata_pdf_page_${fileName}`, newPage.toString());
+      }
+    } catch (e) {}
+  };
 
   // Cargar PDF.js dinámicamente desde CDN
   useEffect(() => {
@@ -57,7 +82,6 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         if (isMounted) {
           setPdfDoc(pdf);
           setNumPages(pdf.numPages);
-          setCurrentPage(1);
           setIsLoading(false);
         }
       } catch (err: any) {
@@ -105,7 +129,7 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         renderTask = page.render(renderContext);
         await renderTask.promise;
 
-        // Renderizar Capa de Texto para permitir la selección de palabras táctil
+        // Renderizar Capa de Texto
         if (textLayerRef.current && (window as any).pdfjsLib) {
           const textLayerDiv = textLayerRef.current;
           textLayerDiv.innerHTML = '';
@@ -140,6 +164,24 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
     };
   }, [pdfDoc, currentPage, scale]);
 
+  // Forzar o Alternar Orientación Horizontal mediante Screen Orientation API
+  const toggleScreenOrientation = async () => {
+    try {
+      if (typeof window !== 'undefined' && window.screen && (window.screen as any).orientation) {
+        const orientation = (window.screen as any).orientation;
+        if (orientation.type.includes('portrait')) {
+          await orientation.lock('landscape');
+        } else {
+          await orientation.lock('portrait-primary');
+        }
+      } else {
+        alert('Gira físicamente tu teléfono con el ahorro de energía o rotación automática activada.');
+      }
+    } catch (e) {
+      alert('Para ver en horizontal activa la "Rotación Automática" en la barra de notificaciones de tu celular y gira tu teléfono.');
+    }
+  };
+
   // Capturar gestos táctiles de deslizamiento (Swipe Left / Swipe Right)
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.targetTouches[0].clientX);
@@ -155,18 +197,16 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
     const minSwipeDistance = 45;
 
     if (distance > minSwipeDistance && currentPage < numPages) {
-      // Deslizar a la izquierda -> Página Siguiente
-      setCurrentPage((p) => Math.min(numPages, p + 1));
+      changePage(Math.min(numPages, currentPage + 1));
     } else if (distance < -minSwipeDistance && currentPage > 1) {
-      // Deslizar a la derecha -> Página Anterior
-      setCurrentPage((p) => Math.max(1, p - 1));
+      changePage(Math.max(1, currentPage - 1));
     }
 
     setTouchStartX(null);
     setTouchEndX(null);
   };
 
-  // Capturar selección de texto táctil para abrir Diccionario al instante
+  // Capturar selección de texto táctil para abrir Diccionario sin salir del PDF
   const handleTextSelection = () => {
     const selection = window.getSelection();
     if (selection) {
@@ -188,17 +228,17 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
       
       {/* BARRA SUPERIOR DE HERRAMIENTAS MÓVILES */}
       <div className="p-2 bg-slate-900 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2 shrink-0 text-xs">
-        <div className="flex items-center space-x-2 truncate max-w-[150px] sm:max-w-xs">
+        <div className="flex items-center space-x-2 truncate max-w-[140px] sm:max-w-xs">
           <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
           <span className="font-bold text-slate-200 font-mono truncate text-[11px]">{fileName}</span>
         </div>
 
-        {/* CONTROLES DE NAVEGACIÓN Y MODO NOCHE */}
+        {/* NAVEGACIÓN, ROTACIÓN HORIZONTAL Y Noche */}
         <div className="flex items-center space-x-1 font-mono text-[11px]">
           <button
             type="button"
             disabled={currentPage <= 1 || isLoading}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            onClick={() => changePage(Math.max(1, currentPage - 1))}
             className="p-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 rounded cursor-pointer"
             title="Página Anterior"
           >
@@ -212,7 +252,7 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
           <button
             type="button"
             disabled={currentPage >= numPages || isLoading}
-            onClick={() => setCurrentPage((p) => Math.min(numPages, p + 1))}
+            onClick={() => changePage(Math.min(numPages, currentPage + 1))}
             className="p-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 rounded cursor-pointer"
             title="Página Siguiente"
           >
@@ -223,20 +263,12 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
 
           <button
             type="button"
-            onClick={() => setScale((s) => Math.max(0.6, s - 0.2))}
-            className="p-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded cursor-pointer"
-            title="Reducir Zoom"
+            onClick={toggleScreenOrientation}
+            className="px-2 py-1 bg-purple-900/60 hover:bg-purple-800 text-purple-200 font-bold rounded border border-purple-500/40 cursor-pointer flex items-center gap-1 text-[10px]"
+            title="Girar a Modo Horizontal"
           >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setScale((s) => Math.min(2.5, s + 0.2))}
-            className="p-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded cursor-pointer"
-            title="Aumentar Zoom"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
+            <RotateCw className="w-3.5 h-3.5 text-purple-300" />
+            <span>Girar Horizontal</span>
           </button>
 
           <button
@@ -263,26 +295,26 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         </button>
       </div>
 
-      {/* AVISO DESLIZAMIENTO TÁCTIL (GESTO SWIPE) */}
+      {/* AVISO DESLIZAMIENTO TÁCTIL (GESTO SWIPE) & BUSCADOR DICCIONARIO */}
       <div className="bg-slate-900/90 text-slate-400 text-[10px] py-1 px-3 border-b border-slate-800 text-center font-mono flex items-center justify-between shrink-0">
-        <span>👈 Desliza hacia los lados para pasar de hoja 👉</span>
+        <span>👈 Desliza para cambiar página 👉</span>
 
         <div className="flex items-center space-x-1">
           <BookOpen className="w-3 h-3 text-purple-400" />
           <input
             type="text"
-            placeholder="🔍 Buscar palabra..."
+            placeholder="📖 Buscar palabra..."
             onKeyDown={(e) => {
               if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                 triggerDictionaryLookup(e.currentTarget.value.trim());
               }
             }}
-            className="bg-slate-950 border border-purple-500/40 rounded px-1.5 py-0.5 text-[10px] text-slate-100 font-mono w-28 focus:outline-none"
+            className="bg-slate-950 border border-purple-500/40 rounded px-1.5 py-0.5 text-[10px] text-slate-100 font-mono w-28 focus:outline-none focus:border-purple-400"
           />
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL CANVAS PDF CON SOPORTE GESTOS Y CAPA DE TEXTO */}
+      {/* ÁREA PRINCIPAL CANVAS PDF */}
       <div
         className="flex-1 overflow-auto p-2 sm:p-4 flex items-start justify-center bg-slate-900/90 relative min-h-[380px] touch-pan-y"
         onTouchStart={handleTouchStart}
@@ -323,7 +355,7 @@ export default function MobilePdfCanvasViewer({ pdfUrl, fileName = 'Documento PD
         )}
       </div>
 
-      {/* POPUP AUTOMÁTICO AL SELECCIONAR O TOCAR UNA PALABRA */}
+      {/* POPUP AUTOMÁTICO AL SELECCIONAR UNA PALABRA (SIN CERRAR EL PDF) */}
       {showDictionaryPopup && selectedWord && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[99999] bg-gradient-to-r from-purple-900 to-sky-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl border border-purple-400/50 flex items-center gap-3 animate-bounce">
           <Sparkles className="w-4 h-4 text-amber-300" />

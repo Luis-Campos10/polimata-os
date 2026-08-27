@@ -113,19 +113,24 @@ export default function DictionaryModal() {
   }, []);
 
   const searchSpecificWord = async (wordToSearch: string) => {
-    if (!wordToSearch.trim()) return;
-    setQuery(wordToSearch);
-    setActiveTab('dictionary');
     setIsOpen(true);
+    const cleaned = wordToSearch.trim();
+    if (!cleaned) {
+      setActiveTab('dictionary');
+      return;
+    }
+
+    setQuery(cleaned);
+    setActiveTab('dictionary');
     setIsSearching(true);
     try {
-      const res = await fetch(`/api/glossary?q=${encodeURIComponent(wordToSearch)}`);
+      const res = await fetch(`/api/glossary?q=${encodeURIComponent(cleaned)}`);
       const data = await res.json();
       if (data.success && data.result) {
         setSearchResult(data.result);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error al buscar palabra:', err);
     } finally {
       setIsSearching(false);
     }
