@@ -61,6 +61,22 @@ export default function SyncHubModal({
   const [ankiStatus, setAnkiStatus] = useState<{ text: string; isError?: boolean } | null>(null);
   const [cardsCount, setCardsCount] = useState<number>(0);
 
+  // Estados para creación directa de notas (Obsidian)
+  const [showNoteForm, setShowNoteForm] = useState<boolean>(false);
+  const [directNoteTitle, setDirectNoteTitle] = useState<string>('');
+  const [directNoteFolder, setDirectNoteFolder] = useState<string>('Notas');
+  const [directNoteTags, setDirectNoteTags] = useState<string>('polimata, idea');
+  const [directNoteBody, setDirectNoteBody] = useState<string>('');
+  const [isSavingDirectNote, setIsSavingDirectNote] = useState<boolean>(false);
+
+  // Estados para creación directa de tarjetas (Anki)
+  const [showCardForm, setShowCardForm] = useState<boolean>(false);
+  const [directCardTerm, setDirectCardTerm] = useState<string>('');
+  const [directCardDef, setDirectCardDef] = useState<string>('');
+  const [directCardCat, setDirectCardCat] = useState<string>('Filosofía');
+  const [directCardEx, setDirectCardEx] = useState<string>('');
+  const [isSavingDirectCard, setIsSavingDirectCard] = useState<boolean>(false);
+
   // Cargar estado inicial y comprobar conexiones
   useEffect(() => {
     if (!isOpen) return;
@@ -209,6 +225,117 @@ export default function SyncHubModal({
       'Polimata_OS/Prueba_Conexion',
       `# Prueba de Conexión Polímata OS ➔ Obsidian\n\nConexión establecida con éxito desde tu celular. [[00_Indice_Polimata_OS]]`
     );
+  };
+
+  const handleSaveDirectNote = async () => {
+    if (!directNoteTitle.trim() || !directNoteBody.trim()) {
+      setObsidianStatus({ text: 'Escribe un título y contenido para la nota.', isError: true });
+      return;
+    }
+    setIsSavingDirectNote(true);
+    try {
+      const tagsList = directNoteTags.split(',').map((t) => t.trim().replace(/^#/, '')).filter(Boolean);
+      const safeTitle = directNoteTitle.trim().replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_-]/g, '_');
+      const filename = `${safeTitle}.md`;
+
+      const formattedContent = `---
+title: "${directNoteTitle.trim()}"
+date: ${new Date().toISOString()}
+tags:
+  - polimata-os
+  ${tagsList.map((t) => `- ${t}`).join('\n  ')}
+---
+
+# ${directNoteTitle.trim()}
+
+${directNoteBody.trim()}
+
+---
+*Nota creada directamente desde Polímata OS*
+`;
+
+      const handle = await getStoredVaultHandle();
+      if (handle) {
+        const hasPerm = await verifyPermission(handle);
+        if (hasPerm) {
+          await writeVaultFile(handle, ['Polimata_OS', directNoteFolder.trim() || 'Notas'], filename, formattedContent);
+          setObsidianStatus({ text: `✅ ¡Nota "${filename}" guardada directamente en tu carpeta de Obsidian!` });
+          setDirectNoteTitle('');
+          setDirectNoteBody('');
+          setShowNoteForm(false);
+          return;
+        }
+      }
+
+      // Fallback móvil / obsidian://
+      const vault = obsidianVaultName.trim() || 'Polimata_Vault';
+      const cleanPath = `Polimata_OS/${directNoteFolder.trim() || 'Notas'}/${safeTitle}`;
+      openInObsidianApp(vault, cleanPath, formattedContent);
+      setObsidianStatus({ text: `Abriendo y creando nota "${directNoteTitle}" en la app de Obsidian...` });
+      setDirectNoteTitle('');
+      setDirectNoteBody('');
+      setShowNoteForm(false);
+    } catch (err: any) {
+      setObsidianStatus({ text: `Error al crear nota: ${err.message}`, isError: true });
+    } finally {
+      setIsSavingDirectNote(false);
+    }
+  };
+
+  const handleSaveDirectCard = async () => {
+    if (!directCardTerm.trim() || !directCardDef.trim()) {
+      setAnkiStatus({ text: 'Escribe un término y su definición.', isError: true });
+      return;
+    }
+    setIsSavingDirectCard(true);
+    try {
+      // 1. Guardar en SQLite de Polímata OS
+      const res = await fetch('/api/glossary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          term: directCardTerm.trim(),
+          definition: directCardDef.trim(),
+          category: directCardCat.trim() || 'General',
+          example: directCardEx.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Error al guardar tarjeta');
+      }
+
+      setCardsCount((prev) => prev + 1);
+
+      // 2. Si AnkiConnect está activo en PC, sincronizar inmediatamente
+      let extraMsg = '';
+      if (isAnkiOnline) {
+        const syncRes = await syncCardsToAnkiConnect(
+          [
+            {
+              term: directCardTerm.trim(),
+              definition: directCardDef.trim(),
+              category: directCardCat.trim() || 'General',
+              example: directCardEx.trim(),
+            },
+          ],
+          ankiDeckName.trim() || 'Polímata OS'
+        );
+        if (syncRes.success) {
+          extraMsg = ' ¡Y sincronizada en tu Anki Desktop!';
+        }
+      }
+
+      setAnkiStatus({ text: `✅ ¡Tarjeta "${directCardTerm.trim()}" creada con éxito!${extraMsg}` });
+      setDirectCardTerm('');
+      setDirectCardDef('');
+      setDirectCardEx('');
+      setShowCardForm(false);
+    } catch (err: any) {
+      setAnkiStatus({ text: `Error al guardar tarjeta: ${err.message}`, isError: true });
+    } finally {
+      setIsSavingDirectCard(false);
+    }
   };
 
   // --- ACCIONES ANKI ---
@@ -432,6 +559,65 @@ export default function SyncHubModal({
               </div>
             </div>
 
+            {/* SECCIÓN CREACIÓN DIRECTA DE NOTA PARA OBSIDIAN */}
+            <div className="p-4 sm:p-5 bg-purple-950/30 rounded-2xl border border-purple-500/30 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <h3 className="text-sm font-bold text-purple-200">Redactar Nota Directa para Obsidian</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNoteForm(!showNoteForm)}
+                  className="px-2.5 py-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 rounded-lg text-xs font-mono font-bold border border-purple-500/40 cursor-pointer"
+                >
+                  {showNoteForm ? 'Ocultar' : '+ Escribir Nota'}
+                </button>
+              </div>
+
+              {showNoteForm ? (
+                <div className="space-y-3 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      value={directNoteTitle}
+                      onChange={(e) => setDirectNoteTitle(e.target.value)}
+                      placeholder="Título de la nota (ej. Reflexión Spinoza)"
+                      className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-purple-500"
+                    />
+                    <input
+                      type="text"
+                      value={directNoteTags}
+                      onChange={(e) => setDirectNoteTags(e.target.value)}
+                      placeholder="Etiquetas (ej. filosofia, etica, racionalismo)"
+                      className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+
+                  <textarea
+                    rows={4}
+                    value={directNoteBody}
+                    onChange={(e) => setDirectNoteBody(e.target.value)}
+                    placeholder="Escribe tus reflexiones, argumentos o citas con enlaces tipo [[Autor]] o [[Pregunta]]..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-purple-500 leading-relaxed"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleSaveDirectNote}
+                    disabled={isSavingDirectNote || !directNoteTitle.trim() || !directNoteBody.trim()}
+                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <span>{isSavingDirectNote ? 'Guardando en Obsidian...' : '🚀 Guardar y Enviar a Obsidian'}</span>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400">
+                  Crea una nueva nota Markdown con enlaces <code className="text-purple-300">[[Wikilinks]]</code> y envíala directamente a tu Bóveda.
+                </p>
+              )}
+            </div>
+
             {/* SECCIÓN EXPORTACIÓN UNIVERSAL (.ZIP) */}
             <div className="pt-1">
               <button
@@ -512,6 +698,73 @@ export default function SyncHubModal({
               {!isAnkiOnline && (
                 <p className="text-[11px] text-slate-500 font-mono">
                   💡 Abre tu Anki Desktop en tu PC para activar la sincronización automática instantánea.
+                </p>
+              )}
+            </div>
+
+            {/* SECCIÓN CREACIÓN DIRECTA DE TARJETAS PARA ANKI */}
+            <div className="p-4 sm:p-5 bg-sky-950/30 rounded-2xl border border-sky-500/30 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-sky-400" />
+                  <h3 className="text-sm font-bold text-sky-200">Crear Flashcard Directa para Anki</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCardForm(!showCardForm)}
+                  className="px-2.5 py-1 bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 rounded-lg text-xs font-mono font-bold border border-sky-500/40 cursor-pointer"
+                >
+                  {showCardForm ? 'Ocultar' : '+ Nueva Tarjeta'}
+                </button>
+              </div>
+
+              {showCardForm ? (
+                <div className="space-y-3 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      value={directCardTerm}
+                      onChange={(e) => setDirectCardTerm(e.target.value)}
+                      placeholder="Frente: Concepto / Pregunta (ej. Falsacionismo)"
+                      className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                    />
+                    <input
+                      type="text"
+                      value={directCardCat}
+                      onChange={(e) => setDirectCardCat(e.target.value)}
+                      placeholder="Categoría / Mazo (ej. Epistemología)"
+                      className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                    />
+                  </div>
+
+                  <textarea
+                    rows={3}
+                    value={directCardDef}
+                    onChange={(e) => setDirectCardDef(e.target.value)}
+                    placeholder="Reverso: Definición o respuesta en tus propias palabras..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500 leading-relaxed"
+                  />
+
+                  <input
+                    type="text"
+                    value={directCardEx}
+                    onChange={(e) => setDirectCardEx(e.target.value)}
+                    placeholder="Ejemplo o mnemotécnica (opcional)"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleSaveDirectCard}
+                    disabled={isSavingDirectCard || !directCardTerm.trim() || !directCardDef.trim()}
+                    className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer font-mono"
+                  >
+                    <span>{isSavingDirectCard ? 'Guardando Tarjeta...' : '⚡ Crear y Sincronizar en Anki'}</span>
+                  </button>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400">
+                  Agrega una tarjeta al instante: entra a tu motor FSRS y se envía en tiempo real a Anki Desktop o queda lista para AnkiDroid.
                 </p>
               )}
             </div>
