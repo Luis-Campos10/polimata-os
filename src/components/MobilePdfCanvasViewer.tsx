@@ -40,6 +40,23 @@ export default function MobilePdfCanvasViewer({
   const [showSelectionPopup, setShowSelectionPopup] = useState<boolean>(false);
   const [isLandscapeForced, setIsLandscapeForced] = useState<boolean>(false);
 
+  // Estados para Nota Obsidian desde el Lector
+  const [showObsidianModal, setShowObsidianModal] = useState<boolean>(false);
+  const [obsidianNoteTitle, setObsidianNoteTitle] = useState<string>('');
+  const [obsidianNoteBody, setObsidianNoteBody] = useState<string>('');
+  const [obsidianQuote, setObsidianQuote] = useState<string>('');
+
+  // Estados para Tarjeta Anki desde el Lector
+  const [showAnkiModal, setShowAnkiModal] = useState<boolean>(false);
+  const [ankiCardTerm, setAnkiCardTerm] = useState<string>('');
+  const [ankiCardDef, setAnkiCardDef] = useState<string>('');
+  const [ankiCardCat, setAnkiCardCat] = useState<string>('');
+  const [ankiCardExample, setAnkiCardExample] = useState<string>('');
+
+  // Estados comunes de guardado
+  const [isSavingInReader, setIsSavingInReader] = useState<boolean>(false);
+  const [readerToast, setReaderToast] = useState<string | null>(null);
+
   // Restaurar página guardada en localStorage
   useEffect(() => {
     try {
@@ -249,6 +266,121 @@ export default function MobilePdfCanvasViewer({
     if (onOpenExtractor) onOpenExtractor();
   };
 
+  // Abrir modal de Obsidian precargado
+  const openObsidianFromReader = (prefilledQuote = '') => {
+    setObsidianNoteTitle(`Nota ${fileName.replace(/\.pdf$/i, '')} - Pág ${currentPage}`);
+    setObsidianQuote(prefilledQuote);
+    setObsidianNoteBody(prefilledQuote ? `> "${prefilledQuote}"\n\n` : '');
+    setShowObsidianModal(true);
+    setShowSelectionPopup(false);
+  };
+
+  // Abrir modal de Anki precargado
+  const openAnkiFromReader = (prefilledTerm = '') => {
+    setAnkiCardTerm(prefilledTerm);
+    setAnkiCardDef('');
+    setAnkiCardCat(fileName.replace(/\.pdf$/i, '').substring(0, 24));
+    setAnkiCardExample(`Cita de lectura pág. ${currentPage}`);
+    setShowAnkiModal(true);
+    setShowSelectionPopup(false);
+  };
+
+  // Guardar nota directa en Obsidian
+  const handleSaveObsidianFromReader = async () => {
+    if (!obsidianNoteTitle.trim() || !obsidianNoteBody.trim()) return;
+    setIsSavingInReader(true);
+    try {
+      const { getStoredVaultHandle, verifyPermission, writeVaultFile, openInObsidianApp } = await import('@/lib/sync/obsidianSync');
+      const safeTitle = obsidianNoteTitle.trim().replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_-]/g, '_');
+      const filename = `${safeTitle}.md`;
+
+      const formattedContent = `---
+type: nota-lectura
+source_document: "${fileName}"
+page: ${currentPage}
+date: ${new Date().toISOString()}
+tags:
+  - polimata-os
+  - lectura-pdf
+---
+
+# ${obsidianNoteTitle.trim()}
+
+${obsidianQuote ? `> 📑 **Cita (Pág. ${currentPage} de ${fileName}):**\n> "${obsidianQuote}"\n\n` : ''}${obsidianNoteBody.trim()}
+
+---
+*Capturada desde el Lector de PDF de Polímata OS*
+`;
+
+      const handle = await getStoredVaultHandle();
+      if (handle) {
+        const hasPerm = await verifyPermission(handle);
+        if (hasPerm) {
+          await writeVaultFile(handle, ['Polimata_OS', 'Lecturas'], filename, formattedContent);
+          setReaderToast(`💎 ¡Nota guardada en Obsidian! (${filename})`);
+          setTimeout(() => setReaderToast(null), 3000);
+          setShowObsidianModal(false);
+          return;
+        }
+      }
+
+      // Móvil / fallback obsidian://
+      const vault = (typeof window !== 'undefined' && localStorage.getItem('polimata_obsidian_vault_name')) || 'Polimata_Vault';
+      const cleanPath = `Polimata_OS/Lecturas/${safeTitle}`;
+      openInObsidianApp(vault, cleanPath, formattedContent);
+      setReaderToast(`💎 Enviando a Obsidian (${vault})...`);
+      setTimeout(() => setReaderToast(null), 3000);
+      setShowObsidianModal(false);
+    } catch (err: any) {
+      alert(`Error al guardar en Obsidian: ${err.message}`);
+    } finally {
+      setIsSavingInReader(false);
+    }
+  };
+
+  // Guardar tarjeta directa en Anki
+  const handleSaveAnkiFromReader = async () => {
+    if (!ankiCardTerm.trim() || !ankiCardDef.trim()) return;
+    setIsSavingInReader(true);
+    try {
+      // 1. Guardar en SQLite FSRS de Polímata OS
+      await fetch('/api/glossary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          term: ankiCardTerm.trim(),
+          definition: ankiCardDef.trim(),
+          category: ankiCardCat.trim() || 'Lectura',
+          example: ankiCardExample.trim(),
+        }),
+      });
+
+      // 2. Si AnkiConnect está activo en PC, sincronizar inmediatamente
+      try {
+        const { checkAnkiConnect, syncCardsToAnkiConnect } = await import('@/lib/sync/ankiSync');
+        const status = await checkAnkiConnect();
+        if (status.isOnline) {
+          await syncCardsToAnkiConnect([
+            {
+              term: ankiCardTerm.trim(),
+              definition: ankiCardDef.trim(),
+              category: ankiCardCat.trim() || 'Lectura',
+              example: ankiCardExample.trim(),
+            },
+          ]);
+        }
+      } catch {}
+
+      setReaderToast(`🎴 ¡Tarjeta guardada en Anki / FSRS!`);
+      setTimeout(() => setReaderToast(null), 3000);
+      setShowAnkiModal(false);
+    } catch (err: any) {
+      alert(`Error al guardar en Anki: ${err.message}`);
+    } finally {
+      setIsSavingInReader(false);
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative">
       
@@ -386,6 +518,26 @@ export default function MobilePdfCanvasViewer({
             </button>
           )}
 
+          {/* BOTÓN DIRECTO: NOTA OBSIDIAN */}
+          <button
+            type="button"
+            onClick={() => openObsidianFromReader()}
+            className="px-2 py-1 bg-purple-900/80 hover:bg-purple-800 text-purple-200 font-bold rounded-lg transition flex items-center gap-1 shadow border border-purple-500/40 cursor-pointer text-[10px]"
+            title="Crear Nota en Obsidian"
+          >
+            <span>💎 Obsidian</span>
+          </button>
+
+          {/* BOTÓN DIRECTO: TARJETA ANKI */}
+          <button
+            type="button"
+            onClick={() => openAnkiFromReader()}
+            className="px-2 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 font-bold rounded-lg transition flex items-center gap-1 shadow border border-sky-500/40 cursor-pointer text-[10px]"
+            title="Crear Tarjeta en Anki"
+          >
+            <span>🎴 Anki</span>
+          </button>
+
           {onClose && (
             <button
               type="button"
@@ -478,11 +630,165 @@ export default function MobilePdfCanvasViewer({
 
           <button
             type="button"
+            onClick={() => openObsidianFromReader(selectedWord)}
+            className="px-2.5 py-1 bg-purple-700 hover:bg-purple-600 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
+          >
+            <span>💎 Obsidian</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => openAnkiFromReader(selectedWord)}
+            className="px-2.5 py-1 bg-sky-700 hover:bg-sky-600 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
+          >
+            <span>🎴 Anki</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowSelectionPopup(false)}
             className="text-slate-400 hover:text-white text-xs ml-1"
           >
             ✕
           </button>
+        </div>
+      )}
+
+      {/* MODAL DIRECTO OBSIDIAN DESDE EL LECTOR */}
+      {showObsidianModal && (
+        <div className="fixed inset-0 z-[100001] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+          <div className="bg-slate-900 border border-purple-500/40 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative text-slate-100">
+            <button
+              type="button"
+              onClick={() => setShowObsidianModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] font-bold text-purple-300 bg-purple-500/10 px-2.5 py-0.5 rounded border border-purple-500/20 font-mono">
+                💎 Nota para Obsidian (Pág. {currentPage})
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-[11px] font-mono text-slate-400 mb-1">Título de la Nota:</label>
+                <input
+                  type="text"
+                  value={obsidianNoteTitle}
+                  onChange={(e) => setObsidianNoteTitle(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              {obsidianQuote && (
+                <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-[11px] text-slate-300 font-mono">
+                  <span className="text-purple-400 font-bold block mb-0.5">📑 Cita del PDF:</span>
+                  <p className="italic line-clamp-3">"{obsidianQuote}"</p>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-mono text-slate-400 mb-1">Tus Reflexiones / Ideas (Markdown):</label>
+                <textarea
+                  rows={4}
+                  value={obsidianNoteBody}
+                  onChange={(e) => setObsidianNoteBody(e.target.value)}
+                  placeholder="Escribe lo que pensaste de esta lectura, vincula con [[Autores]] o [[Preguntas]]..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-purple-500 leading-relaxed"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSaveObsidianFromReader}
+                disabled={isSavingInReader || !obsidianNoteTitle.trim() || !obsidianNoteBody.trim()}
+                className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer font-mono"
+              >
+                <span>{isSavingInReader ? 'Guardando en Obsidian...' : '🚀 Guardar y Enviar a Obsidian'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DIRECTO ANKI DESDE EL LECTOR */}
+      {showAnkiModal && (
+        <div className="fixed inset-0 z-[100001] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+          <div className="bg-slate-900 border border-sky-500/40 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative text-slate-100">
+            <button
+              type="button"
+              onClick={() => setShowAnkiModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] font-bold text-sky-300 bg-sky-500/10 px-2.5 py-0.5 rounded border border-sky-500/20 font-mono">
+                🎴 Flashcard para Anki (Pág. {currentPage})
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-[11px] font-mono text-slate-400 mb-1">Frente (Concepto o Pregunta):</label>
+                <input
+                  type="text"
+                  value={ankiCardTerm}
+                  onChange={(e) => setAnkiCardTerm(e.target.value)}
+                  placeholder="Ej. Eudaimonía"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono text-slate-400 mb-1">Reverso (Definición en tus palabras):</label>
+                <textarea
+                  rows={3}
+                  value={ankiCardDef}
+                  onChange={(e) => setAnkiCardDef(e.target.value)}
+                  placeholder="Explica el concepto o responde a la pregunta con tus propias palabras..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500 leading-relaxed"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  value={ankiCardCat}
+                  onChange={(e) => setAnkiCardCat(e.target.value)}
+                  placeholder="Categoría (ej. Filosofía)"
+                  className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                />
+                <input
+                  type="text"
+                  value={ankiCardExample}
+                  onChange={(e) => setAnkiCardExample(e.target.value)}
+                  placeholder="Ejemplo / Contexto"
+                  className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 font-mono focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSaveAnkiFromReader}
+                disabled={isSavingInReader || !ankiCardTerm.trim() || !ankiCardDef.trim()}
+                className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer font-mono"
+              >
+                <span>{isSavingInReader ? 'Guardando...' : '⚡ Guardar en Anki & FSRS'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST DE CONFIRMACIÓN AL GUARDAR DESDE EL LECTOR */}
+      {readerToast && (
+        <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[100002] bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl border border-emerald-400 flex items-center gap-2 font-mono animate-bounce">
+          <span>{readerToast}</span>
         </div>
       )}
 
