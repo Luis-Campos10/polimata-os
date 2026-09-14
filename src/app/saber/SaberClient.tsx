@@ -5,6 +5,7 @@ import { BookOpen, HelpCircle, History, Network, ArrowRight, X, Plus, ShieldChec
 import KnowledgeGraphCanvas from '@/components/KnowledgeGraphCanvas';
 import SyncHubModal from '@/components/SyncHubModal';
 import ArgumentTreeMapperModal from '@/components/ArgumentTreeMapperModal';
+import SocraticChallengerModal from '@/components/SocraticChallengerModal';
 
 interface Question {
   id: string;
@@ -431,7 +432,11 @@ export default function SaberClient({
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 shrink-0 self-end sm:self-center">
+                <div className="flex flex-wrap items-center gap-2 shrink-0 self-end sm:self-center">
+                  <SocraticChallengerModal
+                    questionId={q.id}
+                    questionTitle={q.title}
+                  />
                   <button
                     type="button"
                     onClick={() => {

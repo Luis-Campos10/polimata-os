@@ -5,6 +5,8 @@ import { Calendar, Play, CheckCircle2, Clock, Brain, AlertCircle, Sparkles, Arro
 import SocraticExamSimulatorModal from '@/components/SocraticExamSimulatorModal';
 import GraduationCertificateModal from '@/components/GraduationCertificateModal';
 import InterdisciplinaryRadarChart from '@/components/InterdisciplinaryRadarChart';
+import DailyFsrsReviewModal from '@/components/DailyFsrsReviewModal';
+import CognitivePacingWidget from '@/components/CognitivePacingWidget';
 
 
 export default async function HoyPage() {
@@ -64,6 +66,9 @@ export default async function HoyPage() {
           </div>
         </section>
       )}
+ 
+      {/* Planificador de Ritmo & Carga Cognitiva (Anti-Burnout) */}
+      <CognitivePacingWidget />
 
       {/* Secuencia Priorizada de Tareas para Hoy */}
       <section className="space-y-3">
@@ -115,25 +120,31 @@ export default async function HoyPage() {
             )}
           </div>
 
-          {/* Tarea 3: Revisiones Diferidas */}
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-amber-500/40 transition-all duration-200">
+          {/* Tarea 3: Revisiones Diferidas FSRS */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-amber-500/40 transition-all duration-200 gap-3">
             <div className="flex items-center space-x-3.5">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-sm shrink-0">
                 3
               </div>
               <div>
-                <h4 className="text-sm font-bold text-slate-100">Revisiones Diferidas (+7 / +30 días)</h4>
+                <h4 className="text-sm font-bold text-slate-100">Revisiones Diferidas FSRS (+7 / +30 días)</h4>
                 <p className="text-xs text-slate-400">
-                  {pendingReviews.length} revisiones pendientes · 12 min
+                  {pendingReviews.length} revisiones programadas · Intervalos FSRS-4.5
                 </p>
               </div>
             </div>
-            <Link
-              href="/yo"
-              className="px-3.5 py-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 text-xs font-bold rounded-xl transition border border-amber-500/30 shrink-0"
-            >
-              Revisar
-            </Link>
+            <div className="flex items-center space-x-2 self-end sm:self-center shrink-0">
+              <DailyFsrsReviewModal
+                buttonLabel="Repasar FSRS"
+                className="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 cursor-pointer active:scale-95"
+              />
+              <Link
+                href="/yo"
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition border border-slate-700"
+              >
+                Historial
+              </Link>
+            </div>
           </div>
         </div>
       </section>

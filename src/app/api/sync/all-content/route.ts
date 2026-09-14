@@ -8,12 +8,13 @@ export async function GET() {
   try {
     await initDb();
 
-    const [weeksList, worksList, questionsList, glossaryList, ledgerList] = await Promise.all([
+    const [weeksList, worksList, questionsList, glossaryList, ledgerList, argumentTreesList] = await Promise.all([
       getAllWeeks(),
       getAllWorks(),
       getAllQuestions(),
       db.select().from(schema.glossary),
       db.select().from(schema.questionLedger),
+      db.select().from(schema.argumentTrees),
     ]);
 
     const enrichedWorks = worksList.map((w: any) => {
@@ -34,6 +35,7 @@ export async function GET() {
         questions: questionsList,
         glossary: glossaryList,
         ledger: ledgerList,
+        argumentTrees: argumentTreesList,
       },
     });
   } catch (error: any) {
