@@ -1,5 +1,6 @@
 import { User, BarChart3, Clock, Target, AlertTriangle, CheckCircle2, Shield, Sparkles } from 'lucide-react';
 import YoBackupActions from './YoBackupActions';
+import YoSyncHeaderBanner from './YoSyncHeaderBanner';
 import MetacognitiveScatterPlot from '@/components/MetacognitiveScatterPlot';
 import RetentionBadges from '@/components/RetentionBadges';
 import GraduationCertificateModal from '@/components/GraduationCertificateModal';
@@ -24,6 +25,9 @@ export default function YoPage() {
           Nivel Activo
         </span>
       </header>
+
+      {/* Acceso Rápido Prominente a Obsidian & Anki */}
+      <YoSyncHeaderBanner />
 
       {/* Grid de Métricas Reales (No Vanity Metrics) - Estado Inicial en Cero */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">

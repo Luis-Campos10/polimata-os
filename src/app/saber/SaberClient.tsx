@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, HelpCircle, History, Network, ArrowRight, X, Plus, ShieldCheck, CheckCircle2, Sparkles, Layers, Compass, Brain, Filter, Search } from 'lucide-react';
+import { BookOpen, HelpCircle, History, Network, ArrowRight, X, Plus, ShieldCheck, CheckCircle2, Sparkles, Layers, Compass, Brain, Filter, Search, FolderSync } from 'lucide-react';
 import KnowledgeGraphCanvas from '@/components/KnowledgeGraphCanvas';
+import SyncHubModal from '@/components/SyncHubModal';
 
 interface Question {
   id: string;
@@ -173,6 +174,7 @@ export default function SaberClient({
   const [showGraphModal, setShowGraphModal] = useState(false);
   const [showNewPositionModal, setShowNewPositionModal] = useState(false);
   const [showModelsModal, setShowModelsModal] = useState(false);
+  const [showSyncModal, setShowSyncModal] = useState(false);
 
   // Filtros de Modelos Mentales
   const [selectedModelCategory, setSelectedModelCategory] = useState<string>('TODOS');
@@ -341,6 +343,35 @@ export default function SaberClient({
             </div>
           </div>
         </a>
+
+        {/* 5. SINCRONIZACIÓN OBSIDIAN & ANKI */}
+        <button
+          type="button"
+          onClick={() => setShowSyncModal(true)}
+          className="sm:col-span-2 group text-left p-5 bg-gradient-to-r from-purple-950/70 via-slate-900 to-sky-950/70 hover:from-purple-900/80 hover:to-sky-900/80 rounded-2xl border border-purple-500/40 hover:border-sky-400/60 transition-all duration-300 shadow-lg active:scale-98 cursor-pointer"
+        >
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-xl group-hover:scale-105 transition-transform shrink-0">
+              <FolderSync className="w-6 h-6 text-purple-300" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-extrabold text-white group-hover:text-purple-300 transition-colors">
+                  💎 Obsidian & 🎴 Anki (Sincronizador Automático)
+                </h3>
+                <span className="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-500/30 font-mono font-bold">
+                  PC & Móvil
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Sincroniza tus notas, las 170 obras con enlaces tipo wiki y tu Question Ledger a tu Bóveda de Obsidian, y envía tus flashcards de repaso espaciado a Anki Desktop o AnkiDroid.
+              </p>
+              <span className="inline-flex items-center text-[11px] font-bold text-sky-400 pt-1 font-mono">
+                Abrir Centro de Sincronización <ArrowRight className="w-3 h-3 ml-1" />
+              </span>
+            </div>
+          </div>
+        </button>
       </div>
 
       {/* Sección Las 18 Grandes Preguntas */}
@@ -669,6 +700,9 @@ export default function SaberClient({
           </div>
         </div>
       )}
+
+      {/* MODAL DE SINCRONIZACIÓN OBSIDIAN & ANKI */}
+      <SyncHubModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
     </main>
   );
 }
