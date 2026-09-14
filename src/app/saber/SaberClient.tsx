@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, HelpCircle, History, Network, ArrowRight, X, Plus, ShieldCheck, CheckCircle2, Sparkles, Layers, Compass, Brain, Filter, Search, FolderSync } from 'lucide-react';
+import { BookOpen, HelpCircle, History, Network, ArrowRight, X, Plus, ShieldCheck, CheckCircle2, Sparkles, Layers, Compass, Brain, Filter, Search, FolderSync, GitFork } from 'lucide-react';
 import KnowledgeGraphCanvas from '@/components/KnowledgeGraphCanvas';
 import SyncHubModal from '@/components/SyncHubModal';
+import ArgumentTreeMapperModal from '@/components/ArgumentTreeMapperModal';
 
 interface Question {
   id: string;
@@ -175,6 +176,7 @@ export default function SaberClient({
   const [showNewPositionModal, setShowNewPositionModal] = useState(false);
   const [showModelsModal, setShowModelsModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
+  const [showArgumentModal, setShowArgumentModal] = useState(false);
 
   // Filtros de Modelos Mentales
   const [selectedModelCategory, setSelectedModelCategory] = useState<string>('TODOS');
@@ -343,6 +345,30 @@ export default function SaberClient({
             </div>
           </div>
         </a>
+
+        {/* 5. ÁRBOL DE ARGUMENTACIÓN LÓGICA */}
+        <button
+          type="button"
+          onClick={() => setShowArgumentModal(true)}
+          className="group text-left p-5 bg-slate-900/90 hover:bg-slate-800/90 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 shadow-md active:scale-98 cursor-pointer"
+        >
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl group-hover:scale-105 transition-transform">
+              <GitFork className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-slate-100 group-hover:text-emerald-300 transition-colors">
+                🌳 Árbol de Argumentación Lógica
+              </h3>
+              <p className="text-xs text-slate-400">
+                Descompón deducciones y silogismos en premisas y axiomas. Exporta diagramas a Obsidian.
+              </p>
+              <span className="inline-flex items-center text-[11px] font-semibold text-emerald-400 pt-1 font-mono">
+                Mapear Argumentos <ArrowRight className="w-3 h-3 ml-1" />
+              </span>
+            </div>
+          </div>
+        </button>
 
         {/* 5. SINCRONIZACIÓN OBSIDIAN & ANKI */}
         <button
@@ -703,6 +729,9 @@ export default function SaberClient({
 
       {/* MODAL DE SINCRONIZACIÓN OBSIDIAN & ANKI */}
       <SyncHubModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
+
+      {/* MODAL DE ÁRBOL DE ARGUMENTACIÓN LÓGICA */}
+      <ArgumentTreeMapperModal isOpen={showArgumentModal} onClose={() => setShowArgumentModal(false)} />
     </main>
   );
 }

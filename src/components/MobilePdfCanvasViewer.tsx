@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, Moon, BookOpen, Search, Sparkles, RotateCw, Maximize, Minimize, HelpCircle, Quote, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, Moon, BookOpen, Search, Sparkles, RotateCw, Maximize, Minimize, HelpCircle, Quote, X, GitFork } from 'lucide-react';
+import ArgumentTreeMapperModal from '@/components/ArgumentTreeMapperModal';
 
 interface MobilePdfViewerProps {
   pdfUrl: string; // Base64 data:application/pdf;base64,... o Blob URL
@@ -52,6 +53,9 @@ export default function MobilePdfCanvasViewer({
   const [ankiCardDef, setAnkiCardDef] = useState<string>('');
   const [ankiCardCat, setAnkiCardCat] = useState<string>('');
   const [ankiCardExample, setAnkiCardExample] = useState<string>('');
+
+  // Estados para Árbol de Argumentos desde el Lector
+  const [showArgumentTreeModal, setShowArgumentTreeModal] = useState<boolean>(false);
 
   // Estados comunes de guardado
   const [isSavingInReader, setIsSavingInReader] = useState<boolean>(false);
@@ -538,6 +542,16 @@ ${obsidianQuote ? `> 📑 **Cita (Pág. ${currentPage} de ${fileName}):**\n> "${
             <span>🎴 Anki</span>
           </button>
 
+          {/* BOTÓN DIRECTO: MAPEAR ARGUMENTO */}
+          <button
+            type="button"
+            onClick={() => setShowArgumentTreeModal(true)}
+            className="px-2 py-1 bg-teal-900/80 hover:bg-teal-800 text-teal-200 font-bold rounded-lg transition flex items-center gap-1 shadow border border-teal-500/40 cursor-pointer text-[10px]"
+            title="Mapear Árbol de Argumentación Lógica de la Lectura"
+          >
+            <span>🌳 Argumento</span>
+          </button>
+
           {onClose && (
             <button
               type="button"
@@ -642,6 +656,17 @@ ${obsidianQuote ? `> 📑 **Cita (Pág. ${currentPage} de ${fileName}):**\n> "${
             className="px-2.5 py-1 bg-sky-700 hover:bg-sky-600 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
           >
             <span>🎴 Anki</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowArgumentTreeModal(true);
+              setShowSelectionPopup(false);
+            }}
+            className="px-2.5 py-1 bg-teal-700 hover:bg-teal-600 text-white rounded-full text-[10px] font-extrabold shadow cursor-pointer flex items-center gap-1"
+          >
+            <span>🌳 Argumento</span>
           </button>
 
           <button
@@ -792,6 +817,13 @@ ${obsidianQuote ? `> 📑 **Cita (Pág. ${currentPage} de ${fileName}):**\n> "${
         </div>
       )}
 
+      {/* MODAL DE MAPEO DE ARGUMENTOS LÓGICOS DESDE EL LECTOR */}
+      <ArgumentTreeMapperModal
+        isOpen={showArgumentTreeModal}
+        onClose={() => setShowArgumentTreeModal(false)}
+        initialBookTitle={fileName}
+        initialPageNumber={currentPage}
+      />
     </div>
   );
 }

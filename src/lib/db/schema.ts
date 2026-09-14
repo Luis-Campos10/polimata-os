@@ -160,3 +160,16 @@ export const glossary = sqliteTable('glossary', {
   example: text('example'),
   createdAt: text('created_at').notNull(),
 });
+
+// 14. Árboles de Argumentación Lógica y Mapeo de Premisas
+export const argumentTrees = sqliteTable('argument_trees', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  authorOrSource: text('author_or_source'),
+  workNumber: integer('work_number'),
+  thesisStatement: text('thesis_statement').notNull(),
+  nodesJson: text('nodes_json').notNull(), // Nodos de premisas, objeciones y tesis
+  edgesJson: text('edges_json').notNull(), // Conexiones deductivas
+  validityScore: integer('validity_score').notNull().default(100),
+  createdAt: text('created_at').notNull(),
+});
