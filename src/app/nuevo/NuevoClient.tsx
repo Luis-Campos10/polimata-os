@@ -97,7 +97,21 @@ export default function NuevoClient() {
       });
       const data = await res.json();
       if (data.success) {
-        setSavedMessage(`¡Flashcard "${cardTerm}" guardada en tu mazo de repetición FSRS!`);
+        let ankiNote = '';
+        try {
+          const { checkAnkiConnect, syncCardsToAnkiConnect } = await import('@/lib/sync/ankiSync');
+          const ankiStatus = await checkAnkiConnect();
+          if (ankiStatus.isOnline) {
+            await syncCardsToAnkiConnect([{
+              term: cardTerm.trim(),
+              definition: cardDef.trim(),
+              category: cardCategory
+            }]);
+            ankiNote = ' (¡y sincronizada con tu Anki Desktop!)';
+          }
+        } catch {}
+
+        setSavedMessage(`¡Flashcard "${cardTerm}" guardada en mazo FSRS${ankiNote}!`);
         setCardTerm('');
         setCardDef('');
         setTimeout(() => setSavedMessage(null), 4000);

@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Download, Upload, Database, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Download, Upload, Database, CheckCircle2, AlertCircle, FolderSync } from 'lucide-react';
+import SyncHubModal from '@/components/SyncHubModal';
 
 export default function YoBackupActions() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [showSyncModal, setShowSyncModal] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError?: boolean } | null>(null);
 
   const handleExport = async () => {
@@ -104,7 +106,16 @@ export default function YoBackupActions() {
         </label>
       </div>
 
-      <div className="pt-2">
+      <div className="pt-2 flex flex-col gap-2.5">
+        <button
+          type="button"
+          onClick={() => setShowSyncModal(true)}
+          className="w-full py-3.5 px-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-purple-950/50 cursor-pointer"
+        >
+          <FolderSync className="w-4 h-4" />
+          <span>💎 Sincronizar con Obsidian & Anki (PC y Móvil)</span>
+        </button>
+
         <a
           href="/api/export/offline-html"
           download="Polimata_OS_Offline.html"
@@ -114,6 +125,8 @@ export default function YoBackupActions() {
           📥 Descargar Polímata OS Autónomo (.html sin Wi-Fi ni Datos)
         </a>
       </div>
+
+      <SyncHubModal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} />
     </section>
   );
 }

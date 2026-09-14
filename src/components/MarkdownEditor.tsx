@@ -20,6 +20,7 @@ export default function MarkdownEditor({
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [obsidianFeedback, setObsidianFeedback] = useState<string | null>(null);
 
   // Insertar formato Markdown en la posición del cursor o al final
   const insertFormatting = (prefix: string, suffix: string = '') => {
@@ -35,6 +36,34 @@ export default function MarkdownEditor({
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  };
+
+  // Enviar a Obsidian (PC con File System Handle o Móvil vía obsidian://)
+  const handleSendToObsidian = async () => {
+    try {
+      const { getStoredVaultHandle, verifyPermission, writeVaultFile, openInObsidianApp } = await import('@/lib/sync/obsidianSync');
+      const handle = await getStoredVaultHandle();
+
+      if (handle) {
+        const hasPerm = await verifyPermission(handle);
+        if (hasPerm) {
+          const safeName = filename.endsWith('.md') ? filename : `${filename}.md`;
+          await writeVaultFile(handle, ['Polimata_OS', 'Entregables'], safeName, content);
+          setObsidianFeedback(`¡Guardado directamente en tu Bóveda "${handle.name}/Polimata_OS/Entregables/${safeName}"!`);
+          setTimeout(() => setObsidianFeedback(null), 4000);
+          return;
+        }
+      }
+
+      // Fallback móvil / App Obsidian
+      const vaultName = localStorage.getItem('polimata_obsidian_vault_name') || 'Polimata_Vault';
+      const cleanPath = `Polimata_OS/Entregables/${filename.replace(/\.md$/, '')}`;
+      openInObsidianApp(vaultName, cleanPath, content);
+      setObsidianFeedback(`Abriendo en la app de Obsidian (Bóveda: ${vaultName})...`);
+      setTimeout(() => setObsidianFeedback(null), 4000);
+    } catch (err: any) {
+      setObsidianFeedback(`Error al conectar con Obsidian: ${err.message}`);
+    }
   };
 
   const handleSave = async () => {
@@ -90,6 +119,16 @@ export default function MarkdownEditor({
             </button>
           </div>
 
+          {/* Enviar a Obsidian */}
+          <button
+            type="button"
+            onClick={handleSendToObsidian}
+            title="Enviar a Obsidian (App o Bóveda)"
+            className="px-2.5 py-1.5 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 rounded-xl transition border border-purple-500/30 flex items-center gap-1 text-xs font-mono font-bold cursor-pointer"
+          >
+            <span>💎 Obsidian</span>
+          </button>
+
           {/* Descargar Markdown */}
           <button
             type="button"
@@ -101,6 +140,22 @@ export default function MarkdownEditor({
           </button>
         </div>
       </div>
+
+      {obsidianFeedback && (
+        <div className="p-2.5 bg-purple-950/90 border-b border-purple-800 text-purple-200 text-xs font-mono flex items-center justify-between">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
+            {obsidianFeedback}
+          </span>
+          <button
+            type="button"
+            onClick={() => setObsidianFeedback(null)}
+            className="text-purple-400 hover:text-white text-xs font-bold"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Barra de Herramientas de Formato (en modo editar) */}
       {activeTab === 'edit' && (
