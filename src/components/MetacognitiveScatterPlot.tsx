@@ -1,36 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Target, ShieldCheck, AlertCircle, TrendingUp, HelpCircle } from 'lucide-react';
 
-interface CalibrationDataPoint {
+export interface CalibrationDataPoint {
+  id?: string;
   discipline: string;
   predictedScore: number;
   actualScore: number;
   bias: 'OVERCONFIDENCE' | 'UNDERCONFIDENCE' | 'ACCURATE';
+  calibrationError?: number;
 }
 
-const SAMPLE_CALIBRATION_DATA: CalibrationDataPoint[] = [
-  { discipline: 'Fase 0 — Metacognición', predictedScore: 85, actualScore: 88, bias: 'ACCURATE' },
-  { discipline: 'Filosofía del Conocimiento', predictedScore: 92, actualScore: 78, bias: 'OVERCONFIDENCE' },
-  { discipline: 'Lógica & Epistemología', predictedScore: 70, actualScore: 82, bias: 'UNDERCONFIDENCE' },
-  { discipline: 'Ciencia & Método', predictedScore: 88, actualScore: 86, bias: 'ACCURATE' },
-  { discipline: 'Psicología Cognitiva', predictedScore: 95, actualScore: 84, bias: 'OVERCONFIDENCE' },
-];
-
-export default function MetacognitiveScatterPlot() {
+export default function MetacognitiveScatterPlot({
+  initialPoints,
+}: {
+  initialPoints?: CalibrationDataPoint[];
+}) {
+  const [dataPoints, setDataPoints] = useState<CalibrationDataPoint[]>(initialPoints || []);
   const [selectedPoint, setSelectedPoint] = useState<CalibrationDataPoint | null>(null);
-  const dataPoints: CalibrationDataPoint[] = [];
+
+  useEffect(() => {
+    if (initialPoints && initialPoints.length > 0) {
+      setDataPoints(initialPoints);
+      setSelectedPoint(initialPoints[0]);
+      return;
+    }
+
+    async function loadCalibrations() {
+      try {
+        const res = await fetch('/api/calibration');
+        const json = await res.json();
+        if (json.success && json.records && json.records.length > 0) {
+          const mapped: CalibrationDataPoint[] = json.records.map((r: any) => ({
+            id: r.id,
+            discipline: r.targetId || 'Examen Socrático',
+            predictedScore: r.predictedScore,
+            actualScore: r.actualScore,
+            bias: r.bias as any,
+            calibrationError: r.calibrationError,
+          }));
+          setDataPoints(mapped);
+          if (mapped.length > 0) setSelectedPoint(mapped[0]);
+        }
+      } catch (e) {
+        console.error('Error cargando puntos de calibración:', e);
+      }
+    }
+
+    loadCalibrations();
+  }, [initialPoints]);
 
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2 text-purple-400 text-xs font-bold uppercase tracking-wider">
+        <div className="flex items-center space-x-2 text-purple-400 text-xs font-bold uppercase tracking-wider font-mono">
           <Target className="w-4 h-4" />
           <span>Matriz & Gráfico Metacognitivo de Calibración</span>
         </div>
-        <span className="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded font-mono">
-          Inicio Limpio (0 Datos)
+        <span className="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded font-mono font-semibold">
+          {dataPoints.length > 0 ? `${dataPoints.length} Evaluaciones` : 'Inicio Limpio (0 Datos)'}
         </span>
       </div>
 
@@ -39,42 +68,84 @@ export default function MetacognitiveScatterPlot() {
       </p>
 
       {/* GRÁFICO DE PUNTOS / DISPERSIÓN */}
-      <div className="relative bg-slate-950 p-4 rounded-xl border border-slate-800 h-56 flex flex-col justify-between overflow-hidden">
-        {/* Línea Ideal de Calibración Perfecta (45 Grados) */}
-        <div className="absolute inset-0 p-4 pointer-events-none flex items-center justify-center opacity-10">
-          <div className="w-full h-full border-b border-l border-slate-700 relative">
-            <div className="absolute inset-0 border-t border-purple-500 transform -rotate-45 origin-bottom-left border-dashed" />
+      <div className="relative bg-slate-950 p-4 rounded-xl border border-slate-800 h-64 flex flex-col justify-between overflow-hidden">
+        {/* Cuadrícula de referencia */}
+        <div className="absolute inset-4 pointer-events-none opacity-20">
+          <div className="w-full h-full border border-slate-700 grid grid-cols-4 grid-rows-4" />
+        </div>
+
+        {/* Línea Ideal de Calibración Perfecta (Diagonal 45 Grados) */}
+        <svg className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] pointer-events-none overflow-visible">
+          <line
+            x1="0%"
+            y1="100%"
+            x2="100%"
+            y2="0%"
+            className="stroke-purple-500/40"
+            strokeWidth="1.5"
+            strokeDasharray="4,4"
+          />
+        </svg>
+
+        {dataPoints.length === 0 ? (
+          /* Mensaje de Estado Inicial Cero */
+          <div className="h-full flex flex-col items-center justify-center text-center space-y-1.5 z-10">
+            <Target className="w-8 h-8 text-slate-600" />
+            <p className="text-xs font-bold text-slate-300">Sin Datos de Calibración Aún</p>
+            <p className="text-[11px] text-slate-500 max-w-xs">
+              Al completar exámenes socráticos o evaluaciones de dominio, aquí se graficará de forma automática tu precisión metacognitiva real frente a la diagonal ideal.
+            </p>
           </div>
-        </div>
+        ) : (
+          /* Lienzo con puntos reales */
+          <div className="relative w-full h-full z-10">
+            {dataPoints.map((pt, idx) => {
+              // Clamp values between 5 and 95 so dots stay fully visible inside canvas
+              const clampedX = Math.min(95, Math.max(5, pt.predictedScore));
+              const clampedY = Math.min(95, Math.max(5, 100 - pt.actualScore));
+              const isSelected = selectedPoint?.id === pt.id;
 
-        {/* Mensaje de Estado Inicial Cero */}
-        <div className="h-full flex flex-col items-center justify-center text-center space-y-1.5 z-10">
-          <Target className="w-8 h-8 text-slate-600" />
-          <p className="text-xs font-bold text-slate-300">Sin Datos de Calibración Aún</p>
-          <p className="text-[11px] text-slate-500 max-w-xs">
-            Al completar tus primeros exámenes semanales, aquí se graficará de forma automática tu precisión metacognitiva real.
-          </p>
-        </div>
+              const dotColor =
+                pt.bias === 'ACCURATE'
+                  ? 'bg-emerald-400 border-emerald-300 shadow-emerald-500/50'
+                  : pt.bias === 'OVERCONFIDENCE'
+                  ? 'bg-amber-400 border-amber-300 shadow-amber-500/50'
+                  : 'bg-sky-400 border-sky-300 shadow-sky-500/50';
 
-        {/* Leyenda del Eje */}
-        <div className="flex justify-between text-[10px] font-mono text-slate-600 border-t border-slate-800/80 pt-1">
-          <span>0 (Bajo Predicho)</span>
-          <span>Eje X: Puntaje Predicho (0-100)</span>
-          <span>100 (Alto Predicho)</span>
+              return (
+                <button
+                  key={pt.id || idx}
+                  type="button"
+                  onClick={() => setSelectedPoint(pt)}
+                  style={{ left: `${clampedX}%`, top: `${clampedY}%` }}
+                  title={`${pt.discipline}: Predicho ${pt.predictedScore}%, Real ${pt.actualScore}%`}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all transform hover:scale-125 shadow cursor-pointer ${dotColor} ${
+                    isSelected ? 'ring-4 ring-purple-400/60 scale-125 z-20' : 'opacity-85'
+                  }`}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Leyenda de los Ejes */}
+        <div className="flex justify-between items-center text-[10px] font-mono text-slate-500 border-t border-slate-800/80 pt-1 z-10">
+          <span>0 (Predicho)</span>
+          <span className="text-slate-400 font-semibold">Eje X: Predicho · Diagonal: Calibración Perfecta</span>
+          <span>100 (Predicho)</span>
         </div>
       </div>
-
 
       {/* Leyenda de Sesgos */}
       <div className="grid grid-cols-3 gap-2 text-[11px] font-mono text-center">
         <div className="p-2 bg-emerald-950/40 border border-emerald-800/50 rounded-xl text-emerald-300">
-          ● Calibración Precisa (±5%)
+          ● Precisa (±5%)
         </div>
         <div className="p-2 bg-amber-950/40 border border-amber-800/50 rounded-xl text-amber-300">
-          ● Sobreconfianza (+Sesgo)
+          ● Sobreconfianza
         </div>
         <div className="p-2 bg-sky-950/40 border border-sky-800/50 rounded-xl text-sky-300">
-          ● Subconfianza (-Sesgo)
+          ● Subconfianza
         </div>
       </div>
 
@@ -97,6 +168,11 @@ export default function MetacognitiveScatterPlot() {
           </div>
           <p className="text-slate-400 leading-relaxed text-[11px]">
             Predicción del estudiante: <strong className="text-purple-300">{selectedPoint.predictedScore} pts</strong> | Resultado Real Obtenido: <strong className="text-emerald-300">{selectedPoint.actualScore} pts</strong>.
+            {selectedPoint.calibrationError !== undefined && (
+              <span className="block text-slate-500 text-[10px] mt-0.5">
+                Desviación de calibración: {selectedPoint.calibrationError}%
+              </span>
+            )}
           </p>
         </div>
       )}

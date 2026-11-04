@@ -142,7 +142,7 @@ export default function InteractiveTimeline({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div className="flex items-center space-x-2 text-xs font-mono text-purple-400 font-bold uppercase">
             <Clock className="w-4 h-4" />
-            <span>Navegador Temporal Interactivo (170 Obras desde el Origen)</span>
+            <span>Navegador Temporal Interactivo (200 Obras desde el Origen)</span>
           </div>
           <span className="text-[11px] font-mono text-slate-400">
             Hito {selectedIndex + 1} de {TIMELINE_MILESTONES.length}

@@ -180,10 +180,10 @@ export default function SyncHubModal({
         await writeVaultFile(handle, ['Polimata_OS', '00_Fase_0'], item.filename, item.content);
       }
 
-      // Escribir 170 Obras del Canon
+      // Escribir 200 Obras del Canon
       for (const work of data.works) {
         const item = formatWorkForObsidian(work);
-        await writeVaultFile(handle, ['Polimata_OS', '01_Canon_170_Obras'], item.filename, item.content);
+        await writeVaultFile(handle, ['Polimata_OS', '01_Canon_200_Obras'], item.filename, item.content);
       }
 
       // Escribir 18 Grandes Preguntas & Question Ledger
@@ -192,7 +192,7 @@ export default function SyncHubModal({
         await writeVaultFile(handle, ['Polimata_OS', '02_Grandes_Preguntas'], item.filename, item.content);
       }
 
-      setObsidianStatus({ text: `✅ ¡Sincronización completa! Se actualizaron 170 obras, 16 semanas y las Grandes Preguntas directamente en tu carpeta de Obsidian.` });
+      setObsidianStatus({ text: `✅ ¡Sincronización completa! Se actualizaron 200 obras, 16 semanas y las Grandes Preguntas directamente en tu carpeta de Obsidian.` });
     } catch (err: any) {
       setObsidianStatus({ text: `Error al sincronizar: ${err.message}`, isError: true });
     } finally {
@@ -486,7 +486,7 @@ ${directNoteBody.trim()}
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed">
-                Selecciona la carpeta de tu Bóveda en tu computadora una sola vez. Polímata OS escribirá directamente tus notas, el canon de 170 obras con <strong className="text-purple-300">[[Wikilinks]]</strong> y tus preguntas guía.
+                Selecciona la carpeta de tu Bóveda en tu computadora una sola vez. Polímata OS escribirá directamente tus notas, el canon de 200 obras con <strong className="text-purple-300">[[Wikilinks]]</strong> y tus preguntas guía.
               </p>
 
               {hasVaultHandle ? (

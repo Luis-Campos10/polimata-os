@@ -184,6 +184,29 @@ export default function SaberClient({
   const [modelSearch, setModelSearch] = useState<string>('');
   const [selectedDetailModel, setSelectedDetailModel] = useState<MentalModel | null>(null);
 
+  // Estados Question Ledger
+  const [ledgerEntries, setLedgerEntries] = useState<any[]>([]);
+  const [isLoadingLedger, setIsLoadingLedger] = useState(false);
+  const [selectedLedgerFilter, setSelectedLedgerFilter] = useState('TODAS');
+
+  const loadLedgerEntries = async () => {
+    setIsLoadingLedger(true);
+    try {
+      const res = await fetch('/api/ledger');
+      const json = await res.json();
+      if (json.entries) setLedgerEntries(json.entries);
+    } catch (e) {
+      console.error('Error cargando ledger:', e);
+    } finally {
+      setIsLoadingLedger(false);
+    }
+  };
+
+  const handleOpenLedgerModal = () => {
+    setShowLedgerModal(true);
+    loadLedgerEntries();
+  };
+
   // Formulario para nueva posición
   const [newPosition, setNewPosition] = useState('');
   const [newConfidence, setNewConfidence] = useState(75);
@@ -211,6 +234,7 @@ export default function SaberClient({
       const data = await res.json();
       if (data.success) {
         setSavedSuccess(true);
+        loadLedgerEntries();
         setTimeout(() => {
           setSavedSuccess(false);
           setShowNewPositionModal(false);
@@ -255,7 +279,7 @@ export default function SaberClient({
         {/* 1. QUESTION LEDGER */}
         <button
           type="button"
-          onClick={() => setShowLedgerModal(true)}
+          onClick={handleOpenLedgerModal}
           className="group text-left p-5 bg-slate-900/90 hover:bg-slate-800/90 rounded-2xl border border-slate-800 hover:border-purple-500/40 transition-all duration-300 shadow-md active:scale-98 cursor-pointer"
         >
           <div className="flex items-start space-x-4">
@@ -573,12 +597,12 @@ export default function SaberClient({
 
       {/* MODAL 1: QUESTION LEDGER INMUTABLE */}
       {showLedgerModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+          <div className="bg-slate-950 border border-purple-500/40 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl relative text-slate-100">
             <button
               type="button"
               onClick={() => setShowLedgerModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-xl hover:bg-slate-800 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -590,16 +614,124 @@ export default function SaberClient({
               </div>
               <h2 className="text-xl font-bold text-slate-100">Registro de Posiciones Filosóficas</h2>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Ninguna posición se sobrescribe. Cada año se añade una nueva capa para medir cómo evolucionó tu pensamiento.
+                Ninguna posición se sobrescribe. Cada año se añade una nueva capa para medir cómo evolucionó tu pensamiento sin sesgos retrospectivos.
               </p>
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
-              <span className="font-bold text-slate-200 block text-sm">Estado del Ledger:</span>
-              <p>
-                Tienes <strong className="text-purple-300">18 preguntas maestras</strong> activas. Al finalizar cada año del currículo, el sistema te invitará a responder de nuevo sin consultar tus respuestas del año anterior para medir tu calibración real.
-              </p>
+            {/* FILTRO POR PREGUNTA */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 font-mono text-[10px]">
+              <button
+                type="button"
+                onClick={() => setSelectedLedgerFilter('TODAS')}
+                className={`px-3 py-1.5 rounded-xl font-bold cursor-pointer transition shrink-0 ${
+                  selectedLedgerFilter === 'TODAS'
+                    ? 'bg-purple-600 text-white shadow'
+                    : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
+                }`}
+              >
+                Todas las Preguntas
+              </button>
+              {questions.map((q) => (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => setSelectedLedgerFilter(q.id)}
+                  className={`px-2.5 py-1.5 rounded-xl font-bold cursor-pointer transition shrink-0 ${
+                    selectedLedgerFilter === q.id
+                      ? 'bg-purple-600 text-white shadow'
+                      : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
+                  }`}
+                >
+                  {q.id}
+                </button>
+              ))}
             </div>
+
+            {/* LISTADO DE ENTRADAS DEL LEDGER */}
+            {isLoadingLedger ? (
+              <div className="p-8 text-center text-xs text-slate-400 font-mono animate-pulse">
+                Cargando registros históricos del ledger...
+              </div>
+            ) : ledgerEntries.filter((e) => selectedLedgerFilter === 'TODAS' || e.questionId === selectedLedgerFilter).length === 0 ? (
+              <div className="p-6 bg-slate-900/60 rounded-2xl border border-slate-800 text-center space-y-2">
+                <ShieldCheck className="w-8 h-8 text-slate-600 mx-auto" />
+                <h4 className="text-xs font-bold text-slate-200">Aún no hay posturas guardadas para este filtro</h4>
+                <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
+                  Registra tu postura actual para una de las 18 Grandes Preguntas para iniciar tu línea histórica.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {ledgerEntries
+                  .filter((e) => selectedLedgerFilter === 'TODAS' || e.questionId === selectedLedgerFilter)
+                  .map((entry) => {
+                    const qObj = questions.find((q) => q.id === entry.questionId);
+                    let args: string[] = [];
+                    try {
+                      if (entry.argumentsJson) args = JSON.parse(entry.argumentsJson);
+                    } catch (e) {}
+
+                    let objections: string[] = [];
+                    try {
+                      if (entry.objectionsJson) objections = JSON.parse(entry.objectionsJson);
+                    } catch (e) {}
+
+                    return (
+                      <div
+                        key={entry.id}
+                        className="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-2.5 text-xs text-slate-300 relative"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 font-bold font-mono text-[10px] border border-purple-500/30">
+                              {entry.questionId}
+                            </span>
+                            <span className="font-bold text-slate-100">{qObj?.title || 'Pregunta Núcleo'}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 font-mono text-[10px]">
+                            <span className="px-2 py-0.5 rounded bg-slate-950 text-amber-300 border border-slate-800">
+                              Año {entry.year}
+                            </span>
+                            <span className="px-2 py-0.5 rounded bg-slate-950 text-emerald-400 border border-slate-800">
+                              {entry.confidence}% Confianza
+                            </span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-500 font-mono block">
+                            Tesis / Posición Filosófica:
+                          </span>
+                          <p className="text-slate-200 mt-0.5 leading-relaxed font-sans">{entry.positionSummary}</p>
+                        </div>
+
+                        {args.length > 0 && (
+                          <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+                            <span className="text-[10px] text-sky-400 font-mono font-bold block">
+                              Argumento & Justificación:
+                            </span>
+                            <p className="text-[11px] text-slate-300">{args.join(' · ')}</p>
+                          </div>
+                        )}
+
+                        {objections.length > 0 && (
+                          <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1">
+                            <span className="text-[10px] text-amber-400 font-mono font-bold block">
+                              Criterio de Falsación / Objeción:
+                            </span>
+                            <p className="text-[11px] text-slate-300">{objections.join(' · ')}</p>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-1">
+                          <span>🔒 Inmutable · {new Date(entry.createdAt).toLocaleDateString()}</span>
+                          <span>ID: {entry.id.substring(0, 16)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
 
             <button
               type="button"
@@ -607,7 +739,7 @@ export default function SaberClient({
                 setShowLedgerModal(false);
                 setShowNewPositionModal(true);
               }}
-              className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow"
+              className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" /> Registrar Nueva Posición Anual
             </button>

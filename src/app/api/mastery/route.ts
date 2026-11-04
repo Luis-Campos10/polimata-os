@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, initDb } from '@/lib/db';
 import * as schema from '@/lib/db/schema';
 import { calculateMasteryScore, calculateCalibration, getDeferredReviewDates } from '@/lib/pedagogy/pedagogy';
 
 export async function POST(req: Request) {
   try {
+    await initDb();
     const body = await req.json();
     const {
       targetType,
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
 
     // Guardar Mastery Score
     const masteryId = `MST_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    db.insert(schema.masteryScores).values({
+    await db.insert(schema.masteryScores).values({
       id: masteryId,
       targetType,
       targetId,
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
       calibrationScore: rubric.calibrationScore,
       totalScore,
       createdAt
-    }).run();
+    });
 
     // Calcular calibración metacognitiva si se indicó predicción
     let currentBias: 'OVERCONFIDENCE' | 'UNDERCONFIDENCE' | 'ACCURATE' | undefined;
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
       currentBias = bias;
 
       const calibId = `CAL_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-      db.insert(schema.calibrationRecords).values({
+      await db.insert(schema.calibrationRecords).values({
         id: calibId,
         targetType,
         targetId,
@@ -52,14 +53,14 @@ export async function POST(req: Request) {
         calibrationError,
         bias,
         createdAt
-      }).run();
+      });
     }
 
     // Programar Revisiones Diferidas FSRS-4.5 Adaptativas
     const reviewDates = getDeferredReviewDates(new Date(), totalScore, body.errorTypes || [], currentBias);
     for (const r of reviewDates) {
       const revId = `REV_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-      db.insert(schema.reviewSchedules).values({
+      await db.insert(schema.reviewSchedules).values({
         id: revId,
         targetType,
         targetId,
@@ -67,7 +68,7 @@ export async function POST(req: Request) {
         scheduledDate: r.scheduledDate,
         completed: 0,
         createdAt
-      }).run();
+      });
     }
 
     return NextResponse.json({

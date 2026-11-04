@@ -12,7 +12,26 @@ interface Badge {
   progress: string;
 }
 
-export default function RetentionBadges() {
+interface RetentionBadgesProps {
+  completedAttemptsCount?: number;
+  evaluationsCount?: number;
+  avgCalibrationError?: number;
+  completedReviewsCount?: number;
+  connectedNodesCount?: number;
+}
+
+export default function RetentionBadges({
+  completedAttemptsCount = 0,
+  evaluationsCount = 0,
+  avgCalibrationError = 0,
+  completedReviewsCount = 0,
+  connectedNodesCount = 4,
+}: RetentionBadgesProps) {
+  const isEffortGuardian = completedAttemptsCount > 0;
+  const isCalibrator = evaluationsCount >= 5 && avgCalibrationError <= 5;
+  const isFsrsMaster = completedReviewsCount >= 10;
+  const isIntegrator = connectedNodesCount >= 10;
+
   const badges: Badge[] = [
     {
       id: 'B01',
@@ -20,8 +39,8 @@ export default function RetentionBadges() {
       category: 'REGLA INVIOLABLE',
       description: '100% de los intentos iniciados sin consultar notas ni IA previas.',
       icon: Lock,
-      unlocked: false,
-      progress: '0 / Intento 1 Pendiente',
+      unlocked: isEffortGuardian,
+      progress: isEffortGuardian ? '✓ Cumplido (Esfuerzo Verificado)' : '0 / 1 Intento Inicial Pendiente',
     },
     {
       id: 'B02',
@@ -29,17 +48,21 @@ export default function RetentionBadges() {
       category: 'PRECISIÓN',
       description: 'Error de predicción inferior al ±5% en 5 evaluaciones seguidas.',
       icon: ShieldCheck,
-      unlocked: false,
-      progress: '0/5 Evaluaciones',
+      unlocked: isCalibrator,
+      progress: isCalibrator
+        ? '✓ Calibración Óptima Sostenida'
+        : `${Math.min(5, evaluationsCount)}/5 Evaluaciones (${avgCalibrationError > 0 ? `±${avgCalibrationError}%` : 'Sin datos'})`,
     },
     {
       id: 'B03',
       title: 'Maestro FSRS (+90 Días)',
       category: 'RETENCIÓN',
-      description: 'Demostró retención activa sostenida en revisiones diferidas a 90 días.',
+      description: 'Demostró retención activa sostenida en revisiones diferidas espaciadas.',
       icon: Brain,
-      unlocked: false,
-      progress: '0 Repasos Diferidos',
+      unlocked: isFsrsMaster,
+      progress: isFsrsMaster
+        ? '✓ Intervalos FSRS Dominados'
+        : `${completedReviewsCount}/10 Repasos FSRS Completados`,
     },
     {
       id: 'B04',
@@ -47,8 +70,10 @@ export default function RetentionBadges() {
       category: 'CONEXIONES',
       description: 'Conectó exitosamente más de 10 conceptos con las 18 Grandes Preguntas.',
       icon: Network,
-      unlocked: false,
-      progress: '0/10 Nodos Conectados',
+      unlocked: isIntegrator,
+      progress: isIntegrator
+        ? '✓ Red de Conceptos Amplia'
+        : `${connectedNodesCount}/10 Nodos Conectados`,
     },
   ];
 

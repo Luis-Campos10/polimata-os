@@ -198,7 +198,39 @@ const HISTORICAL_WORKS_DATA: Record<number, { year: string; period: string }> = 
   167: { year: '1989 d.C.', period: 'Sociología de la Modernidad Líquida' },
   168: { year: '1998 d.C.', period: 'Consiliencia & Unificación del Conocimiento' },
   169: { year: '1990 d.C.', period: 'Organizaciones de Aprendizaje & Pensamiento Sistémico' },
-  170: { year: '1995 d.C.', period: 'Evolución de la Mente & Conciencia Darwiniana' }
+  170: { year: '1995 d.C.', period: 'Evolución de la Mente & Conciencia Darwiniana' },
+
+  // --- OBRAS ADICIONALES DEL CANON DE 200 ---
+  171: { year: '~700 a.C.', period: 'Poesía Arcaica Griega & Mito Cosmico' },
+  172: { year: '~55 a.C.', period: 'Atomismo Romano & Filosofía Epicúrea' },
+  173: { year: '~750 a.C.', period: 'Épica Arcaica & Tragedia Humana' },
+  174: { year: '~400 a.C.', period: 'Taoísmo Clásico & Ontología del Vacío' },
+  175: { year: '~200 d.C.', period: 'Escepticismo Pirrónico Clásico' },
+  176: { year: '~65 d.C.', period: 'Filosofía Moral Romana & Estoicismo' },
+  177: { year: '44 a.C.', period: 'Filosofía del Derecho & Deber Republicano' },
+  178: { year: '1106 d.C.', period: 'Epistemología Islámica & Autocrítica Racional' },
+  179: { year: '1670 d.C.', period: 'Antropología Existencial & Paradoja Humana' },
+  180: { year: '1670 d.C.', period: 'Filosofía Política Moderna & Libertad de Expresión' },
+  181: { year: '1689 d.C.', period: 'Liberalismo Político & Propiedad Privada' },
+  182: { year: '1748 d.C.', period: 'Teoría Constitucional & Separación de Poderes' },
+  183: { year: '1739 d.C.', period: 'Empirismo Radical & Escepticismo Psicológico' },
+  184: { year: '1808 d.C.', period: 'Romanticismo & Tragedia del Conocimiento Fáustico' },
+  185: { year: '1843 d.C.', period: 'Existencialismo Cristiano & Salto de Fe' },
+  186: { year: '1873 d.C.', period: 'Física Clásica & Síntesis Electromagnética' },
+  187: { year: '1930 d.C.', period: 'Psicoanálisis & Crítica Civilizatoria' },
+  188: { year: '1934 d.C.', period: 'Psicología Socio-Histórica & Origen del Pensamiento' },
+  189: { year: '1945 d.C.', period: 'Fenomenología Corpórea & Percepción Encarnada' },
+  190: { year: '~150 a.C.', period: 'Teoría Constitucional Romana & Ciclos de Gobierno' },
+  191: { year: '1776 d.C.', period: 'Historiografía Clásica de la Decadencia Imperial' },
+  192: { year: '1997 d.C.', period: 'Geografía Evolutiva & Determinismo Ecológico' },
+  193: { year: '1974 d.C.', period: 'Teoría del Sistema-Mundo & Economía Histórica' },
+  194: { year: '1552 d.C.', period: 'Derecho Internacional Temprano & Crítica Colonial' },
+  195: { year: '1692 d.C.', period: 'Barroco Novohispano & Epistemología Poética' },
+  196: { year: '1902 d.C.', period: 'Historiografía Liberal & Evolución de México' },
+  197: { year: '1925 d.C.', period: 'Pensamiento Filosófico-Estético Iberoamericano' },
+  198: { year: '1974 d.C.', period: 'Filosofía Política Libertaria & Estado Mínimo' },
+  199: { year: '1979 d.C.', period: 'Termodinámica del No Equilibrio & Filosofía del Tiempo' },
+  200: { year: '2014 d.C.', period: 'Alineamiento de Inteligencia Artificial & Riesgo Existencial' }
 };
 
 export function getWorkHistoricalData(workNumber: number): WorkYearInfo {

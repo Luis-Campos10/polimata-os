@@ -141,3 +141,203 @@ export async function getPendingReviews() {
     return [];
   }
 }
+
+export async function getAllCalibrationRecords() {
+  try {
+    return await db.select().from(schema.calibrationRecords).orderBy(desc(schema.calibrationRecords.createdAt));
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function getAllMasteryScores() {
+  try {
+    return await db.select().from(schema.masteryScores).orderBy(desc(schema.masteryScores.createdAt));
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function getAllStudySessions() {
+  try {
+    return await db.select().from(schema.studySessions).orderBy(desc(schema.studySessions.createdAt));
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function getAllAuditFindings() {
+  try {
+    return await db.select().from(schema.auditFindings).orderBy(desc(schema.auditFindings.createdAt));
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function getAllQuestionLedgerEntries(questionId?: string) {
+  try {
+    if (questionId) {
+      return await db.select()
+        .from(schema.questionLedger)
+        .where(eq(schema.questionLedger.questionId, questionId))
+        .orderBy(desc(schema.questionLedger.year));
+    }
+    return await db.select().from(schema.questionLedger).orderBy(desc(schema.questionLedger.createdAt));
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function getAllReviewSchedules() {
+  try {
+    return await db.select().from(schema.reviewSchedules);
+  } catch (err) {
+    return [];
+  }
+}
+
+export interface UserRealMetrics {
+  totalStudyMinutes: number;
+  studyHoursText: string;
+  averageMastery: number;
+  completedWeeksCount: number;
+  totalEvaluationsCount: number;
+  calibrationRecordCount: number;
+  avgCalibrationError: number;
+  calibrationBiasText: string;
+  retentionRate: number;
+  completedReviewsCount: number;
+  pendingReviewsCount: number;
+  errorCounts: {
+    omision: number;
+    conexionNoJustificada: number;
+    distorsion: number;
+    total: number;
+  };
+  errorPercentages: {
+    omision: number;
+    conexionNoJustificada: number;
+    distorsion: number;
+  };
+  shannonDiversityScore: number;
+  activeWeekId: string;
+}
+
+export async function getUserRealMetrics(): Promise<UserRealMetrics> {
+  const [sessions, masteries, calibrations, reviews, findings, weeks] = await Promise.all([
+    getAllStudySessions(),
+    getAllMasteryScores(),
+    getAllCalibrationRecords(),
+    getAllReviewSchedules(),
+    getAllAuditFindings(),
+    getAllWeeks(),
+  ]);
+
+  // 1. Horas de Estudio Real
+  const totalStudyMinutes = sessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  const studyHoursText = (totalStudyMinutes / 60).toFixed(1);
+
+  // 2. Dominio Promedio Real (0 a 100)
+  const averageMastery = masteries.length > 0
+    ? Math.round(masteries.reduce((acc, m) => acc + m.totalScore, 0) / masteries.length)
+    : 0;
+
+  // Semanas completadas con dominio >= 70
+  const masteredWeekIds = new Set(
+    masteries.filter((m) => m.targetType === 'WEEK' && m.totalScore >= 70).map((m) => m.targetId)
+  );
+  const completedWeeksCount = masteredWeekIds.size;
+
+  // Semana activa: la primera semana que no esté dominada aún
+  const uncompletedWeek = (weeks as any[]).find((w: any) => !masteredWeekIds.has(w.id));
+  const activeWeekId = uncompletedWeek ? uncompletedWeek.id : (weeks[0]?.id || 'W01');
+
+  // 3. Calibración Metacognitiva Real
+  const calibrationRecordCount = calibrations.length;
+  let avgCalibrationError = 0;
+  let calibrationBiasText = '± 0.0%';
+
+  if (calibrations.length > 0) {
+    const sumError = calibrations.reduce((acc, c) => acc + c.calibrationError, 0);
+    avgCalibrationError = parseFloat((sumError / calibrations.length).toFixed(1));
+    
+    // Contar sobre vs subconfianza
+    let over = 0;
+    let under = 0;
+    calibrations.forEach((c) => {
+      if (c.bias === 'OVERCONFIDENCE' || c.predictedScore > c.actualScore) over++;
+      else if (c.bias === 'UNDERCONFIDENCE' || c.actualScore > c.predictedScore) under++;
+    });
+
+    const sign = over > under ? '+' : under > over ? '-' : '±';
+    calibrationBiasText = `${sign}${avgCalibrationError}%`;
+  }
+
+  // 4. Retención FSRS Real (+30 / +90 días)
+  const completedReviews = reviews.filter((r) => r.completed === 1);
+  const pendingReviews = reviews.filter((r) => r.completed === 0);
+  let retentionRate = 0;
+
+  if (reviews.length > 0) {
+    // Si hay revisiones completadas con puntuación
+    const ratedReviews = completedReviews.filter((r) => r.score !== null && r.score !== undefined);
+    if (ratedReviews.length > 0) {
+      // Score en FSRS va de 1 a 4; 3 (Bien) y 4 (Fácil) cuentan como retención exitosa (>=3)
+      const passed = ratedReviews.filter((r) => (r.score as number) >= 3).length;
+      retentionRate = Math.round((passed / ratedReviews.length) * 100);
+    } else if (completedReviews.length > 0) {
+      retentionRate = Math.round((completedReviews.length / reviews.length) * 100);
+    }
+  }
+
+  // 5. Perfil de Errores Recurrentes (Heurístico)
+  let omision = 0;
+  let conexion = 0;
+  let distorsion = 0;
+
+  findings.forEach((f) => {
+    const t = (f.errorType || '').toUpperCase();
+    if (t.includes('OMISION') || t.includes('ESTRUCTURA')) omision++;
+    else if (t.includes('CONEXION') || t.includes('EVIDENCIA') || t.includes('JUSTIFICADA')) conexion++;
+    else if (t.includes('DISTORSION') || t.includes('SESGO') || t.includes('CONFUSION')) distorsion++;
+    else omision++; // fallback
+  });
+
+  const totalErrors = omision + conexion + distorsion;
+  const errorPercentages = {
+    omision: totalErrors > 0 ? Math.round((omision / totalErrors) * 100) : 0,
+    conexionNoJustificada: totalErrors > 0 ? Math.round((conexion / totalErrors) * 100) : 0,
+    distorsion: totalErrors > 0 ? Math.round((distorsion / totalErrors) * 100) : 0,
+  };
+
+  // 6. Diversidad Intelectual (Shannon Entropy Approximation)
+  // Medida según diversidad de disciplinas y objetivos estudiados
+  const distinctTargets = new Set(sessions.map((s) => s.targetType || s.targetId));
+  masteries.forEach((m) => distinctTargets.add(m.targetId));
+  const categoryCount = distinctTargets.size;
+  // Escala a 0 - 100 con curva logarítmica
+  const shannonDiversityScore = categoryCount > 0 ? Math.min(100, Math.round(Math.log2(categoryCount + 1) * 28)) : 0;
+
+  return {
+    totalStudyMinutes,
+    studyHoursText,
+    averageMastery,
+    completedWeeksCount,
+    totalEvaluationsCount: masteries.length,
+    calibrationRecordCount,
+    avgCalibrationError,
+    calibrationBiasText,
+    retentionRate,
+    completedReviewsCount: completedReviews.length,
+    pendingReviewsCount: pendingReviews.length,
+    errorCounts: {
+      omision,
+      conexionNoJustificada: conexion,
+      distorsion,
+      total: totalErrors,
+    },
+    errorPercentages,
+    shannonDiversityScore,
+    activeWeekId,
+  };
+}

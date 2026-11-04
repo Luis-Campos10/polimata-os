@@ -8,15 +8,30 @@ interface RadarData {
   value: number;
 }
 
-export default function InterdisciplinaryRadarChart() {
-  const data: RadarData[] = [
-    { axis: 'Filosofía & Ética', value: 88 },
-    { axis: 'Ciencia Cognitiva', value: 94 },
-    { axis: 'Epistemología', value: 90 },
-    { axis: 'Biología & Origen', value: 85 },
-    { axis: 'Historia & Sociedad', value: 82 },
-    { axis: 'Argumentación', value: 91 },
+interface InterdisciplinaryRadarChartProps {
+  customData?: RadarData[];
+  averageMastery?: number;
+  hasEvaluations?: boolean;
+}
+
+export default function InterdisciplinaryRadarChart({
+  customData,
+  averageMastery,
+  hasEvaluations = false,
+}: InterdisciplinaryRadarChartProps) {
+  const defaultData: RadarData[] = [
+    { axis: 'Filosofía & Ética', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery - 5) : 30 },
+    { axis: 'Ciencia Cognitiva', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery + 4) : 45 },
+    { axis: 'Epistemología', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery) : 35 },
+    { axis: 'Biología & Origen', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery - 8) : 25 },
+    { axis: 'Historia & Sociedad', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery - 3) : 20 },
+    { axis: 'Argumentación', value: hasEvaluations && averageMastery ? Math.max(20, averageMastery + 2) : 40 },
   ];
+
+  const data = customData || defaultData;
+  const currentAverage = averageMastery !== undefined && averageMastery > 0
+    ? averageMastery
+    : Math.round(data.reduce((acc, d) => acc + d.value, 0) / data.length);
 
   const size = 260;
   const center = size / 2;
@@ -48,7 +63,7 @@ export default function InterdisciplinaryRadarChart() {
           <span>Radar de Dominio Interdisciplinario</span>
         </div>
         <span className="text-[10px] bg-purple-500/10 text-purple-300 border border-purple-500/20 px-2.5 py-0.5 rounded font-mono font-bold">
-          88.3 Pts Promedio
+          {hasEvaluations ? `${currentAverage} Pts Dominio Real` : `${currentAverage} Pts (Línea Base)`}
         </span>
       </div>
 

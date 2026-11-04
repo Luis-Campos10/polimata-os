@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers } from 'lucide-react';
+import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers, Upload, Trash2, FileText } from 'lucide-react';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
 import { getWorkPublicationYear } from '@/lib/workYearHelper';
+import MobilePdfCanvasViewer from '@/components/MobilePdfCanvasViewer';
+import { savePdfToIndexedDb, getPdfsFromIndexedDb, deletePdfFromIndexedDb, StoredPdfDoc } from '@/lib/pdfIndexedDb';
 
 interface Week {
   id: string;
@@ -44,6 +46,64 @@ export default function RutaClient({
   const [sessionStarted, setSessionStarted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [viewMode, setViewMode] = useState<'YEARS' | 'TIMELINE'>('YEARS');
+
+  // Estados de PDF para Obras del Canon
+  const [workPdfs, setWorkPdfs] = useState<StoredPdfDoc[]>([]);
+  const [activeReadingPdf, setActiveReadingPdf] = useState<{ url: string; fileName: string } | null>(null);
+  const [isUploadingWorkPdf, setIsUploadingWorkPdf] = useState(false);
+
+  useEffect(() => {
+    if (selectedWork) {
+      getPdfsFromIndexedDb(selectedWork.id).then((docs) => setWorkPdfs(docs || []));
+    } else {
+      setWorkPdfs([]);
+    }
+  }, [selectedWork]);
+
+  const handleUploadWorkPdf = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !selectedWork) return;
+    setIsUploadingWorkPdf(true);
+    try {
+      const file = files[0];
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const base64Data = `data:application/pdf;base64,${buffer.toString('base64')}`;
+      const docId = `PDF_WORK_${Date.now()}`;
+      const newDoc: StoredPdfDoc = {
+        id: docId,
+        targetId: selectedWork.id,
+        targetType: 'WORK',
+        fileName: file.name,
+        filePath: base64Data,
+        fileSize: file.size,
+        createdAt: new Date().toISOString(),
+      };
+      await savePdfToIndexedDb(newDoc);
+      const docs = await getPdfsFromIndexedDb(selectedWork.id);
+      setWorkPdfs(docs || []);
+    } catch (err) {
+      console.error('Error al guardar PDF de la obra:', err);
+    } finally {
+      setIsUploadingWorkPdf(false);
+    }
+  };
+
+  const handleDeleteWorkPdf = async (docId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await deletePdfFromIndexedDb(docId);
+      if (selectedWork) {
+        const docs = await getPdfsFromIndexedDb(selectedWork.id);
+        setWorkPdfs(docs || []);
+      }
+      if (activeReadingPdf?.url.includes(docId)) {
+        setActiveReadingPdf(null);
+      }
+    } catch (err) {
+      console.error('Error al eliminar PDF de la obra:', err);
+    }
+  };
 
   // Agrupar obras por Año (1 al 10)
   const worksByYear = Array.from({ length: 10 }, (_, i) => {
@@ -147,7 +207,7 @@ export default function RutaClient({
         </div>
         <h1 className="text-2xl font-extrabold text-slate-50 tracking-tight">Ruta Interdisciplinaria</h1>
         <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-          16 semanas preparatorias de laboratorio cognitivo + 170 obras núcleo organizadas año por año o por línea de tiempo histórica.
+          16 semanas preparatorias de laboratorio cognitivo + 200 obras núcleo organizadas año por año o por línea de tiempo histórica.
         </p>
       </header>
 
@@ -187,13 +247,13 @@ export default function RutaClient({
         </div>
       </section>
 
-      {/* Seccion AÑOS 1 al 10 (170 OBRAS) CON SELECTOR DE VISTA */}
+      {/* Seccion AÑOS 1 al 10 (200 OBRAS) CON SELECTOR DE VISTA */}
       <section className="space-y-4 pt-6 border-t border-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-5 h-5 text-sky-400" />
             <h2 className="text-base font-bold text-slate-100 uppercase tracking-wide">
-              Canon de 170 Obras Núcleo
+              Canon de 200 Obras Núcleo
             </h2>
           </div>
 
@@ -349,6 +409,61 @@ export default function RutaClient({
                   Esta obra conecta directamente con las preguntas ontológicas y epistemológicas analizadas en el <strong className="text-slate-200">Question Ledger</strong> y en el <strong className="text-slate-200">Grafo de Conocimiento</strong>.
                 </p>
               </div>
+
+              {/* BIBLIOTECA DIGITAL / PDF DE LA OBRA */}
+              <div className="pt-3 border-t border-slate-900 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-300 font-bold font-mono text-[11px] flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-sky-400" /> Archivo PDF de la Obra:
+                  </span>
+                  <label className="text-[10px] font-bold text-sky-400 hover:text-sky-300 bg-sky-500/10 border border-sky-500/30 px-2 py-1 rounded-lg cursor-pointer flex items-center gap-1">
+                    <Upload className="w-3 h-3" />
+                    <span>{isUploadingWorkPdf ? 'Cargando...' : '+ Adjuntar PDF'}</span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={handleUploadWorkPdf}
+                      disabled={isUploadingWorkPdf}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {workPdfs.length > 0 ? (
+                  <div className="space-y-1.5">
+                    {workPdfs.map((pdf) => (
+                      <div
+                        key={pdf.id}
+                        className="flex items-center justify-between p-2 bg-slate-900/90 rounded-xl border border-slate-800 text-xs"
+                      >
+                        <span className="truncate max-w-[200px] text-slate-200 font-mono text-[11px]">
+                          {pdf.fileName}
+                        </span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setActiveReadingPdf({ url: pdf.filePath, fileName: pdf.fileName })}
+                            className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-bold text-[10px] transition cursor-pointer"
+                          >
+                            📖 Leer
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteWorkPdf(pdf.id, e)}
+                            className="p-1 text-slate-400 hover:text-rose-400 transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[10px] text-slate-500 italic">
+                    Sin PDF local adjunto aún. Puedes adjuntar tu ejemplar digital para leerlo con el visor integrado, tomar notas en Obsidian y generar flashcards para Anki.
+                  </p>
+                )}
+              </div>
             </div>
 
             {sessionStarted && (
@@ -361,12 +476,23 @@ export default function RutaClient({
               type="button"
               onClick={handleStartWorkSession}
               disabled={isSaving}
-              className="w-full py-3 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+              className="w-full py-3 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg cursor-pointer active:scale-95"
             >
               <Play className="w-4 h-4 fill-current" />
               {isSaving ? 'Registrando Sesión...' : 'Iniciar Sesión de Lectura para esta Obra'}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* VISOR PDF EN PANTALLA COMPLETA PARA CUALQUIER OBRA DEL CANON */}
+      {activeReadingPdf && (
+        <div className="fixed inset-0 z-[100000] bg-slate-950 flex flex-col">
+          <MobilePdfCanvasViewer
+            pdfUrl={activeReadingPdf.url}
+            fileName={activeReadingPdf.fileName}
+            onClose={() => setActiveReadingPdf(null)}
+          />
         </div>
       )}
     </main>

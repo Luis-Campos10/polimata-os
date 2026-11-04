@@ -20,7 +20,7 @@ export interface SearchItem {
   id: string;
   title: string;
   subtitle?: string;
-  category: 'Canon 170' | 'Fase 0' | '18 Preguntas' | 'Glosario' | 'Argumentos';
+  category: 'Canon 200' | 'Fase 0' | '18 Preguntas' | 'Glosario' | 'Argumentos';
   url: string;
   description: string;
   keywords?: string;
@@ -90,7 +90,7 @@ export default function GlobalSearchModal() {
           });
         }
 
-        // 2. Canon 170 Obras
+        // 2. Canon 200 Obras
         if (Array.isArray(json.data.works)) {
           json.data.works.forEach((w: any) => {
             const period = w.badgeText || w.historicalPeriod || (w.historicalYear ? `Año ${w.historicalYear}` : `Año ${w.year}`);
@@ -98,7 +98,7 @@ export default function GlobalSearchModal() {
               id: `WORK_${w.id || w.workNumber}`,
               title: `Obra #${w.workNumber}: ${w.title}`,
               subtitle: `${w.author} · ${period}`,
-              category: 'Canon 170',
+              category: 'Canon 200',
               url: `/ruta?work=${w.id || 'WORK_' + String(w.workNumber).padStart(3, '0')}`,
               description: w.prescribedReading || `Nivel ${w.level || 'B'} · Canon Interdisciplinario`,
               keywords: `${w.title} ${w.author} obra ${w.workNumber} año ${w.year} ${period}`,
@@ -207,13 +207,13 @@ export default function GlobalSearchModal() {
     router.push(url);
   };
 
-  const categories = ['Todos', 'Canon 170', 'Fase 0', '18 Preguntas', 'Glosario', 'Argumentos'];
+  const categories = ['Todos', 'Canon 200', 'Fase 0', '18 Preguntas', 'Glosario', 'Argumentos'];
 
   const getCategoryBadgeClass = (category: string) => {
     switch (category) {
       case 'Fase 0':
         return 'bg-sky-500/10 text-sky-400 border-sky-500/30';
-      case 'Canon 170':
+      case 'Canon 200':
         return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
       case '18 Preguntas':
         return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
@@ -308,7 +308,7 @@ export default function GlobalSearchModal() {
               {isLoading && database.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
                   <Sparkles className="w-4 h-4 animate-spin text-sky-400" />
-                  <span>Indexando 170 obras, semanas, preguntas y glosario...</span>
+                  <span>Indexando 200 obras, semanas, preguntas y glosario...</span>
                 </div>
               ) : filteredResults.length > 0 ? (
                 filteredResults.map((item, idx) => {

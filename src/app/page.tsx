@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllWeeks, getPendingReviews } from '@/lib/db/queries';
+import { getAllWeeks, getPendingReviews, getUserRealMetrics } from '@/lib/db/queries';
 import { initDb } from '@/lib/db';
 import { Calendar, Play, CheckCircle2, Clock, Brain, AlertCircle, Sparkles, ArrowRight, ShieldAlert } from 'lucide-react';
 import SocraticExamSimulatorModal from '@/components/SocraticExamSimulatorModal';
@@ -8,27 +8,39 @@ import InterdisciplinaryRadarChart from '@/components/InterdisciplinaryRadarChar
 import DailyFsrsReviewModal from '@/components/DailyFsrsReviewModal';
 import CognitivePacingWidget from '@/components/CognitivePacingWidget';
 
-
 export default async function HoyPage() {
   await initDb();
-  const weeks = await getAllWeeks();
-  const currentWeek = weeks.length > 0 ? weeks[0] : null;
-  const pendingReviews = await getPendingReviews();
+  const [weeks, pendingReviews, metrics] = await Promise.all([
+    getAllWeeks(),
+    getPendingReviews(),
+    getUserRealMetrics(),
+  ]);
+
+  // Encontrar la semana activa del estudiante según su progreso real
+  const currentWeek =
+    weeks.find((w: any) => w.id === metrics.activeWeekId) ||
+    (weeks.length > 0 ? weeks[0] : null);
+
+  // Minutos previstos para hoy: 35 min lectura/recall + ~3 min por revisión FSRS pendiente
+  const reviewsTime = Math.min(30, Math.max(5, pendingReviews.length * 3));
+  const plannedDailyMinutes = 35 + reviewsTime;
 
   return (
     <main className="space-y-6 pb-12">
       {/* Saludo y Cabecera */}
       <header className="relative overflow-hidden bg-gradient-to-r from-sky-950/60 via-slate-900 to-slate-900 p-6 rounded-2xl border border-sky-800/30 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-300 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-300 text-xs font-semibold uppercase tracking-wider font-mono">
             <Calendar className="w-3.5 h-3.5 text-sky-400" />
             <span>Plan Diario — Polímata OS</span>
           </div>
           <h1 className="text-2xl font-extrabold text-slate-50">¿Qué estudiamos hoy?</h1>
-          <p className="text-xs text-slate-300">Plan personalizado según tus revisiones y avances.</p>
+          <p className="text-xs text-slate-300">
+            Plan adaptativo según tus repasos FSRS y progreso en la Fase 0.
+          </p>
         </div>
-        <div className="bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-xl text-center shadow-inner self-stretch sm:self-auto">
-          <span className="text-2xl font-black text-sky-400">47</span>
+        <div className="bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-xl text-center shadow-inner self-stretch sm:self-auto font-mono">
+          <span className="text-2xl font-black text-sky-400">{plannedDailyMinutes}</span>
           <span className="text-[10px] text-slate-400 uppercase font-semibold block">min previstos</span>
         </div>
       </header>
@@ -37,10 +49,10 @@ export default async function HoyPage() {
       {currentWeek && (
         <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950/50 p-6 rounded-2xl border border-sky-700/40 shadow-lg space-y-4">
           <div className="flex flex-wrap justify-between items-center gap-2">
-            <span className="px-3 py-1 bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/40">
+            <span className="px-3 py-1 bg-sky-500/20 text-sky-300 text-xs font-bold rounded-lg border border-sky-500/40 font-mono">
               FASE 0 — SEMANA {currentWeek.weekNumber}
             </span>
-            <span className="text-xs text-slate-400 flex items-center gap-1 bg-slate-950/60 px-2.5 py-1 rounded-md border border-slate-800">
+            <span className="text-xs text-slate-400 flex items-center gap-1 bg-slate-950/60 px-2.5 py-1 rounded-md border border-slate-800 font-mono">
               <Clock className="w-3.5 h-3.5 text-sky-400" />
               {currentWeek.targetHours}
             </span>
@@ -54,25 +66,30 @@ export default async function HoyPage() {
           <div className="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Estado: <strong className="text-emerald-300">En progreso</strong></span>
+              <span>
+                Estado:{' '}
+                <strong className="text-emerald-300">
+                  {metrics.completedWeeksCount >= currentWeek.weekNumber ? 'Completada / Repaso' : 'En progreso'}
+                </strong>
+              </span>
             </div>
             <Link
               href={`/ruta/fase-0/${currentWeek.id}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-sky-950/50 active:scale-95"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-sky-950/50 active:scale-95 cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              Continuar Semana
+              Continuar Semana {currentWeek.weekNumber}
             </Link>
           </div>
         </section>
       )}
- 
+
       {/* Planificador de Ritmo & Carga Cognitiva (Anti-Burnout) */}
       <CognitivePacingWidget />
 
       {/* Secuencia Priorizada de Tareas para Hoy */}
       <section className="space-y-3">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 font-mono">
           <Brain className="w-4 h-4 text-sky-400" />
           Secuencia de Estudio Recomendada
         </h3>
@@ -81,7 +98,7 @@ export default async function HoyPage() {
           {/* Tarea 1: Recuerdo Activo / Recall */}
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-purple-500/40 transition-all duration-200">
             <div className="flex items-center space-x-3.5">
-              <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-sm font-mono">
                 1
               </div>
               <div>
@@ -92,7 +109,7 @@ export default async function HoyPage() {
             {currentWeek && (
               <Link
                 href={`/ruta/fase-0/${currentWeek.id}?step=recall`}
-                className="px-3.5 py-2 bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 text-xs font-bold rounded-xl transition border border-purple-500/30 shrink-0"
+                className="px-3.5 py-2 bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 text-xs font-bold rounded-xl transition border border-purple-500/30 shrink-0 font-mono"
               >
                 Empezar
               </Link>
@@ -102,7 +119,7 @@ export default async function HoyPage() {
           {/* Tarea 2: Lectura Guiada */}
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-sky-500/40 transition-all duration-200">
             <div className="flex items-center space-x-3.5">
-              <div className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-bold text-sm font-mono">
                 2
               </div>
               <div>
@@ -113,7 +130,7 @@ export default async function HoyPage() {
             {currentWeek && (
               <Link
                 href={`/ruta/fase-0/${currentWeek.id}?step=reading`}
-                className="px-3.5 py-2 bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs font-bold rounded-xl transition border border-sky-500/30 shrink-0"
+                className="px-3.5 py-2 bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs font-bold rounded-xl transition border border-sky-500/30 shrink-0 font-mono"
               >
                 Empezar
               </Link>
@@ -123,7 +140,7 @@ export default async function HoyPage() {
           {/* Tarea 3: Revisiones Diferidas FSRS */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-amber-500/40 transition-all duration-200 gap-3">
             <div className="flex items-center space-x-3.5">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-sm shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-sm shrink-0 font-mono">
                 3
               </div>
               <div>
@@ -151,25 +168,33 @@ export default async function HoyPage() {
 
       {/* Accesos a Herramientas de Evaluación & Certificado */}
       <section className="space-y-4 pt-2">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 font-mono">
           <Sparkles className="w-4 h-4 text-purple-400" />
           Evaluación, Calibración & Certificación
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <SocraticExamSimulatorModal />
-          <GraduationCertificateModal />
+          <GraduationCertificateModal
+            userName="Estudiante Polímata"
+            completedWeeks={metrics.completedWeeksCount}
+            retentionRate={metrics.retentionRate > 0 ? metrics.retentionRate : 85}
+            calibrationBias={metrics.calibrationBiasText !== '± 0.0%' ? `Calibración ${metrics.calibrationBiasText}` : 'En evaluación'}
+          />
         </div>
 
-        <InterdisciplinaryRadarChart />
+        <InterdisciplinaryRadarChart
+          averageMastery={metrics.averageMastery}
+          hasEvaluations={metrics.averageMastery > 0}
+        />
       </section>
 
       {/* Regla Pedagógica Visible */}
       <div className="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/80 flex items-start space-x-3 text-xs text-slate-400">
         <AlertCircle className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong className="text-slate-200 block mb-0.5">Regla Polímata OS (Inviolable):</strong>
-          Primero realiza tu esfuerzo propio sin consultar notas. La auditoría e IA solo se desbloquearán tras guardar tu primer intento.
+          <strong className="text-slate-200 block mb-0.5 font-mono">Regla Polímata OS (Inviolable):</strong>
+          Primero realiza tu esfuerzo propio sin consultar notas ni IA. La auditoría e intervenciones socráticas solo se desbloquearán tras guardar tu primer intento de recuerdo activo.
         </p>
       </div>
     </main>

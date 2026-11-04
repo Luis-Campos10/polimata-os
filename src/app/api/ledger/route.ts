@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, initDb } from '@/lib/db';
 import * as schema from '@/lib/db/schema';
-import { getQuestionLedger } from '@/lib/db/queries';
+import { getQuestionLedger, getAllQuestionLedgerEntries } from '@/lib/db/queries';
 
 export async function GET(req: Request) {
   try {
+    await initDb();
     const { searchParams } = new URL(req.url);
     const questionId = searchParams.get('questionId');
-    if (!questionId) {
-      return NextResponse.json({ error: 'Falta questionId' }, { status: 400 });
-    }
-    const entries = await getQuestionLedger(questionId);
+    const entries = questionId
+      ? await getQuestionLedger(questionId)
+      : await getAllQuestionLedgerEntries();
     return NextResponse.json({ entries });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -19,6 +19,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    await initDb();
     const body = await req.json();
     const { questionId, positionSummary, confidence, argument, falsationCriteria } = body;
 

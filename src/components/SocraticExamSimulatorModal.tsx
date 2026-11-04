@@ -48,6 +48,8 @@ export default function SocraticExamSimulatorModal() {
   const [currentStep, setCurrentStep] = useState<'predict' | 'test' | 'results'>('predict');
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [finalScore, setFinalScore] = useState<number | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
   const handleStartTest = () => {
     setCurrentStep('test');
@@ -57,7 +59,7 @@ export default function SocraticExamSimulatorModal() {
     setSelectedAnswers(prev => ({ ...prev, [qId]: oIdx }));
   };
 
-  const handleFinishTest = () => {
+  const handleFinishTest = async () => {
     let correctCount = 0;
     EXAM_QUESTIONS.forEach(q => {
       if (selectedAnswers[q.id] === q.correctIndex) {
@@ -68,6 +70,34 @@ export default function SocraticExamSimulatorModal() {
     const calculatedScore = Math.round((correctCount / EXAM_QUESTIONS.length) * 100);
     setFinalScore(calculatedScore);
     setCurrentStep('results');
+    setIsSaving(true);
+
+    try {
+      const errVal = Math.abs(predictedScore - calculatedScore);
+      const calculatedBias = predictedScore > calculatedScore + 5
+        ? 'OVERCONFIDENCE'
+        : calculatedScore > predictedScore + 5
+        ? 'UNDERCONFIDENCE'
+        : 'ACCURATE';
+
+      await fetch('/api/calibration', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetType: 'SOCRATIC_EXAM',
+          targetId: 'FASE_0_SOCRATIC_SIMULATOR',
+          predictedScore,
+          actualScore: calculatedScore,
+          calibrationError: errVal,
+          bias: calculatedBias,
+        }),
+      });
+      setSavedSuccess(true);
+    } catch (e) {
+      console.error('Error guardando registro de calibración:', e);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const calibrationError = finalScore !== null ? Math.abs(predictedScore - finalScore) : 0;
@@ -197,6 +227,13 @@ export default function SocraticExamSimulatorModal() {
                     <p className="font-bold">Error de Calibración: {calibrationError}%</p>
                     <p className="text-[11px] text-slate-300 mt-1">{biasType}</p>
                   </div>
+
+                  {savedSuccess && (
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-emerald-400 font-semibold bg-emerald-950/40 border border-emerald-500/30 p-2 rounded-xl">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Calibración guardada en tu historial SQLite</span>
+                    </div>
+                  )}
                 </div>
 
                 <button

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, initDb } from '@/lib/db';
 import * as schema from '@/lib/db/schema';
 import { getDeferredReviewDates } from '@/lib/pedagogy/pedagogy';
 
 export async function POST(req: Request) {
   try {
+    await initDb();
     const body = await req.json();
     const { targetType, targetId, attemptType, content } = body;
 
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
     const createdAt = new Date().toISOString();
 
     // Guardar intento con estado OWN_EFFORT_COMPLETED para desbloquear auditoria
-    db.insert(schema.attempts).values({
+    await db.insert(schema.attempts).values({
       id,
       targetType,
       targetId,
@@ -24,13 +25,13 @@ export async function POST(req: Request) {
       content,
       status: 'OWN_EFFORT_COMPLETED',
       createdAt
-    }).run();
+    });
 
     // Programar automáticamente revisiones diferidas (+7, +30, +90, +365) si no existen
     const reviewDates = getDeferredReviewDates(new Date());
     for (const rd of reviewDates) {
       const revId = `REV_${Date.now()}_${rd.intervalDays}_${Math.random().toString(36).substring(2, 5)}`;
-      db.insert(schema.reviewSchedules).values({
+      await db.insert(schema.reviewSchedules).values({
         id: revId,
         targetType,
         targetId,
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
         scheduledDate: rd.scheduledDate,
         completed: 0,
         createdAt
-      }).run();
+      });
     }
 
     return NextResponse.json({ success: true, attemptId: id, status: 'OWN_EFFORT_COMPLETED' });

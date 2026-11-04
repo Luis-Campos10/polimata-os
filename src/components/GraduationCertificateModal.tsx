@@ -69,9 +69,18 @@ export default function GraduationCertificateModal({
                 </h3>
               </div>
 
-              <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
-                Por haber completado exitosamente las <strong>16 Semanas de la Fase 0 ("Aprender a aprender")</strong>, demostrando dominio en práctica de recuperación activa sin notas (Free Recall), diseño de dificultades deseables, calibración metacognitiva y defensa socrática de postulados.
-              </p>
+              {completedWeeks < 16 ? (
+                <div className="p-3 bg-amber-950/40 border border-amber-500/30 rounded-xl text-amber-200 text-xs">
+                  <p className="font-bold">📜 Certificado en Proceso de Acreditación ({completedWeeks}/16 Semanas)</p>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Este diploma muestra tus métricas reales actuales. Demuestra dominio en las {16 - completedWeeks} semanas restantes de la Fase 0 para obtener el diploma definitivo de honor.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
+                  Por haber completado exitosamente las <strong>16 Semanas de la Fase 0 ("Aprender a aprender")</strong>, demostrando dominio en práctica de recuperación activa sin notas (Free Recall), diseño de dificultades deseables, calibración metacognitiva y defensa socrática de postulados.
+                </p>
+              )}
 
               {/* MÉTRICAS DE VERIFICACIÓN */}
               <div className="grid grid-cols-3 gap-2 pt-3 border-t border-amber-500/30 text-left font-mono text-[11px]">
