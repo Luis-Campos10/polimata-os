@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Compass, BookOpen, ChevronRight, Award, X, Play, Clock, CheckCircle2, HelpCircle, History, Calendar, Layers, Upload, Trash2, FileText } from 'lucide-react';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
-import { getWorkPublicationYear } from '@/lib/workYearHelper';
+import { getWorkPublicationYear, YEAR_DETAILS } from '@/lib/workYearHelper';
 import MobilePdfCanvasViewer from '@/components/MobilePdfCanvasViewer';
 import { savePdfToIndexedDb, getPdfsFromIndexedDb, deletePdfFromIndexedDb, StoredPdfDoc } from '@/lib/pdfIndexedDb';
 
@@ -298,12 +298,19 @@ export default function RutaClient({
               >
                 <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-slate-800/70 transition list-none font-bold text-sm text-slate-100">
                   <div className="flex items-center space-x-3">
-                    <span className="w-8 h-8 rounded-xl bg-slate-800 text-sky-400 flex items-center justify-center text-xs font-black border border-slate-700 font-mono">
+                    <span className="w-8 h-8 rounded-xl bg-slate-800 text-sky-400 flex items-center justify-center text-xs font-black border border-slate-700 font-mono shrink-0">
                       A{year}
                     </span>
-                    <span>AÑO {year} — Canon Principal</span>
+                    <div className="text-left">
+                      <div className="font-bold text-sm text-slate-100">
+                        AÑO {year} — {YEAR_DETAILS[year]?.title || 'Canon Principal'}
+                      </div>
+                      <div className="text-[11px] text-slate-400 font-normal">
+                        {YEAR_DETAILS[year]?.integratingQuestion}
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700 font-mono">
+                  <span className="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700 font-mono shrink-0 ml-2">
                     {works.length} obras
                   </span>
                 </summary>

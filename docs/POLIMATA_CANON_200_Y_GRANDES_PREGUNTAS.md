@@ -1,24 +1,19 @@
-# POLÍMATA OS — PLAN MAESTRO EJECUTABLE (CANON 200 OBRAS)
+# POLÍMATA OS 3.0 — PLAN MAESTRO EJECUTABLE (CANON 200 LECTURAS)
 
-> **Programa Interdisciplinario de 10 Años + Fase 0 de Laboratorio Cognitivo (16 Semanas)**
+> **Canon Interdisciplinario en Espiral de 10 Años + Fase 0 de Laboratorio Cognitivo (16 Semanas)**
 
-## 📱 Liga y Acceso para tu Celular (Misma Red Wi-Fi)
+## 📱 Acceso Web y Celular
 
-Conecta tu teléfono a la misma red Wi-Fi de esta computadora y abre en Chrome, Safari o tu navegador móvil:
+- **Vercel Web App:** Conexión continua y despliegue en la nube.
+- **Red Wi-Fi Local:** `http://192.168.100.13:3000`
 
-```text
-http://192.168.100.13:3000
-```
-
-*💡 Tip PWA (Instalación como App):* En el menú del navegador de tu celular, selecciona **"Agregar a la pantalla de inicio"** para usarla en modo pantalla completa sin barra de navegación.
+*💡 Tip PWA:* En Chrome o Safari móvil, selecciona **"Agregar a la pantalla de inicio"** para usarla a pantalla completa con soporte offline.
 
 ---
 
 ## 🧠 Las 18 Grandes Preguntas Núcleo
 
-Estas preguntas transversales articulan todo el programa de 10 años. Cada año registras tu postura en el *Question Ledger* para medir cómo madura tu juicio:
-
-| ID | Pregunta | Formulación Epistemológica |
+| ID | Pregunta | Formulación Filosófica y Epistemológica |
 |:---|:---|:---|
 | **Q01** | **Origen** | ¿De dónde vienen universo, Tierra, vida y nosotros? |
 | **Q02** | **Realidad** | ¿Qué existe? |
@@ -43,8 +38,6 @@ Estas preguntas transversales articulan todo el programa de 10 años. Cada año 
 
 ## 🧪 Fase 0 — Aprender a Aprender (16 Semanas de Laboratorio Cognitivo)
 
-Entrenamiento previo en metacognición, dificultades deseables, recall activo, falacias y lectura sintópica:
-
 | Semana | Título | Propósito | Horas | Entregable Práctico |
 |:---:|:---|:---|:---:|:---|
 | **W01** | **Qué Significa Aprender** | Construir una concepción científicamente defendible del aprendizaje. Distinguir exposición, familiaridad, comprensión momentánea, recuerdo, retención y dominio. | 6–8 horas/semana | SEM01_MODELO_PERSONAL_DE_APRENDIZAJE.md |
@@ -52,257 +45,285 @@ Entrenamiento previo en metacognición, dificultades deseables, recall activo, f
 
 ---
 
-## 📚 Canon de 200 Obras Núcleo (Años 1 al 10)
+## 📚 Canon 3.0 — Distribución Anual (Exactamente 20 Obras por Año)
 
-Distribución exacta de **20 obras por año** (~1 libro cada 18 días):
+### AÑO 1 — Fundamentos: asombro, realidad, virtud y primeras historias (20 Obras)
 
-### AÑO 1 — Historia profunda, primeras civilizaciones y nacimiento de la filosofía (19 Obras)
+* **Pregunta integradora:** *¿De dónde proceden nuestras formas de entender el mundo?*
+* **Preguntas de énfasis:** `Q01, Q03, Q10, Q17`
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 1 | **OpenStax** | *Astronomy 2e* | `B` | `Q01, Q02` |  Caps. 1, 2, 5, 7, 15--16, 20, 23, 26, 28--30. |
-| 2 | **Andrew H. Knoll** | *A Brief History of Earth* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 3 | **Chris Scarre (ed.)** | *The Human Past* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 4 | **Richard G. Klein** | *The Human Career* | `B` | `Q01, Q02` |  Introducción y capítulos sobre australopitecos, origen |
-| 5 | **Steven Mithen** | *After the Ice* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 6 | **Peter Bellwood** | *First Farmers* | `B` | `Q01, Q02` |  Introducción; capítulos sobre Suroeste de Asia, China, |
-| 7 | **Arqueología Mexicana / INAH** | *Primeros pobladores de México + actualización académica* | `B` | `Q01, Q02` |  Dossier académico de poblamiento temprano de México |
-| 8 | **López Austin & López Luján** | *El pasado indígena* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 9 | **El Colegio de México** | *Nueva historia mínima de México (mapa inicial)* | `B` | `Q01, Q02` |  Completa. |
-| 10 | **Confucio** | *Analectas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 11 | **Upanishads + Bhagavad Gita** | *Selecciones estructurales* | `B` | `Q01, Q02` |  Upanishads: Katha; Chandogya VI; Brihadaranyaka |
-| 12 | **Platón** | *Apología de Sócrates* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 13 | **Platón** | *Fedón* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 14 | **Platón** | *Banquete* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 15 | **Platón** | *República* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 16 | **Aristóteles** | *Ética a Nicómaco* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 171 | **Hesíodo** | *Teogonía y Trabajos y días* | `B` | `Q01, Q11` | Teogonía completa; Trabajos y días (mito de Prometeo y las cinco edades). |
-| 172 | **Lucrecio** | *De Rerum Natura (De la naturaleza de las cosas)* | `B` | `Q01, Q02` | Libros I (átomos y vacío), II (movimiento y el clinamen) y III (mortalidad del alma). |
-| 173 | **Homero** | *Ilíada y Odisea (Cantos núcleo)* | `B` | `Q08, Q14` | Ilíada: Cantos 1, 9, 16, 18 (escudo de Aquiles), 22 y 24. Odisea: Cantos 9, 11 (Nekuia) y 22. |
+| 1 | **El Colegio de México** | *Nueva historia mínima de México (mapa inicial)* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Panorama nacional fundacional para situar procesos históricos posteriores. |
+| 2 | **Tim Harford** | *The Undercover Economist* | `B` | `Q12, Q13` | [Modalidad: L] [Área: Sociedad, economía y derecho] Puerta de entrada narrativa a incentivos, precios, información y mercados. |
+| 3 | **Platón** | *Apología de Sócrates* | `B` | `Q03, Q10` | [Modalidad: L] [Área: Filosofía y epistemología] Modelo clásico de examen crítico, virtud y justificación de creencias. |
+| 4 | **Confucio** | *Analectas* | `B` | `Q10, Q11` | [Modalidad: L] [Área: Ética y religiones] Ética relacional y política del carácter desde la tradición confuciana. |
+| 5 | **Arqueología Mexicana / INAH** | *Primeros pobladores de México + actualización académica* | `B` | `Q01, Q17` | [Modalidad: L] [Área: Historia y culturas] Conecta arqueología y evidencias de poblamiento en México; dossier revisable. |
+| 6 | **Adam Smith** | *Teoría de los sentimientos morales* | `B` | `Q09, Q10, Q11` | [Modalidad: L] [Área: Sociedad, economía y derecho] Simpatía y juicio moral; complementa la economía smithiana. |
+| 7 | **Carl Sagan** | *Cosmos* | `B` | `Q01, Q15` | [Modalidad: V+A] [Área: Ciencias y naturaleza] Síntesis científica clásica y legible; actualizar descubrimientos astronómicos desde su publicación. |
+| 8 | **Descartes** | *Discurso del método* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Filosofía y epistemología] Argumento accesible para introducir el método y la duda. |
+| 9 | **Aristóteles** | *Ética a Nicómaco* | `B` | `Q10, Q11` | [Modalidad: L] [Área: Ética y religiones] Marco de virtud y eudaimonía; obra ética nuclear. |
+| 10 | **Donella Meadows** | *Thinking in Systems* | `B` | `Q15, Q18` | [Modalidad: L] [Área: Tecnología y sistemas] Modelos, bucles y retroalimentación; introducción transversal excelente. |
+| 11 | **Marc Bloch** | *Apología para la historia* | `B` | `Q03, Q17` | [Modalidad: L] [Área: Historia y culturas] Evidencia, oficio e interpretación histórica; método imprescindible. |
+| 12 | **Homero** | *Ilíada y Odisea (Cantos núcleo)* | `B` | `Q08, Q14` | [Modalidad: L] [Área: Arte y literatura] Épica, ética y estética; leer episodios señalados y discutir contexto. |
+| 13 | **Gillian Butler y Freda McManus** | *Psychology: A Very Short Introduction* | `B` | `Q04, Q05` | [Modalidad: A] [Área: Psicología y conciencia] Panorama breve de escuelas, métodos, trastornos y preguntas de la psicología. |
+| 14 | **Aristóteles** | *Política* | `B` | `Q11, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Teoría de regímenes y polis; contrastar límites históricos de ciudadanía. |
+| 15 | **Andrew H. Knoll** | *A Brief History of Earth* | `B` | `Q01, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Síntesis accesible de historia geológica y evolución terrestre. |
+| 16 | **Sexto Empírico** | *Esbozos Pirrónicos (Libro I)* | `B` | `Q03, Q10` | [Modalidad: L] [Área: Filosofía y epistemología] Escepticismo antiguo y suspensión del juicio; útil para epistemología. |
+| 17 | **Epicteto** | *Disertaciones + Enquiridión* | `B` | `Q06, Q10` | [Modalidad: L] [Área: Ética y religiones] Estoicismo práctico con argumentos sobre juicio y control. |
+| 18 | **Sun Tzu** | *El arte de la guerra* | `B` | `Q06, Q12` | [Modalidad: L] [Área: Tecnología y sistemas] Estratégica antigua; contexto histórico y límites de analogía. |
+| 19 | **Heródoto** | *Historias* | `B` | `Q03, Q17` | [Modalidad: G] [Área: Historia y culturas] Fuentes, relatos y causalidad en la historiografía antigua; lectura seleccionada. |
+| 20 | **Tradición k’iche’** | *Popol Vuh (edición crítica anotada)* | `B` | `Q01, Q14` | [Modalidad: L] [Área: Arte y literatura] Mito, genealogía y cosmovisión k’iche’; leer como fuente histórica y literaria. |
 
-### AÑO 2 — Antigüedad comparada, lógica, ética y filosofía medieval (20 Obras)
+### AÑO 2 — Cómo justificamos ideas: ciencia, poder y comparación cultural (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Qué hace que una explicación o un gobierno sea creíble?*
+* **Preguntas de énfasis:** `Q02, Q07, Q11, Q12`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 17 | **Aristóteles** | *Metafísica* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 18 | **Aristóteles** | *Política* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 19 | **Aristóteles** | *Analíticos primeros y segundos* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 20 | **Zhuangzi** | *Zhuangzi* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 21 | **Nāgārjuna** | *Mūlamadhyamakakārikā* | `B` | `Q01, Q02` |  Caps. 1, 2, 15, 18, 24 y 25, con comentario académico. |
-| 22 | **Epicteto** | *Disertaciones + Enquiridión* | `B` | `Q01, Q02` |  Enquiridión completo; Disertaciones I.1, I.2, I.6, |
-| 23 | **Marco Aurelio** | *Meditaciones* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 24 | **Heródoto** | *Historias* | `B` | `Q01, Q02` |  Heródoto: Libro I (prólogo/Creso), III y VII--IX. |
-| 25 | **Tucídides** | *Historia de la guerra del Peloponeso* | `B` | `Q01, Q02` |  Tucídides: Libros I--II y V--VIII; discursos clave |
-| 26 | **Euclides** | *Elementos* | `B` | `Q01, Q02` |  Libro I completo; V definiciones y núcleo; VI props. |
-| 27 | **Agustín** | *Confesiones* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 28 | **Anselmo** | *Proslogion* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 29 | **Tomás de Aquino** | *Suma teológica (selecciones)* | `B` | `Q01, Q02` |  I q.2, q.3, q.13, q.19, q.22, q.48--49; I--II |
-| 30 | **Avicena** | *Metafísica* | `B` | `Q01, Q02` |  Avicena, *The Metaphysics of The Healing*: I.1--2, |
-| 31 | **Maimónides** | *Guía de los perplejos* | `B` | `Q01, Q02` |  Introducción; I.1--5, I.50--60; II.13--25; III.8--12 y |
-| 174 | **Lao Tse** | *Tao Te King (Daodejing)* | `B` | `Q02, Q10` | Obra completa (81 breves aforismos sobre ontología, wu wei y gobierno sabio). |
-| 175 | **Sexto Empírico** | *Esbozos Pirrónicos (Libro I)* | `B` | `Q03, Q10` | Libro I completo: los diez modos de la suspensión del juicio (epoché) y la ataraxia escéptica. |
-| 176 | **Séneca** | *Cartas a Lucilio (Selección de cartas éticas)* | `B` | `Q08, Q10` | Cartas 1, 7, 8, 28, 47 (trato a los esclavos), 65, 76, 88 (artes liberales) y 108. |
-| 177 | **Cicerón** | *De los deberes (De Officiis)* | `B` | `Q11, Q12` | Libro I (lo honesto y las cuatro virtudes cardinales) y Libro III (conflicto aparente entre honestidad y utilidad). |
-| 178 | **Al-Ghazali** | *El rescate del error (Al-Munqidh min al-Dalal)* | `B` | `Q03, Q07` | Obra completa: autobiografía intelectual, crisis epistemológica cartesiana temprana y límites de la teología racional. |
+| 21 | **Maquiavelo** | *El príncipe* | `B` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Razonamiento estratégico del poder político; comparar con ética normativa. |
+| 22 | **López Austin & López Luján** | *El pasado indígena* | `B` | `Q02, Q17` | [Modalidad: L] [Área: Historia y culturas] Síntesis imprescindible de Mesoamérica; distinguir consensos y debates. |
+| 23 | **Bacon** | *Novum Organum* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Filosofía y epistemología] Ídolos, inducción y proyecto científico moderno; no confundir con método actual. |
+| 24 | **Upanishads + Bhagavad Gita** | *Selecciones estructurales* | `B` | `Q02, Q07` | [Modalidad: G] [Área: Ética y religiones] Cosmovisiones, identidad y liberación en diálogo comparativo; traducción comentada. |
+| 25 | **Platón** | *República* | `B` | `Q11, Q12` | [Modalidad: G] [Área: Sociedad, economía y derecho] Justicia, educación y organización social; requiere evaluación crítica de sus presupuestos. |
+| 26 | **Neil Shubin** | *Your Inner Fish: A Journey into the 3.5-Billion-Year History of the Human Body* | `B` | `Q01, Q15` | [Modalidad: A] [Área: Ciencias y naturaleza] Biología evolutiva narrada mediante evidencias anatómicas y fósiles. |
+| 27 | **Ibn Jaldún** | *Muqaddimah* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Teoría histórica de cohesión, ciclos y poder; contextualizar límites empíricos. |
+| 28 | **Hume** | *Investigación sobre el entendimiento humano* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Filosofía y epistemología] Causalidad, evidencia y límites de inducción; núcleo de epistemología. |
+| 29 | **Platón** | *Banquete* | `B` | `Q09, Q10` | [Modalidad: L] [Área: Ética y religiones] Pluralidad de modelos de amor y eros; ideal para lectura comparativa. |
+| 30 | **Melanie Mitchell** | *Complexity* | `B` | `Q15, Q18` | [Modalidad: V] [Área: Tecnología y sistemas] Emergencia y complejidad; entrada moderna interdisciplinaria. |
+| 31 | **William James** | *Principios de psicología* | `B` | `Q04, Q05` | [Modalidad: G] [Área: Psicología y conciencia] Conciencia, hábito y atención en fuente clásica; no como manual actual. |
+| 32 | **Hobbes** | *Leviatán* | `B` | `Q12, Q06` | [Modalidad: G] [Área: Sociedad, economía y derecho] Soberanía, autoridad y contrato social; fragmentos nucleares. |
+| 33 | **Oliver Sacks** | *Uncle Tungsten: Memories of a Chemical Boyhood* | `B` | `Q01, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Aproximación narrativa al descubrimiento de elementos, experimentación y química. |
+| 34 | **Tucídides** | *Historia de la guerra del Peloponeso* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Poder, conflicto y análisis histórico; leer discursos y método de Tucídides. |
+| 35 | **William James** | *Pragmatismo* | `B` | `Q03, Q10` | [Modalidad: L] [Área: Filosofía y epistemología] Pragmatismo y verdad; comparar con realismo y teorías representacionales. |
+| 36 | **Juan Rulfo** | *Pedro Páramo* | `B` | `Q08, Q09, Q14` | [Modalidad: L] [Área: Arte y literatura] Novela breve de enorme valor estético y filosófico mexicano. |
+| 37 | **Lao Tse** | *Tao Te King (Daodejing)* | `B` | `Q02, Q10` | [Modalidad: L] [Área: Ética y religiones] Taoísmo y gobierno; comparar traducciones de sentencias. |
+| 38 | **Melanie Mitchell** | *Artificial Intelligence: A Guide for Thinking Humans* | `B` | `Q15, Q16` | [Modalidad: A] [Área: Tecnología y sistemas] Visión general de IA, capacidades y límites; libro sujeto a revisión por actualidad. |
+| 39 | **Lev Vygotsky** | *Pensamiento y lenguaje* | `B` | `Q03, Q04` | [Modalidad: L] [Área: Psicología y conciencia] Lenguaje y pensamiento en psicología histórico-cultural. |
+| 40 | **John Locke** | *Segundo tratado sobre el gobierno civil* | `B` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Gobierno, propiedad y derechos; analizar exclusiones históricas. |
 
-### AÑO 3 — Revolución científica, racionalismo, empirismo y modernidad (20 Obras)
+### AÑO 3 — Razón, lenguaje, biología y organización de la vida humana (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Cómo surgen formas de razón, conocimiento y cooperación?*
+* **Preguntas de énfasis:** `Q03, Q05, Q13, Q15`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 32 | **Ibn Jaldún** | *Muqaddimah* | `B` | `Q01, Q02` |  Introducción y Libro I: civilización, ʿasabiyya, |
-| 33 | **Maquiavelo** | *El príncipe* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 34 | **Bacon** | *Novum Organum* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 35 | **Galileo** | *Diálogo sobre los dos máximos sistemas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 36 | **Descartes** | *Discurso del método* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 37 | **Descartes** | *Meditaciones metafísicas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 38 | **Hobbes** | *Leviatán* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 39 | **Spinoza** | *Ética* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 40 | **Locke** | *Ensayo sobre el entendimiento humano* | `B` | `Q01, Q02` |  Libro I; II.1,8,21,23,27,33; III.1--3,9--11; |
-| 41 | **Leibniz** | *Monadología + textos* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 42 | **Newton** | *Principia* | `B` | `Q01, Q02` |  Prefacio; Definiciones; Leyes del movimiento; Libro I |
-| 43 | **Hume** | *Investigación sobre el entendimiento humano* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 44 | **Hume** | *Diálogos sobre la religión natural* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 45 | **Rousseau** | *El contrato social* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 46 | **Adam Smith** | *Teoría de los sentimientos morales* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 47 | **Adam Smith** | *La riqueza de las naciones* | `B` | `Q01, Q02` |  I.1--8; II.1--3; IV.1--3,8--9; V.1--3. |
-| 179 | **Blaise Pascal** | *Pensamientos (Pensées)* | `B` | `Q03, Q07` | Fragmentos sobre la desproporción del hombre (dos infinitos), la razón vs corazón y el argumento de la apuesta. |
-| 180 | **Baruch Spinoza** | *Tratado teológico-político* | `B` | `Q07, Q12` | Prefacio, caps. 1-3 (profecía), cap. 7 (interpretación bíblica), cap. 16 (derecho natural y Estado) y cap. 20 (libertad de pensamiento). |
-| 181 | **John Locke** | *Segundo tratado sobre el gobierno civil* | `B` | `Q06, Q12` | Caps. 2 (estado de naturaleza), 3 (guerra), 5 (propiedad privada), 8 (sociedad política) y 19 (disolución del gobierno). |
-| 182 | **Montesquieu** | *Del espíritu de las leyes* | `B` | `Q12, Q17` | Libros I-III (leyes y tipos de gobierno), Libro XI (separación de poderes en Inglaterra) y Libro XIX (espíritu general de una nación). |
+| 41 | **Chris Scarre (ed.)** | *The Human Past* | `B` | `Q01, Q17` | [Modalidad: G] [Área: Historia y culturas] Arqueología comparada exhaustiva; leer capítulos selectos, no todo como manual. |
+| 42 | **Romila Thapar** | *Early India* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Historia del sur de Asia; preserva perspectiva comparada. |
+| 43 | **Locke** | *Ensayo sobre el entendimiento humano* | `B` | `Q03, Q05` | [Modalidad: G] [Área: Filosofía y epistemología] Experiencia, ideas, lenguaje y conocimiento; seleccionar capítulos. |
+| 44 | **Rousseau** | *El contrato social* | `C` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Contrato y voluntad general; contrastar con prácticas democráticas. |
+| 45 | **Philip J. Davis y Reuben Hersh** | *The Mathematical Experience* | `C` | `Q03, Q15` | [Modalidad: G+V] [Área: Ciencias y naturaleza] Filosofía y cultura matemática; leer capítulos narrativos, sin exigir tareas del manual. |
+| 46 | **Zhuangzi** | *Zhuangzi* | `B` | `Q02, Q10` | [Modalidad: L] [Área: Ética y religiones] Perspectiva taoísta sobre lenguaje, transformación y distinciones conceptuales. |
+| 47 | **John Iliffe** | *Africans: The History of a Continent* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Historia africana con agencia regional y larga duración. |
+| 48 | **Descartes** | *Meditaciones metafísicas* | `B` | `Q02, Q03` | [Modalidad: L] [Área: Filosofía y epistemología] Conocimiento, certeza y dualismo; exige reconstrucción argumental. |
+| 49 | **Adam Smith** | *La riqueza de las naciones* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Sociedad, economía y derecho] División del trabajo y mercado en fuente histórica; no usar como manual vigente. |
+| 50 | **Siddhartha Mukherjee** | *The Gene: An Intimate History* | `B` | `Q01, Q15` | [Modalidad: A] [Área: Ciencias y naturaleza] Historia de la genética y sus implicaciones sociales; complementar avances recientes. |
+| 51 | **Avinash K. Dixit y Barry J. Nalebuff** | *Thinking Strategically: The Competitive Edge in Business, Politics, and Everyday Life* | `B` | `Q12, Q13` | [Modalidad: L] [Área: Tecnología y sistemas] Interacciones estratégicas, negociación y decisiones; omitir ejercicios opcionales. |
+| 52 | **Marco Aurelio** | *Meditaciones* | `B` | `Q06, Q10` | [Modalidad: L] [Área: Ética y religiones] Ejercicios filosóficos personales; contrastar con teoría ética sistemática. |
+| 53 | **William Shakespeare** | *Hamlet* | `B` | `Q06, Q08` | [Modalidad: L] [Área: Arte y literatura] Tragedia central para estudiar acción, muerte, moralidad y lenguaje. |
+| 54 | **Herbert Simon** | *Textos sobre racionalidad limitada* | `B` | `Q03, Q06` | [Modalidad: L] [Área: Psicología y conciencia] Racionalidad limitada y decisiones; texto de fundación interdisciplinaria. |
+| 55 | **Marshall G. S. Hodgson** | *The Venture of Islam* | `B` | `Q07, Q17` | [Modalidad: G] [Área: Historia y culturas] Civilizaciones islámicas fuera del marco eurocéntrico; leer secciones. |
+| 56 | **Aristóteles** | *Analíticos primeros y segundos* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Filosofía y epistemología] Lógica demostrativa y teoría de ciencia clásicas; solo secciones con ejercicios. |
+| 57 | **Mill** | *Sobre la libertad* | `B` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Libertad de expresión y daño; teoría liberal central. |
+| 58 | **Carl Sagan** | *El mundo y sus demonios: La ciencia como una luz en la oscuridad* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Escepticismo científico aplicado y argumentación; distinguir ciencia de pseudociencia. |
+| 59 | **Taleb** | *The Black Swan* | `B` | `Q03, Q18` | [Modalidad: G] [Área: Tecnología y sistemas] Incertidumbre y colas pesadas; separar intuiciones de demostraciones. |
+| 60 | **Platón** | *Fedón* | `B` | `Q05, Q08` | [Modalidad: L] [Área: Ética y religiones] Problemas de alma, muerte, argumentación y dualismo; no como neurociencia. |
 
-### AÑO 4 — Kant, idealismo alemán, economía política, evolución y crítica (19 Obras)
+### AÑO 4 — Conocimiento moderno, evolución y sociedad (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Cómo cambia lo que sabemos sobre vida y sociedad?*
+* **Preguntas de énfasis:** `Q01, Q12, Q15, Q17`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 48 | **Kant** | *Crítica de la razón pura* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 49 | **Kant** | *Fundamentación de la metafísica de las costumbres* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 50 | **Kant** | *Crítica del juicio* | `B` | `Q01, Q02` |  §§1--22, 23--29, 30--40 y 43--54. |
-| 51 | **Hegel** | *Fenomenología del espíritu* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 52 | **Schopenhauer** | *El mundo como voluntad y representación* | `B` | `Q01, Q02` |  Libro I §§1--16; II §§17--29; III §§30--52; IV |
-| 53 | **Mill** | *Sobre la libertad* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 54 | **Marx** | *El capital, tomo I* | `B` | `Q01, Q02` |  Prólogos/epílogo; caps. 1--4, 6--10, 12--15, 23--25 y |
-| 55 | **Ricardo** | *Principios de economía política y tributación* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 56 | **Tocqueville** | *La democracia en América* | `B` | `Q01, Q02` |  Vol. I: Introducción; Parte I 2--8; Parte II 6--10. |
-| 57 | **Kierkegaard** | *Las obras del amor* | `B` | `Q01, Q02` |  Prefacio; Primera serie I--II y V; Segunda serie I, IV |
-| 58 | **Nietzsche** | *Genealogía de la moral* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 59 | **Nietzsche** | *Más allá del bien y del mal* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 60 | **Darwin** | *El origen de las especies* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 61 | **Mendel** | *Experimentos sobre hibridación de plantas (artículo guiado)* | `B` | `Q01, Q02` |  Artículo de 1866 completo: *Versuche über |
-| 62 | **Marc Bloch** | *Apología para la historia* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 183 | **David Hume** | *Tratado de la naturaleza humana (Libro I: Del entendimiento)* | `A` | `Q03, Q04` | Parte I (ideas e impresiones), Parte III (causalidad y creencia) y Parte IV, sec. 6 (identidad personal y teoría del haz). |
-| 184 | **J. W. von Goethe** | *Fausto (Parte I)* | `B` | `Q08, Q14` | Prólogo en el cielo, pacto con Mefistófeles y tragedia de Gretchen (el mito fáustico del saber moderno). |
-| 185 | **Søren Kierkegaard** | *Temor y temblor* | `B` | `Q07, Q08` | Obra completa (problemas I, II y III sobre la suspensión teleológica de la moral y el caballero de la fe). |
-| 186 | **James Clerk Maxwell** | *Tratado sobre electricidad y magnetismo (Selección)* | `A` | `Q15` | Introducción metodológica, formulación unificada del electromagnetismo y concepción de las líneas de fuerza. |
+| 61 | **Jonathan D. Spence** | *The Search for Modern China* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] China moderna desde distintas dinámicas sociales; capítulos seleccionados. |
+| 62 | **Tocqueville** | *La democracia en América* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Democracia, costumbres y asociaciones; selección contextualizada. |
+| 63 | **Aristóteles** | *Metafísica* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Metafísica aristotélica decisiva pero avanzada; guiar por libros y preguntas. |
+| 64 | **C. A. Bayly** | *The Birth of the Modern World* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Modernidad global comparada; evita teleologías europeas sencillas. |
+| 65 | **Séneca** | *Cartas a Lucilio (Selección de cartas éticas)* | `C` | `Q08, Q10` | [Modalidad: L] [Área: Ética y religiones] Ética estoica con situaciones concretas; usar cartas seleccionadas. |
+| 66 | **Marx** | *El capital, tomo I* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Sociedad, economía y derecho] Crítica de economía política; capítulos seleccionados y contrastes empíricos. |
+| 67 | **Galileo** | *Diálogo sobre los dos máximos sistemas* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Controversia científica y cambio de modelo; lectura histórica selectiva. |
+| 68 | **Leibniz** | *Monadología + textos* | `B` | `Q02, Q05` | [Modalidad: L] [Área: Filosofía y epistemología] Racionalismo e identidad; texto breve con lectura comparativa. |
+| 69 | **Miguel de Cervantes** | *Don Quijote de la Mancha* | `C` | `Q02, Q14` | [Modalidad: G] [Área: Arte y literatura] Ironía, ficción, realidad y crítica social en la tradición literaria hispánica. |
+| 70 | **Marcus Rediker** | *The Slave Ship: A Human History* | `B` | `Q11, Q17` | [Modalidad: L] [Área: Historia y culturas] Historia social de la trata esclavista; lectura crítica de las fuentes. |
+| 71 | **Cicerón** | *De los deberes (De Officiis)* | `B` | `Q11, Q12` | [Modalidad: L] [Área: Ética y religiones] Deberes y utilidad; introduce tensiones normativas. |
+| 72 | **Bertalanffy** | *General System Theory* | `B` | `Q15, Q18` | [Modalidad: G] [Área: Tecnología y sistemas] Teoría general de sistemas histórica; distinguir supuestos y aplicaciones. |
+| 73 | **Kahneman** | *Pensar rápido, pensar despacio (con actualización de replicación)* | `B` | `Q03, Q04` | [Modalidad: G+A] [Área: Psicología y conciencia] Heurísticos y sesgos; señalar controversias de replicación y actualización. |
+| 74 | **Weber** | *La ética protestante y el espíritu del capitalismo* | `B` | `Q12, Q13` | [Modalidad: L] [Área: Sociedad, economía y derecho] Historia de ideas y capitalismo; su tesis requiere discusión empírica. |
+| 75 | **Darwin** | *El origen de las especies* | `B` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Evidencia histórica de selección natural; contrastar con biología moderna. |
+| 76 | **Nāgārjuna** | *Mūlamadhyamakakārikā* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Vaciedad y dependencia; requiere comentario para evitar lecturas simplistas. |
+| 77 | **Sor Juana Inés de la Cruz** | *Primero sueño y Respuesta a Sor Filotea de la Cruz* | `B` | `Q03, Q14` | [Modalidad: L] [Área: Arte y literatura] Poesía y defensa del aprendizaje; doble función artística y epistemológica. |
+| 78 | **Benedict Anderson** | *Comunidades imaginadas* | `C` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Nacionalismo e identidad colectiva; historiografía y teoría social. |
+| 79 | **Agustín** | *Confesiones* | `B` | `Q05, Q07` | [Modalidad: L] [Área: Ética y religiones] Interioridad, memoria y fe en una autobiografía filosófica. |
+| 80 | **Charles Petzold** | *Code: The Hidden Language of Computer Hardware and Software* | `C` | `Q15, Q16` | [Modalidad: G+V] [Área: Tecnología y sistemas] Cómo se construyen sistemas de cómputo desde códigos y circuitos; mantener diagramas. |
 
-### AÑO 5 — Mente, existencia, lenguaje, religión y psicología profunda (20 Obras)
+### AÑO 5 — Causalidad, revoluciones y economía histórica (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Qué hace legítimas nuestras creencias y arreglos colectivos?*
+* **Preguntas de énfasis:** `Q03, Q11, Q12, Q17`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 63 | **William James** | *Pragmatismo* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 64 | **William James** | *Las variedades de la experiencia religiosa* | `B` | `Q01, Q02` |  Conferencias I--III, VI--VII, IX--X, XVI--XVII y XX. |
-| 65 | **William James** | *Principios de psicología* | `B` | `Q01, Q02` |  Caps. IX, X, XI, XXIV, XXV y XXVI. |
-| 66 | **Weber** | *La ética protestante y el espíritu del capitalismo* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 67 | **Weber** | *Economía y sociedad* | `B` | `Q01, Q02` |  Conceptos sociológicos fundamentales; dominación |
-| 68 | **Husserl** | *Ideas I* | `B` | `Q01, Q02` |  §§24, 27--33, 34--46, 49--55, 57--62, 84--96 y |
-| 69 | **Heidegger** | *Ser y tiempo* | `B` | `Q01, Q02` |  Introducción §§1--8; División I §§9--18,25--27,28--44; |
-| 70 | **Wittgenstein** | *Tractatus Logico-Philosophicus* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 71 | **Wittgenstein** | *Investigaciones filosóficas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 72 | **Sartre** | *El existencialismo es un humanismo + selección* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 73 | **Camus** | *El mito de Sísifo* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 74 | **Simone de Beauvoir** | *El segundo sexo* | `B` | `Q01, Q02` |  Introducción; Vol. I: Destino, Historia, Mitos; Vol. |
-| 75 | **Frankl** | *El hombre en busca de sentido* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 76 | **Piaget** | *El nacimiento de la inteligencia en el niño* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 77 | **Herbert Simon** | *Textos sobre racionalidad limitada* | `B` | `Q01, Q02` |  Herbert Simon: "A Behavioral Model of Rational |
-| 78 | **Kahneman** | *Pensar rápido, pensar despacio (con actualización de replicación)* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 79 | **Jonathan Haidt** | *La mente de los justos* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 187 | **Sigmund Freud** | *El malestar en la cultura* | `B` | `Q04, Q09` | Obra completa (represión de pulsiones de vida y muerte, eros vs tánatos y génesis del sentimiento de culpa). |
-| 188 | **Lev Vygotsky** | *Pensamiento y lenguaje* | `B` | `Q04, Q05` | Caps. 1 (planteamiento), 4 (raíces genéticas del habla), 6 (desarrollo de conceptos científicos) y 7 (pensamiento y palabra). |
-| 189 | **Maurice Merleau-Ponty** | *Fenomenología de la percepción* | `A` | `Q02, Q04` | Prefacio sobre qué es la fenomenología; Primera Parte: El cuerpo (el cuerpo como objeto y la experiencia corporal). |
+| 81 | **Braudel** | *El Mediterráneo* | `C` | `Q13, Q17` | [Modalidad: G] [Área: Historia y culturas] Historia de larga duración; tomar muestras por escalas temporales. |
+| 82 | **C. Wright Mills** | *La imaginación sociológica* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Sociedad, economía y derecho] Método sociológico y conexión entre experiencia personal y estructuras sociales. |
+| 83 | **Avicena** | *Metafísica* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Ontología islámica medieval; necesita introducción a esencia y existencia. |
+| 84 | **Hobsbawm** | *La era de la revolución* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Revoluciones económicas y políticas; interpretación histórica contrastable. |
+| 85 | **Montesquieu** | *Del espíritu de las leyes* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Separación de poderes; distinción entre doctrina histórica y constitucionalismo. |
+| 86 | **Anselmo** | *Proslogion* | `B` | `Q03, Q07` | [Modalidad: L] [Área: Ética y religiones] Argumento ontológico valioso pero breve y solapado con filosofía teísta. |
+| 87 | **Mendel** | *Experimentos sobre hibridación de plantas (artículo guiado)* | `B` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Genética clásica mediante un artículo; evidencias y contexto histórico. |
+| 88 | **Popper** | *La lógica de la investigación científica* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Filosofía y epistemología] Falsación, método científico y demarcación; leer ejemplos concretos. |
+| 89 | **Jonathan Haidt** | *La mente de los justos* | `B` | `Q11, Q04` | [Modalidad: G] [Área: Psicología y conciencia] Psicología moral contemporánea; distinguir resultados robustos de hipótesis. |
+| 90 | **Tulio Halperín Donghi** | *Historia contemporánea de América Latina (síntesis seleccionada)* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Historia latinoamericana moderna; secuencia y casos comparados. |
+| 91 | **H. L. A. Hart** | *The Concept of Law* | `B` | `Q11, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Bases conceptuales sobre normas, reglas, validez y autoridad jurídica. |
+| 92 | **Tomás de Aquino** | *Suma teológica (selecciones)* | `B` | `Q02, Q07` | [Modalidad: G] [Área: Ética y religiones] Síntesis escolástica de fe y razón; selecciones antes que totalidad. |
+| 93 | **Edward Dolnick** | *The Clockwork Universe: Isaac Newton, the Royal Society, and the Birth of the Modern World* | `C` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Historia de Newton, la Royal Society y la transformación de la física. |
+| 94 | **Judea Pearl** | *The Book of Why* | `B` | `Q03, Q15` | [Modalidad: G+A] [Área: Tecnología y sistemas] Modelos de causalidad; requiere estadística y formalización. |
+| 95 | **John Berger** | *Ways of Seeing* | `B` | `Q12, Q14` | [Modalidad: V] [Área: Arte y literatura] Análisis crítico de imágenes; conservar las ilustraciones para comprender la argumentación. |
+| 96 | **Kuhn** | *La estructura de las revoluciones científicas* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Filosofía y epistemología] Paradigmas y revoluciones científicas; no convertir en eslogan. |
+| 97 | **Sigmund Freud** | *El malestar en la cultura* | `B` | `Q04, Q08` | [Modalidad: G] [Área: Psicología y conciencia] Psicoanálisis cultural influyente, pero no corroboración clínica actual. |
+| 98 | **Joseph Tainter** | *The Collapse of Complex Societies* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Colapso y rendimientos decrecientes; una hipótesis, no teoría única. |
+| 99 | **Enrique Dussel** | *Filosofía de la liberación* | `B` | `Q11, Q12` | [Modalidad: G] [Área: Sociedad, economía y derecho] Perspectiva latinoamericana de liberación y crítica del poder. |
+| 100 | **Maimónides** | *Guía de los perplejos* | `B` | `Q02, Q07` | [Modalidad: G] [Área: Ética y religiones] Epistemología, teología negativa e interpretación en tradición judía. |
 
-### AÑO 6 — Historia mundial comparada, sociología y sistemas sociales (19 Obras)
+### AÑO 6 — Identidad, modelos explicativos y culturas (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Cómo emergen identidad, instituciones y explicaciones?*
+* **Preguntas de énfasis:** `Q04, Q05, Q13, Q14`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 80 | **Braudel** | *El Mediterráneo* | `B` | `Q01, Q02` |  Prefacio metodológico; Parte I; Parte II: economía, |
-| 81 | **Romila Thapar** | *Early India* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 82 | **Marshall G. S. Hodgson** | *The Venture of Islam* | `B` | `Q01, Q02` |  Vol. I formación; Vol. II orden internacional/alta |
-| 83 | **John Iliffe** | *Africans: The History of a Continent* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 84 | **Jonathan D. Spence** | *The Search for Modern China* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 85 | **C. A. Bayly** | *The Birth of the Modern World* | `B` | `Q01, Q02` |  Introducción; capítulos sobre Estado, imperios, |
-| 86 | **Osterhammel** | *La transformación del mundo* | `B` | `Q01, Q02` |  Introducción; capítulos sobre tiempo/espacio, |
-| 87 | **Hobsbawm** | *La era de la revolución* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 88 | **Hobsbawm** | *Historia del siglo XX* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 89 | **Kenneth Pomeranz** | *The Great Divergence* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 90 | **Obra académica seleccionada** | *Esclavitud atlántica y diáspora africana* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 91 | **Tulio Halperín Donghi** | *Historia contemporánea de América Latina (síntesis seleccionada)* | `B` | `Q01, Q02` |  Independencia; formación estatal; economía |
-| 92 | **Paul Kennedy** | *The Rise and Fall of the Great Powers* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 93 | **Benedict Anderson** | *Comunidades imaginadas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 94 | **Joseph Tainter** | *The Collapse of Complex Societies* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 190 | **Polibio** | *Historias (Libro VI: Sobre las instituciones romanas)* | `B` | `Q12, Q17` | Libro VI completo: teoría de la anaciclosis (ciclo constitucional de seis formas de gobierno) y constitución mixta romana. |
-| 191 | **Edward Gibbon** | *Historia de la decadencia y caída del Imperio Romano (Selección)* | `B` | `Q17` | Caps. 1-3 (era de los Antoninos), caps. 15-16 (progreso del cristianismo) y cap. 71 (conclusiones generales de la ruina). |
-| 192 | **Jared Diamond** | *Armas, gérmenes y acero* | `B` | `Q15, Q17` | Prólogo (la pregunta de Yali), caps. 1-4 (geografía y domesticación), caps. 8-11 (gérmenes y escritura) y epílogo. |
-| 193 | **Immanuel Wallerstein** | *El moderno sistema mundial (Selección conceptual)* | `B` | `Q13, Q17` | Introducción conceptual: economía-mundo capitalista, división centro-periferia-semiperiferia y dinámica de acumulación global. |
+| 101 | **Hobsbawm** | *Historia del siglo XX* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Siglo XX y conflictos; perspectiva de autor, cotejar fuentes. |
+| 102 | **Kant** | *Crítica de la razón pura* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Condiciones del conocimiento y síntesis trascendental; guía imprescindible. |
+| 103 | **Arendt** | *La condición humana* | `C` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Trabajo, acción y condición política; fundamental para esfera pública. |
+| 104 | **Rachel Carson** | *Silent Spring* | `B` | `Q11, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Ciencia ambiental y acción pública; contextualizar casos y métodos. |
+| 105 | **Geoffrey West** | *Scale* | `B` | `Q13, Q18` | [Modalidad: G] [Área: Tecnología y sistemas] Escalamiento y leyes de potencia; interpretar límites de modelos. |
+| 106 | **Al-Ghazali** | *El rescate del error (Al-Munqidh min al-Dalal)* | `B` | `Q03, Q07` | [Modalidad: L] [Área: Ética y religiones] Autobiografía intelectual islámica; crisis de conocimiento y tradición. |
+| 107 | **Kenneth Pomeranz** | *The Great Divergence* | `B` | `Q13, Q17` | [Modalidad: G] [Área: Historia y culturas] Explicaciones de divergencia económica; comparar mecanismos rivales. |
+| 108 | **Wittgenstein** | *Tractatus Logico-Philosophicus* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Lógica, lenguaje y mundo; estudiar proposiciones fundamentales. |
+| 109 | **Chinua Achebe** | *Todo se desmorona (Things Fall Apart)* | `B` | `Q11, Q17` | [Modalidad: L] [Área: Arte y literatura] Novela africana fundacional sobre identidad, cambio social y conquista. |
+| 110 | **Arendt** | *Los orígenes del totalitarismo* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Orígenes históricos del totalitarismo; distinguir análisis y generalización. |
+| 111 | **Elizabeth Kolbert** | *The Sixth Extinction: An Unnatural History* | `B` | `Q15, Q18` | [Modalidad: A] [Área: Ciencias y naturaleza] Extinción de especies y evidencia de crisis ecológicas contemporáneas. |
+| 112 | **Martin Davis** | *The Universal Computer: The Road from Leibniz to Turing* | `C` | `Q03, Q16` | [Modalidad: G] [Área: Tecnología y sistemas] Historia conceptual de computabilidad y de los precursores de la computadora. |
+| 113 | **Minsky** | *The Society of Mind* | `B` | `Q04, Q05` | [Modalidad: L] [Área: Psicología y conciencia] Arquitectura clásica de agentes con visión precontemporánea; valor historiográfico. |
+| 114 | **Spinoza** | *Ética* | `B` | `Q02, Q06` | [Modalidad: L] [Área: Ética y religiones] Sistema racionalista de afectos y libertad; demostraciones guiadas. |
+| 115 | **Polibio** | *Historias (Libro VI: Sobre las instituciones romanas)* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Constitución mixta y cambio político; historiografía romana. |
+| 116 | **David Hume** | *Tratado de la naturaleza humana (Libro I: Del entendimiento)* | `B` | `Q03, Q05` | [Modalidad: G] [Área: Filosofía y epistemología] Teoría humeana de causalidad e identidad; leer partes seleccionadas. |
+| 117 | **Toni Morrison** | *Beloved* | `B` | `Q08, Q14` | [Modalidad: L] [Área: Arte y literatura] Novela fundamental para estudiar memoria, trauma e historia desde la literatura. |
+| 118 | **Isaiah Berlin** | *Dos conceptos de libertad* | `B` | `Q06, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Libertad positiva y negativa; texto breve pero esencial. |
+| 119 | **Lucrecio** | *De Rerum Natura (De la naturaleza de las cosas)* | `B` | `Q01, Q02` | [Modalidad: L] [Área: Ciencias y naturaleza] Atomismo y mortalidad de la mente; fuente clásica, no evidencia moderna. |
+| 120 | **Thomas Schelling** | *The Strategy of Conflict* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Tecnología y sistemas] Conflicto, incentivos y señales; valioso después de base en juegos. |
 
-### AÑO 7 — México y América Latina: orígenes, conquista, nación, revolución e identidad (19 Obras)
+### AÑO 7 — Instituciones, moralidad, ciencia y experiencia (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Qué debemos a otros y qué podemos justificar?*
+* **Preguntas de énfasis:** `Q06, Q09, Q11, Q12`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 95 | **León-Portilla** | *Visión de los vencidos* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 96 | **Bernal Díaz del Castillo** | *Historia verdadera de la conquista de la Nueva España* | `B` | `Q01, Q02` |  Prólogo; llegada; Tlaxcala; Tenochtitlan; Moctezuma; |
-| 97 | **Hernán Cortés** | *Cartas de relación* | `B` | `Q01, Q02` |  Segunda y Tercera Cartas completas. |
-| 98 | **Serge Gruzinski** | *La colonización de lo imaginario* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 99 | **Edmundo O'Gorman** | *La invención de América* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 100 | **David Brading** | *Mineros y comerciantes en el México borbónico* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 101 | **Enrique Florescano** | *Historia de las historias de la nación mexicana* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 102 | **Charles Hale** | *El liberalismo mexicano en la época de Mora* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 103 | **François-Xavier Guerra** | *México: del Antiguo Régimen a la Revolución* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 104 | **Alan Knight** | *The Mexican Revolution* | `B` | `Q01, Q02` |  Vol. I: Porfiriato tardío, 1910--13, |
-| 105 | **Daniel Cosío Villegas** | *El sistema político mexicano* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 106 | **Luis González y González** | *Pueblo en vilo* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 107 | **Octavio Paz** | *El laberinto de la soledad* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 108 | **James Maffie** | *Aztec Philosophy* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 109 | **Lorenzo Meyer** | *Síntesis política de México contemporáneo seleccionada* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 194 | **Bartolomé de las Casas** | *Brevísima relación de la destrucción de las Indias* | `B` | `Q11, Q12` | Texto completo: argumentación jurídica y teológica contra la crueldad colonial y defensa de la condición humana indígena. |
-| 195 | **Sor Juana Inés de la Cruz** | *Primero sueño y Respuesta a Sor Filotea de la Cruz* | `B` | `Q03, Q14` | Primero sueño (poema epistemológico sobre los límites de la mente para aprehender el cosmos); Respuesta a Sor Filotea completa. |
-| 196 | **Justo Sierra** | *Evolución política del pueblo mexicano* | `B` | `Q12, Q17` | Libro I (orígenes y conquista), Libro II (la colonia y la independencia) y Libro III (la Reforma liberal y consolidación nacional). |
-| 197 | **José Vasconcelos** | *La raza cósmica* | `B` | `Q14, Q17` | Prólogo y primera parte: El mestizaje como misión histórica, estética y espiritual en la América ibérica. |
+| 121 | **Osterhammel** | *La transformación del mundo* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Monografía enorme de siglo XIX global, redundante en itinerario de base. |
+| 122 | **Hume** | *Diálogos sobre la religión natural* | `B` | `Q03, Q07` | [Modalidad: L] [Área: Ética y religiones] Argumentos sobre religión natural; comparar posiciones, no dogmatizar. |
+| 123 | **Rawls** | *Teoría de la justicia* | `B` | `Q11, Q12` | [Modalidad: G] [Área: Sociedad, economía y derecho] Justicia como equidad; seleccionar argumentos centrales antes de objeciones. |
+| 124 | **Kwasi Wiredu** | *Philosophy and an African Culture* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Filosofía africana y crítica de universalismos culturales. |
+| 125 | **León-Portilla** | *Visión de los vencidos* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Conquista narrada desde fuentes indígenas; discutir edición y mediación. |
+| 126 | **Blaise Pascal** | *Pensamientos (Pensées)* | `B` | `Q03, Q07` | [Modalidad: L] [Área: Ética y religiones] Límites de razón y fe; lectura selecta interpretativa. |
+| 127 | **Amartya Sen** | *La idea de la justicia* | `A` | `Q11, Q12` | [Modalidad: L] [Área: Sociedad, economía y derecho] Enfoque comparativo de capacidades y justicia; contrasta con Rawls. |
+| 128 | **Richard P. Feynman** | *Six Easy Pieces: Essentials of Physics Explained by Its Most Brilliant Teacher* | `B` | `Q01, Q15` | [Modalidad: V] [Área: Ciencias y naturaleza] Ideas físicas fundamentales sin un curso de resolución de problemas. |
+| 129 | **Husserl** | *Ideas I* | `B` | `Q02, Q04` | [Modalidad: G] [Área: Filosofía y epistemología] Intencionalidad y reducción; avanzado, usar aparato de apoyo. |
+| 130 | **Jared Diamond** | *Armas, gérmenes y acero* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Macroteoría geográfica influyente pero criticada; sustituir por debate antropológico. |
+| 131 | **Dehaene** | *Obra seleccionada sobre conciencia/cognición* | `B` | `Q04, Q15` | [Modalidad: G+A] [Área: Psicología y conciencia] Neurociencia experimental de la conciencia; fuentes y límites. |
+| 132 | **Murasaki Shikibu** | *La historia de Genji (selección estructural)* | `C` | `Q08, Q09, Q14` | [Modalidad: G] [Área: Arte y literatura] Narrativa japonesa clásica; lectura guiada por capítulos e introducción cultural. |
+| 133 | **Kant** | *Fundamentación de la metafísica de las costumbres* | `B` | `Q06, Q11` | [Modalidad: L] [Área: Ética y religiones] Deber y autonomía; excelente contraste con ética de la virtud. |
+| 134 | **James Gleick** | *The Information: A History, a Theory, a Flood* | `C` | `Q03, Q16` | [Modalidad: G] [Área: Tecnología y sistemas] Síntesis de la información como idea científica y cultural. |
+| 135 | **Foucault** | *Vigilar y castigar* | `B` | `Q06, Q12` | [Modalidad: G] [Área: Sociedad, economía y derecho] Poder disciplinario y genealogía institucional; contextualizar evidencia. |
+| 136 | **Feynman** | *El carácter de la ley física* | `C` | `Q01, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Estructura de leyes físicas y explicación; accesible con complementos. |
+| 137 | **Wittgenstein** | *Investigaciones filosóficas* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Filosofía y epistemología] Uso, reglas y significado; contraste pedagógico con Tractatus. |
+| 138 | **Bernal Díaz del Castillo** | *Historia verdadera de la conquista de la Nueva España* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Testimonio español de conquista; leer en contrapunto con fuentes indígenas. |
+| 139 | **Andy Clark** | *Obra seleccionada sobre mente extendida* | `B` | `Q04, Q05` | [Modalidad: G] [Área: Psicología y conciencia] Mente extendida; hipótesis y argumentos en debate interdisciplinario. |
+| 140 | **Gabriel García Márquez** | *Cien años de soledad* | `C` | `Q08, Q17` | [Modalidad: G] [Área: Arte y literatura] Ficción latinoamericana y memoria colectiva, con complejidad narrativa. |
 
-### AÑO 8 — Justicia, instituciones, economía política y filosofía moral global (18 Obras)
+### AÑO 8 — Justicia, interpretación, crisis y diversidad (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Cómo evaluar cultura, poder y teorías enfrentadas?*
+* **Preguntas de énfasis:** `Q07, Q14, Q15, Q17`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 110 | **Enrique Dussel** | *Filosofía de la liberación* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 111 | **Kwasi Wiredu** | *Philosophy and an African Culture* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 112 | **Arendt** | *La condición humana* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 113 | **Arendt** | *Los orígenes del totalitarismo* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 114 | **Isaiah Berlin** | *Dos conceptos de libertad* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 115 | **Rawls** | *Teoría de la justicia* | `B` | `Q01, Q02` |  |
-| 116 | **Amartya Sen** | *La idea de la justicia* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 117 | **Foucault** | *Vigilar y castigar* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 118 | **Polanyi** | *La gran transformación* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 119 | **Keynes** | *Teoría general* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 120 | **Schumpeter** | *Capitalismo, socialismo y democracia* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 121 | **Hayek** | *Derecho, legislación y libertad* | `B` | `Q01, Q02` |  Vol. I caps. 1--6; Vol. II 7--10; Vol. III 12--18. |
-| 122 | **Friedman** | *Capitalismo y libertad* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 123 | **Douglass North** | *Institutions, Institutional Change and Economic Performance* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 124 | **Elinor Ostrom** | *El gobierno de los bienes comunes* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 125 | **Piketty** | *El capital en el siglo XXI* | `B` | `Q01, Q02` |  Introducción; caps. 1--6, 7--12 y 13--15; conclusión. |
-| 126 | **Acemoglu & Robinson** | *Why Nations Fail* | `B` | `Q01, Q02` |  Introducción; caps. 1--4,7--9,12--13 y 15; postlectura |
-| 198 | **Robert Nozick** | *Anarquía, Estado y utopía* | `A` | `Q11, Q12` | Primera parte (el Estado mínimo legítimo) y Segunda parte: teoría de la justicia retributiva y crítica a los patrones igualitarios. |
+| 141 | **Hernán Cortés** | *Cartas de relación* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Discurso interesado del conquistador; análisis de sesgo documental. |
+| 142 | **Polanyi** | *La gran transformación* | `B` | `Q12, Q13` | [Modalidad: L] [Área: Sociedad, economía y derecho] Mercado y sociedad; perspectivas históricas de mercantilización. |
+| 143 | **Søren Kierkegaard** | *Temor y temblor* | `B` | `Q07, Q11` | [Modalidad: G] [Área: Ética y religiones] Fe, deber y paradoja; contraste con Kant. |
+| 144 | **Heidegger** | *Ser y tiempo* | `C` | `Q02, Q08` | [Modalidad: G] [Área: Filosofía y epistemología] Ser, temporalidad y existencia; programa guiado de alta dificultad. |
+| 145 | **Serge Gruzinski** | *La colonización de lo imaginario* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Cultura, imposición y adaptación colonial; nivel especializado. |
+| 146 | **Keynes** | *Teoría general* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Sociedad, economía y derecho] Demanda agregada y desempleo; leer tesis con manual previo. |
+| 147 | **Einstein** | *Sobre la relatividad especial y general* | `B` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Relatividad explicada por su autor; ejercicios y conceptos base. |
+| 148 | **Nietzsche** | *Genealogía de la moral* | `B` | `Q11, Q12` | [Modalidad: L] [Área: Ética y religiones] Genealogía de valores; distinguir crítica histórica de evidencia. |
+| 149 | **Hofstadter** | *Gödel, Escher, Bach* | `B` | `Q03, Q04` | [Modalidad: G] [Área: Tecnología y sistemas] Formalismo, música y autorreferencia; obra interdisciplinar extensa. |
+| 150 | **Hegel** | *Fenomenología del espíritu* | `B` | `Q02, Q05` | [Modalidad: G] [Área: Filosofía y epistemología] Idealismo y dialéctica; lectura comentada y parcial, nunca como entrada. |
+| 151 | **Edmundo O'Gorman** | *La invención de América* | `B` | `Q03, Q17` | [Modalidad: L] [Área: Historia y culturas] Problema de la invención conceptual de América; original mexicano. |
+| 152 | **Hayek** | *Derecho, legislación y libertad* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Sociedad, economía y derecho] Normas y orden espontáneo; lectura selectiva con contraposiciones. |
+| 153 | **Schrödinger** | *¿Qué es la vida?* | `B` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Biología y materia en el desarrollo de la genética; historia conceptual. |
+| 154 | **William James** | *Las variedades de la experiencia religiosa* | `B` | `Q04, Q07` | [Modalidad: L] [Área: Ética y religiones] Variedades religiosas y experiencia humana; análisis histórico-psicológico. |
+| 155 | **Clausewitz** | *De la guerra* | `B` | `Q06, Q12` | [Modalidad: G] [Área: Tecnología y sistemas] Guerra y fricción; conservar fragmentos político-estratégicos. |
+| 156 | **Thomas Nagel** | *What Is It Like to Be a Bat?* | `B` | `Q04, Q05` | [Modalidad: L] [Área: Psicología y conciencia] Qualia y experiencia subjetiva; artículo corto de gran impacto. |
+| 157 | **Schopenhauer** | *El mundo como voluntad y representación* | `B` | `Q02, Q08` | [Modalidad: G] [Área: Filosofía y epistemología] Metafísica de la voluntad; selección con contextualización de presupuestos. |
+| 158 | **J. W. von Goethe** | *Fausto (Parte I)* | `B` | `Q08, Q09, Q14` | [Modalidad: L] [Área: Arte y literatura] Tragedia del deseo de saber; ficción y reflexión estética. |
+| 159 | **François-Xavier Guerra** | *México: del Antiguo Régimen a la Revolución* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Transición estatal mexicana; seleccionar tesis y evidencias. |
+| 160 | **Douglass North** | *Institutions, Institutional Change and Economic Performance* | `B` | `Q12, Q13` | [Modalidad: L] [Área: Sociedad, economía y derecho] Instituciones y desempeño económico; base teórica empírica imperfecta. |
 
-### AÑO 9 — Ciencia, método empírico, teoría de la información y computación (19 Obras)
+### AÑO 9 — Complejidad, crítica de teorías y experiencia humana (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Cómo afrontar la incertidumbre, el sufrimiento y el conocimiento?*
+* **Preguntas de énfasis:** `Q03, Q08, Q15, Q18`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 127 | **Popper** | *La lógica de la investigación científica* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 128 | **Kuhn** | *La estructura de las revoluciones científicas* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 129 | **Lakatos** | *Metodología de los programas de investigación científica* | `B` | `Q01, Q02` |  Ensayo "Falsification and the Methodology of |
-| 130 | **Feyerabend** | *Contra el método* | `B` | `Q01, Q02` |  Prefacio/Introducción; caps. 1--5,11--18 y conclusión. |
-| 131 | **Schrödinger** | *¿Qué es la vida?* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 132 | **Monod** | *El azar y la necesidad* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 133 | **Einstein** | *Sobre la relatividad especial y general* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 134 | **Feynman** | *El carácter de la ley física* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 135 | **Rachel Carson** | *Silent Spring* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 136 | **Vaclav Smil** | *Energy and Civilization* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 137 | **Gödel** | *Incompletitud (texto guiado)* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 138 | **Turing** | *On Computable Numbers* | `B` | `Q01, Q02` |  Artículo de 1936 completo. |
-| 139 | **Shannon** | *A Mathematical Theory of Communication* | `B` | `Q01, Q02` |  Partes I--III completas. |
-| 140 | **Wiener** | *Cybernetics* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 141 | **Abelson & Sussman** | *SICP* | `B` | `Q01, Q02` |  Caps. 1--3; 4.1--4.2; 5.1--5.2 + ejercicios/código. |
-| 142 | **Judea Pearl** | *The Book of Why* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 143 | **Russell & Norvig** | *Artificial Intelligence: A Modern Approach* | `B` | `Q01, Q02` |  Caps. 1--4,6,12--14,17--19,22--23 y capítulo(s) de |
-| 144 | **Sean Carroll** | *The Big Picture* | `B` | `Q01, Q02` |  Obra completa; la etiqueta antigua se elimina. IDD |
-| 199 | **Ilya Prigogine e Isabelle Stengers** | *La nueva alianza: metamorfosis de la ciencia* | `B` | `Q02, Q15` | Introducción, Libro II (la flecha del tiempo y termodinámica lejos del equilibrio) y Libro III (autoorganización y caos creativo). |
+| 161 | **Alan Knight** | *The Mexican Revolution* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Historia rigurosa de revolución mexicana; recortar ambos volúmenes. |
+| 162 | **Sartre** | *El existencialismo es un humanismo + selección* | `B` | `Q06, Q08` | [Modalidad: L] [Área: Ética y religiones] Existencia, proyecto y responsabilidad; divulgación filosófica primaria. |
+| 163 | **Lakatos** | *Metodología de los programas de investigación científica* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Filosofía y epistemología] Programas de investigación; excelente puente entre teorías de ciencia. |
+| 164 | **Elinor Ostrom** | *El gobierno de los bienes comunes* | `B` | `Q11, Q13` | [Modalidad: L] [Área: Sociedad, economía y derecho] Gobernanza policéntrica y recursos comunes; evidencia aplicada muy valiosa. |
+| 165 | **Monod** | *El azar y la necesidad* | `C` | `Q01, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Azar y necesidad; comparar biología molecular histórica con actual. |
+| 166 | **Daniel Cosío Villegas** | *El sistema político mexicano* | `B` | `Q12, Q17` | [Modalidad: L] [Área: Historia y culturas] Descripción clásica de funcionamiento del régimen político mexicano. |
+| 167 | **Camus** | *El mito de Sísifo* | `B` | `Q08, Q10` | [Modalidad: L] [Área: Ética y religiones] Absurdo y suicidio como problema filosófico; enfoque argumental. |
+| 168 | **Arvind Narayanan y Sayash Kapoor** | *AI Snake Oil: What Artificial Intelligence Can Do, What It Can’t, and How to Tell the Difference* | `B` | `Q16, Q18` | [Modalidad: A] [Área: Tecnología y sistemas] Lectura crítica contemporánea; revisar su vigencia al llegar a ella. |
+| 169 | **Feyerabend** | *Contra el método* | `B` | `Q03, Q15` | [Modalidad: G] [Área: Filosofía y epistemología] Pluralismo metodológico; útil para problematizar reglas rígidas. |
+| 170 | **Piketty** | *El capital en el siglo XXI* | `B` | `Q12, Q13` | [Modalidad: G] [Área: Sociedad, economía y derecho] Desigualdad y riqueza; actualizar series estadísticas antes de inferir. |
+| 171 | **Vaclav Smil** | *Energy and Civilization* | `B` | `Q13, Q15` | [Modalidad: A] [Área: Ciencias y naturaleza] Energía, sociedad y restricciones físicas; conecta economía e historia. |
+| 172 | **David Chalmers** | *Selección sobre el problema de la conciencia* | `B` | `Q02, Q04` | [Modalidad: L] [Área: Psicología y conciencia] Problema difícil y explicación; distinguir tesis de conclusión empírica. |
+| 173 | **E. H. Gombrich** | *La historia del arte* | `B` | `Q14, Q17` | [Modalidad: V] [Área: Arte y literatura] Panorama de historia del arte; requiere conservar y consultar imágenes. |
+| 174 | **Luis González y González** | *Pueblo en vilo* | `B` | `Q05, Q17` | [Modalidad: L] [Área: Historia y culturas] Microhistoria regional; aporta método y cercanía con Michoacán. |
+| 175 | **Simone de Beauvoir** | *El segundo sexo* | `B` | `Q05, Q09, Q11` | [Modalidad: G] [Área: Ética y religiones] Crítica filosófica e histórica del género; partes seleccionadas. |
+| 176 | **Norbert Wiener** | *The Human Use of Human Beings* | `C` | `Q16, Q18` | [Modalidad: G] [Área: Tecnología y sistemas] Introducción histórica y filosófica a la cibernética y sus consecuencias humanas. |
+| 177 | **W. V. O. Quine** | *From a Logical Point of View* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Crítica a dogmas analíticos y ontología; requiere lenguaje lógico. |
+| 178 | **Acemoglu & Robinson** | *Why Nations Fail* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Instituciones inclusivas/extractivas; comparar con críticas históricas. |
+| 179 | **Strogatz** | *Sync* | `B` | `Q01, Q15` | [Modalidad: L] [Área: Ciencias y naturaleza] Estudio de sincronización atractivo, pero menos básico que cálculo. |
+| 180 | **Maurice Merleau-Ponty** | *Fenomenología de la percepción* | `C` | `Q02, Q04` | [Modalidad: G] [Área: Psicología y conciencia] Cuerpo y percepción; fenomenología con aportación distinta. |
 
-### AÑO 10 — Conciencia, Inteligencia Artificial, sistemas complejos, estrategia y síntesis (27 Obras)
+### AÑO 10 — Síntesis, incertidumbre y futuro de la humanidad (20 Obras)
 
-| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción de Lectura |
+* **Pregunta integradora:** *¿Qué síntesis y responsabilidades futuras podemos defender?*
+* **Preguntas de énfasis:** `Q02, Q04, Q16, Q18`
+
+| # | Autor | Título de la Obra | Nivel | Preguntas Clave | Prescripción / Modalidad |
 |:---:|:---|:---|:---:|:---:|:---|
-| 145 | **Michael Nielsen** | *Neural Networks and Deep Learning* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 146 | **Hofstadter** | *Gödel, Escher, Bach* | `B` | `Q01, Q02` |  Caps. I--V,VIII--X,XIII--XV,XVII--XX y diálogos |
-| 147 | **Minsky** | *The Society of Mind* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 148 | **Dehaene** | *Obra seleccionada sobre conciencia/cognición* | `B` | `Q01, Q02` |  Stanislas Dehaene, *Consciousness and the Brain*: |
-| 149 | **Andy Clark** | *Obra seleccionada sobre mente extendida* | `B` | `Q01, Q02` |  Andy Clark, *Supersizing the Mind*: Introducción; |
-| 150 | **Thomas Nagel** | *What Is It Like to Be a Bat?* | `B` | `Q01, Q02` |  Artículo completo. |
-| 151 | **David Chalmers** | *Selección sobre el problema de la conciencia* | `B` | `Q01, Q02` |  David Chalmers, "Facing Up to the Problem of |
-| 152 | **Derek Parfit** | *Reasons and Persons* | `B` | `Q01, Q02` |  Parte III completa (caps. 10--15); Parte I cap. 1; |
-| 153 | **W. V. O. Quine** | *From a Logical Point of View* | `B` | `Q01, Q02` |  "On What There Is", "Two Dogmas of Empiricism" y |
-| 154 | **Saul Kripke** | *Naming and Necessity* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 155 | **Gadamer** | *Verdad y método* | `B` | `Q01, Q02` |  Parte I: experiencia estética; Parte II: círculo |
-| 156 | **Donella Meadows** | *Thinking in Systems* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 157 | **Bertalanffy** | *General System Theory* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 158 | **Melanie Mitchell** | *Complexity* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 159 | **Strogatz** | *Sync* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 160 | **Geoffrey West** | *Scale* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 161 | **Taleb** | *The Black Swan* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 162 | **Taleb** | *Antifragile* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 163 | **Sun Tzu** | *El arte de la guerra* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 164 | **Clausewitz** | *De la guerra* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 165 | **Von Neumann & Morgenstern** | *Theory of Games and Economic Behavior* | `B` | `Q01, Q02` |  Caps. 1--4,6 y 12; secciones introductorias de juegos |
-| 166 | **Thomas Schelling** | *The Strategy of Conflict* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 167 | **Bauman** | *Modernidad y Holocausto* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 168 | **E. O. Wilson** | *Consilience* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 169 | **Peter Senge** | *La quinta disciplina* | `B` | `Q01, Q02` |  Obra completa; IDD puede reducirla después de mapear |
-| 170 | **Daniel Dennett** | *Obra seleccionada sobre evolución de mente/cultura* | `B` | `Q01, Q02` |  Daniel Dennett, *From Bacteria to Bach and Back*: |
-| 200 | **Nick Bostrom** | *Superinteligencia: caminos, peligros, estrategias* | `B` | `Q16, Q18` | Caps. 2 (caminos a la AGI), 5 (superinteligencia estratégica), 7 (la tesis de la ortogonalidad y convergencia instrumental) y 12 (el problema del control). |
+| 181 | **James Maffie** | *Aztec Philosophy* | `B` | `Q02, Q17` | [Modalidad: G] [Área: Historia y culturas] Filosofía mexica interpretada académicamente; confrontar fuentes. |
+| 182 | **Saul Kripke** | *Naming and Necessity* | `B` | `Q02, Q03` | [Modalidad: G] [Área: Filosofía y epistemología] Necesidad y referencia; filosofía analítica avanzada. |
+| 183 | **Frankl** | *El hombre en busca de sentido* | `B` | `Q08, Q09, Q10` | [Modalidad: L] [Área: Ética y religiones] Testimonio y sentido vital; distinguir experiencia y generalización científica. |
+| 184 | **Octavio Paz** | *El laberinto de la soledad* | `B` | `Q05, Q17` | [Modalidad: G] [Área: Historia y culturas] Ensayo sobre identidad nacional; no tratar estereotipos como hechos. |
+| 185 | **Bauman** | *Modernidad y Holocausto* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Sociología de modernidad y genocidio; enfoque explicativo específico. |
+| 186 | **Gadamer** | *Verdad y método* | `B` | `Q03, Q14` | [Modalidad: G] [Área: Filosofía y epistemología] Horizontes hermenéuticos e interpretación; lectura parcial guiada. |
+| 187 | **Derek Parfit** | *Reasons and Persons* | `B` | `Q05, Q08` | [Modalidad: G] [Área: Ética y religiones] Identidad personal, razones y consecuencias; dificultad conceptual alta. |
+| 188 | **Bartolomé de las Casas** | *Brevísima relación de la destrucción de las Indias* | `B` | `Q11, Q12` | [Modalidad: L] [Área: Historia y culturas] Defensa de humanidad indígena y crítica colonial; lectura de fuente primaria. |
+| 189 | **Ernest Nagel y James R. Newman** | *Gödel’s Proof* | `C` | `Q03, Q15` | [Modalidad: G] [Área: Ciencias y naturaleza] Introducción divulgativa rigurosa a límites de sistemas formales; algunas secciones siguen siendo densas. |
+| 190 | **Immanuel Wallerstein** | *El moderno sistema mundial (Selección conceptual)* | `B` | `Q13, Q17` | [Modalidad: G] [Área: Sociedad, economía y derecho] Centro-periferia y sistema mundo; hipótesis macrohistórica contrastable. |
+| 191 | **Fiódor Dostoievski** | *Los hermanos Karamázov* | `C` | `Q07, Q11` | [Modalidad: G] [Área: Arte y literatura] Narrativa literaria exigente para pensar libertad, fe, culpa y mal. |
+| 192 | **E. O. Wilson** | *Consilience* | `B` | `Q03, Q15` | [Modalidad: L] [Área: Tecnología y sistemas] Unidad del conocimiento; hipótesis de integración debatible y útil. |
+| 193 | **Sean Carroll** | *The Big Picture* | `B` | `Q02, Q18` | [Modalidad: L] [Área: Filosofía y epistemología] Naturalismo, física y significado; obra integradora de nivel avanzado. |
+| 194 | **Baruch Spinoza** | *Tratado teológico-político* | `A` | `Q07, Q12` | [Modalidad: G] [Área: Ética y religiones] Tolerancia y política religiosa; contraste con Spinoza metafísico. |
+| 195 | **Justo Sierra** | *Evolución política del pueblo mexicano* | `B` | `Q12, Q17` | [Modalidad: G] [Área: Historia y culturas] Historia liberal mexicana; leer como fuente de una época. |
+| 196 | **Ilya Prigogine e Isabelle Stengers** | *La nueva alianza: metamorfosis de la ciencia* | `B` | `Q02, Q15` | [Modalidad: G+V] [Área: Ciencias y naturaleza] Irreversibilidad y complejidad física; selecciones con fundamento previo. |
+| 197 | **Robert Nozick** | *Anarquía, Estado y utopía* | `B` | `Q11, Q12` | [Modalidad: G] [Área: Sociedad, economía y derecho] Derechos, Estado mínimo y teorías de justicia; contrapunto a Rawls. |
+| 198 | **Daniel Dennett** | *Obra seleccionada sobre evolución de mente/cultura* | `B` | `Q04, Q05` | [Modalidad: G+A] [Área: Psicología y conciencia] Conciencia y evolución cultural; autor contemporáneo para síntesis. |
+| 199 | **Kant** | *Crítica del juicio* | `B` | `Q14, Q03` | [Modalidad: G] [Área: Arte y literatura] Estética y juicio reflexionante; importante, pero leer tramos esenciales. |
+| 200 | **Nick Bostrom** | *Superinteligencia: caminos, peligros, estrategias* | `B` | `Q16, Q18` | [Modalidad: G+A] [Área: Tecnología y sistemas] Riesgo y control de IA desde 2014; lectura histórica y discusión actualizada. |
 
